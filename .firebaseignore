@@ -1,0 +1,7 @@
+# ignore a few things
+.DS_Store
+node_modules
+.next
+.git
+.env.local
+workspace/
