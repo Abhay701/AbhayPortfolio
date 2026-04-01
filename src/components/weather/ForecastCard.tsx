@@ -12,10 +12,10 @@ export function ForecastCard({ day }: ForecastCardProps) {
     const date = new Date(day.date);
 
     return (
-        <Card className="flex flex-col items-center p-4 text-center">
+        <Card variant="glass" className="flex flex-col items-center p-4 text-center">
             <p className="font-semibold">{formatDay(date)}</p>
             <p className="text-sm text-muted-foreground">{date.toLocaleDateString([], { month: 'short', day: 'numeric' })}</p>
-            <WeatherIcon code={day.weatherCode} className="w-12 h-12 my-2 text-primary" />
+            <WeatherIcon code={day.weatherCode} className="w-12 h-12 my-2 text-white" />
             <div className="flex gap-2 font-semibold">
                 <span>{day.tempMax}°</span>
                 <span className="text-muted-foreground">{day.tempMin}°</span>

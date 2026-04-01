@@ -54,6 +54,25 @@ export default {
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
       },
+      keyframes: {
+        'rain-fall': {
+          to: { transform: 'translateY(100vh)' },
+        },
+        'snow-fall': {
+          to: { transform: 'translateY(100vh) translateX(50vw)' },
+        },
+        'cloud-drift': {
+          from: { transform: 'translateX(-200px)' },
+          to: { transform: 'translateX(100vw)' },
+        }
+      },
+      animation: {
+        'rain-fall': 'rain-fall 0.5s linear infinite',
+        'snow-fall': 'snow-fall 10s linear infinite',
+        'cloud-drift-fast': 'cloud-drift 120s linear infinite',
+        'cloud-drift-medium': 'cloud-drift 200s linear infinite',
+        'cloud-drift-slow': 'cloud-drift 300s linear infinite',
+      }
     },
   },
   plugins: [],

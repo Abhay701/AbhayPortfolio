@@ -16,7 +16,7 @@ export function CurrentWeatherCard({ weather }: CurrentWeatherCardProps) {
   const today = daily[0];
 
   return (
-    <Card className="bg-primary/10 dark:bg-primary/20 border-primary/20 backdrop-blur-sm">
+    <Card variant="glass">
       <CardHeader>
         <CardTitle className="text-2xl">
           Current Weather in {city.name}
@@ -28,7 +28,7 @@ export function CurrentWeatherCard({ weather }: CurrentWeatherCardProps) {
             <WeatherIcon
               code={current.weather_code}
               isDay={!!current.is_day}
-              className="w-24 h-24 text-primary"
+              className="w-24 h-24 text-white"
             />
             <div>
               <p className="text-6xl font-bold">
@@ -77,7 +77,7 @@ export function CurrentWeatherCard({ weather }: CurrentWeatherCardProps) {
 
 export function CurrentWeatherSkeleton() {
     return (
-        <Card>
+        <Card variant="glass">
             <CardHeader>
                 <Skeleton className="h-8 w-1/2" />
             </CardHeader>

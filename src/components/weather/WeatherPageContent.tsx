@@ -14,6 +14,7 @@ import { SearchBar } from './SearchBar';
 import { EmptyState } from '../EmptyState';
 import { Button } from '../ui/button';
 import { toast } from '../ui/toaster';
+import { WeatherBackground } from './WeatherBackground';
 
 // Default to Ludhiana, India
 const defaultCity: GeocodingResult = {
@@ -41,7 +42,7 @@ function LiveDate() {
     return () => clearInterval(timer);
   }, []);
 
-  if (!date) return <div className="h-6 w-72 rounded-md bg-gray-200 animate-pulse" />;
+  if (!date) return <div className="h-6 w-72 rounded-md bg-white/20 animate-pulse" />;
   
   return <p className="text-muted-foreground">{date}</p>;
 }
@@ -110,41 +111,44 @@ export function WeatherPageContent() {
 
 
   return (
-    <div className="w-full max-w-6xl mx-auto p-4 md:p-8 space-y-8">
-      <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">KB Weather Forecast</h1>
-          <LiveDate />
-        </div>
-        <div className="w-full md:w-auto flex flex-col sm:flex-row gap-2">
-            <SearchBar onCitySelect={setSelectedCity} />
-            <Button variant="outline" onClick={handleUseMyLocation} className='shrink-0'>
-                <MapPin className="mr-2 h-4 w-4" />
-                Use My Location
-            </Button>
-        </div>
-      </header>
+    <div className="relative min-h-screen">
+      {data && <WeatherBackground weatherCode={data.current.weather_code} isDay={!!data.current.is_day} />}
+      <div className="relative z-10 w-full max-w-6xl mx-auto p-4 md:p-8 space-y-8">
+        <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">KB Weather Forecast</h1>
+            <LiveDate />
+          </div>
+          <div className="w-full md:w-auto flex flex-col sm:flex-row gap-2">
+              <SearchBar onCitySelect={setSelectedCity} />
+              <Button variant="outline" onClick={handleUseMyLocation} className='shrink-0 bg-transparent hover:bg-white/10'>
+                  <MapPin className="mr-2 h-4 w-4" />
+                  Use My Location
+              </Button>
+          </div>
+        </header>
 
-      <main>
-        {isLoading && (
-            <div className="space-y-8">
-                <CurrentWeatherSkeleton />
-                <ForecastGridSkeleton />
-            </div>
-        )}
-        {error && (
-            <EmptyState 
-                message="Could not fetch weather data for the selected location."
-                onRetry={refetch}
-            />
-        )}
-        {data && (
-            <div className="space-y-8">
-                <CurrentWeatherCard weather={data} />
-                <ForecastGrid daily={data.daily} />
-            </div>
-        )}
-      </main>
+        <main>
+          {isLoading && (
+              <div className="space-y-8">
+                  <CurrentWeatherSkeleton />
+                  <ForecastGridSkeleton />
+              </div>
+          )}
+          {error && (
+              <EmptyState 
+                  message="Could not fetch weather data for the selected location."
+                  onRetry={refetch}
+              />
+          )}
+          {data && (
+              <div className="space-y-8">
+                  <CurrentWeatherCard weather={data} />
+                  <ForecastGrid daily={data.daily} />
+              </div>
+          )}
+        </main>
+      </div>
     </div>
   );
 }
