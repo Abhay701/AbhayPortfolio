@@ -1,0 +1,52 @@
+{
+  "weather": {
+    "clear_day": {
+      "src": "https://picsum.photos/seed/clear_day/1200/800",
+      "hint": "clear sky"
+    },
+    "clear_night": {
+      "src": "https://picsum.photos/seed/clear_night/1200/800",
+      "hint": "night sky"
+    },
+    "cloudy_day": {
+      "src": "https://picsum.photos/seed/cloudy_day/1200/800",
+      "hint": "cloudy sky"
+    },
+    "cloudy_night": {
+      "src": "https://picsum.photos/seed/cloudy_night/1200/800",
+      "hint": "dark clouds"
+    },
+    "rain_day": {
+      "src": "https://picsum.photos/seed/rain_day/1200/800",
+      "hint": "rainy day"
+    },
+    "rain_night": {
+      "src": "https://picsum.photos/seed/rain_night/1200/800",
+      "hint": "rainy night"
+    },
+    "snow_day": {
+      "src": "https://picsum.photos/seed/snow_day/1200/800",
+      "hint": "snowy landscape"
+    },
+    "snow_night": {
+      "src": "https://picsum.photos/seed/snow_night/1200/800",
+      "hint": "snowy night"
+    },
+    "thunderstorm_day": {
+      "src": "https://picsum.photos/seed/thunderstorm_day/1200/800",
+      "hint": "thunderstorm lightning"
+    },
+    "thunderstorm_night": {
+      "src": "https://picsum.photos/seed/thunderstorm_night/1200/800",
+      "hint": "thunderstorm night"
+    },
+    "fog_day": {
+      "src": "https://picsum.photos/seed/fog_day/1200/800",
+      "hint": "foggy morning"
+    },
+    "fog_night": {
+      "src": "https://picsum.photos/seed/fog_night/1200/800",
+      "hint": "foggy night"
+    }
+  }
+}
