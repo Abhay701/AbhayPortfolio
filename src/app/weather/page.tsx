@@ -3,9 +3,6 @@
 import { Suspense } from 'react';
 import { WeatherPageContent } from '@/components/weather/WeatherPageContent';
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
-
 export default function WeatherPage() {
   return (
     <Suspense fallback={<WeatherPageContentSkeleton />}>
