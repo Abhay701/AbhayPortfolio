@@ -1,5 +1,5 @@
 {
-  "name": "kb-weather-forecast",
+  "name": "weather-forecast",
   "private": true,
   "engines": {
     "node": ">=22 <23"
