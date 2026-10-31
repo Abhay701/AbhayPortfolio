@@ -1,14 +1,13 @@
-
 'use client';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Mail, Github, Linkedin, MapPin, Send, Loader2, Phone } from 'lucide-react';
+import { Mail, Github, Linkedin, MapPin, Send, Loader2 } from 'lucide-react';
 import { profile } from '@/lib/data';
 import { toast } from '../ui/toaster';
 import { useFirestore } from '@/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { errorEmitter } from '@/firebase/error-emitter';
-import { FirestorePermissionError } from '@/firebase/errors';
+import { FirestorePermissionError, type SecurityRuleContext } from '@/firebase/errors';
 
 const COUNTRY_CODES = [
   { code: '+91', name: 'India' },
@@ -46,7 +45,7 @@ export function Contact() {
   const validateForm = () => {
     if (!formData.name.trim()) return "Name is required";
     if (!formData.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) return "Valid email is required";
-    if (!formData.phone.trim() || !/^\d{10,12}$/.test(formData.phone.replace(/\D/g, ''))) return "Valid phone number is required";
+    if (!formData.phone.trim()) return "Phone number is required";
     if (!formData.subject.trim()) return "Subject is required";
     return null;
   };
@@ -84,13 +83,15 @@ export function Contact() {
         });
         setFormData({ name: '', email: '', phone: '', countryCode: '+91', subject: '', message: '', honeypot: '' });
       })
-      .catch(async (error) => {
+      .catch(async (err) => {
         const permissionError = new FirestorePermissionError({
           path: contactRef.path,
           operation: 'create',
           requestResourceData: firestoreData,
-        });
+        } satisfies SecurityRuleContext);
+        
         errorEmitter.emit('permission-error', permissionError);
+        
         toast({
           variant: "destructive",
           title: "Submission Failed",
