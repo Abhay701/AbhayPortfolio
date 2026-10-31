@@ -1,10 +1,13 @@
 
 'use client';
-import { motion } from 'framer-motion';
-import { ExternalLink, Github, ArrowUpRight } from 'lucide-react';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ExternalLink, Github, ArrowUpRight, X, Clock } from 'lucide-react';
 import { projects } from '@/lib/data';
 
 export function Projects() {
+  const [showModal, setShowModal] = useState(false);
+
   return (
     <section id="projects" className="py-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -72,26 +75,22 @@ export function Projects() {
 
                   <div className="flex items-center gap-4">
                     {project.links?.live && (
-                      <a 
-                        href={project.links.live} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
+                      <button 
+                        onClick={() => setShowModal(true)}
                         className="bg-primary text-primary-foreground px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:translate-y-[-2px] transition-all"
                       >
                         Live Demo
                         <ArrowUpRight size={18} />
-                      </a>
+                      </button>
                     )}
                     {project.links?.other && (
-                      <a 
-                        href={project.links.other} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
+                      <button 
+                        onClick={() => setShowModal(true)}
                         className="glass px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-white/5 transition-all"
                       >
                         Visit Site
                         <ExternalLink size={18} />
-                      </a>
+                      </button>
                     )}
                     <button className="text-muted-foreground hover:text-primary transition-colors">
                       <Github size={24} />
@@ -103,6 +102,50 @@ export function Projects() {
           ))}
         </div>
       </div>
+
+      {/* professional Coming Soon Modal */}
+      <AnimatePresence>
+        {showModal && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center px-4">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowModal(false)}
+              className="absolute inset-0 bg-background/80 backdrop-blur-md"
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="relative glass max-w-md w-full p-8 rounded-[2.5rem] border border-white/10 shadow-2xl"
+            >
+              <button 
+                onClick={() => setShowModal(false)}
+                className="absolute top-6 right-6 text-muted-foreground hover:text-primary transition-colors"
+              >
+                <X size={24} />
+              </button>
+              
+              <div className="flex flex-col items-center text-center">
+                <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-6">
+                  <Clock className="text-primary" size={32} />
+                </div>
+                <h3 className="text-2xl font-bold mb-4">Live Demo Coming Soon</h3>
+                <p className="text-muted-foreground leading-relaxed mb-8">
+                  This project is currently showcased through portfolio screenshots and descriptions. A public live demonstration will be available soon.
+                </p>
+                <button 
+                  onClick={() => setShowModal(false)}
+                  className="w-full bg-primary text-primary-foreground py-4 rounded-xl font-bold hover:translate-y-[-2px] transition-all"
+                >
+                  Close
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }

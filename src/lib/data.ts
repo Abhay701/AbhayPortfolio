@@ -80,8 +80,8 @@ export const projects = [
     description: "A comprehensive ERP management platform developed for the printing and packaging industry. Features role-based dashboards for production, inventory, and business operations.",
     tech: ["Next.js 15", "React", "TypeScript", "Tailwind CSS", "Firebase", "Firestore", "Auth"],
     links: {
-      live: "https://macroprinthub.in",
-      other: "https://kbprintpack.com"
+      live: true,
+      other: true
     },
     featured: true,
     imageHint: "enterprise software dashboard"
