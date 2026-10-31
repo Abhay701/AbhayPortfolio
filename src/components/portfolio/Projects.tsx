@@ -1,11 +1,12 @@
 'use client';
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ExternalLink, Github, ArrowUpRight, X, Clock, CheckCircle2 } from 'lucide-react';
-import { projects, profile } from '@/lib/data';
+import { motion } from 'framer-motion';
+import { ArrowUpRight, CheckCircle2 } from 'lucide-react';
+import { profile } from '@/lib/data';
+import { projectsData } from '@/lib/projects-data';
+import Link from 'next/link';
 
 export function Projects() {
-  const [showModal, setShowModal] = useState(false);
+  const featuredProjects = Object.values(projectsData);
 
   return (
     <section id="projects" className="py-24">
@@ -51,25 +52,24 @@ export function Projects() {
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          {projects.map((project, idx) => (
+          {featuredProjects.map((project, idx) => (
             <motion.div
-              key={project.title}
+              key={project.slug}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: idx * 0.1 }}
               className={`group glass rounded-[2.5rem] overflow-hidden flex flex-col h-full border border-white/5 ${
-                project.featured ? 'lg:col-span-12' : 'lg:col-span-6'
+                idx === 0 ? 'lg:col-span-12' : 'lg:col-span-6'
               }`}
             >
-              <div className={`grid grid-cols-1 ${project.featured ? 'lg:grid-cols-2' : ''} h-full`}>
+              <div className={`grid grid-cols-1 ${idx === 0 ? 'lg:grid-cols-2' : ''} h-full`}>
                 {/* Image Section */}
                 <div className="relative h-64 lg:h-full min-h-[320px] overflow-hidden">
                   <div className="absolute inset-0 bg-primary/10 group-hover:bg-transparent transition-all z-10" />
                   <img 
-                    src={`https://picsum.photos/seed/${project.title}/1200/800`} 
+                    src={`https://picsum.photos/seed/${project.slug}/1200/800`} 
                     alt={project.title}
-                    data-ai-hint={project.imageHint}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000"
                   />
                   <div className="absolute top-6 left-6 z-20 flex flex-wrap gap-2">
@@ -85,7 +85,7 @@ export function Projects() {
                   <div>
                     <div className="flex items-center gap-2 mb-3">
                       <span className="text-primary font-bold text-xs uppercase tracking-[0.2em]">
-                        {project.subtitle}
+                        {project.category}
                       </span>
                     </div>
                     <h3 className="text-3xl md:text-4xl font-bold mb-6 group-hover:text-primary transition-colors">
@@ -95,7 +95,7 @@ export function Projects() {
                       {project.description}
                     </p>
                     <div className="flex flex-wrap gap-2 mb-10">
-                      {project.tech.map((t) => (
+                      {project.verifiedTech.map((t) => (
                         <span key={t} className="px-3 py-1.5 rounded-lg bg-white/5 text-xs font-medium border border-white/10 hover:border-primary/50 transition-colors">
                           {t}
                         </span>
@@ -104,16 +104,13 @@ export function Projects() {
                   </div>
 
                   <div className="flex flex-wrap items-center gap-4">
-                    <button 
-                      onClick={() => setShowModal(true)}
+                    <Link 
+                      href={`/projects/${project.slug}`}
                       className="bg-primary text-primary-foreground px-8 py-4 rounded-2xl font-bold flex items-center gap-2 hover:translate-y-[-2px] transition-all shadow-lg shadow-primary/20 active:scale-95"
                     >
-                      View Case Study
+                      Explore Project
                       <ArrowUpRight size={18} />
-                    </button>
-                    <button className="w-12 h-12 rounded-2xl glass flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/50 transition-all">
-                      <Github size={22} />
-                    </button>
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -121,51 +118,6 @@ export function Projects() {
           ))}
         </div>
       </div>
-
-      {/* Professional Coming Soon Modal */}
-      <AnimatePresence>
-        {showModal && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center px-4">
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setShowModal(false)}
-              className="absolute inset-0 bg-background/90 backdrop-blur-xl"
-            />
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="relative glass max-w-md w-full p-8 md:p-10 rounded-[2.5rem] border border-white/10 shadow-2xl"
-            >
-              <button 
-                onClick={() => setShowModal(false)}
-                className="absolute top-6 right-6 w-10 h-10 rounded-full glass flex items-center justify-center text-muted-foreground hover:text-primary transition-all"
-              >
-                <X size={20} />
-              </button>
-              
-              <div className="flex flex-col items-center text-center">
-                <div className="w-20 h-20 rounded-3xl bg-primary/10 flex items-center justify-center mb-8 relative">
-                  <div className="absolute inset-0 bg-primary/20 blur-2xl rounded-full animate-pulse" />
-                  <Clock className="text-primary relative z-10" size={40} />
-                </div>
-                <h3 className="text-2xl font-bold mb-4">Case Study Coming Soon</h3>
-                <p className="text-muted-foreground leading-relaxed mb-8">
-                  I'm currently documenting the detailed development lifecycle, architecture decisions, and business impact for this application. A comprehensive case study will be available soon.
-                </p>
-                <button 
-                  onClick={() => setShowModal(false)}
-                  className="w-full bg-primary text-primary-foreground py-4 rounded-2xl font-bold hover:translate-y-[-2px] transition-all shadow-lg shadow-primary/20 active:scale-95"
-                >
-                  Return to Portfolio
-                </button>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
     </section>
   );
 }

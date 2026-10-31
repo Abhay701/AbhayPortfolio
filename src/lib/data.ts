@@ -22,13 +22,13 @@ export const profile = {
   },
   contributions: [
     "Client requirement gathering and analysis",
-    "Application planning and architecture",
+    "Business workflow analysis",
+    "Application architecture & planning",
     "UI/UX design and frontend development",
     "Backend and database implementation",
     "Authentication and role-based access control",
     "Application testing and debugging",
-    "Production deployment",
-    "Ongoing maintenance and feature enhancements"
+    "Production deployment"
   ]
 };
 
@@ -80,35 +80,5 @@ export const experience = [
     responsibilities: [
       "Contributed to business operations and technical process improvements during the tenure."
     ]
-  }
-];
-
-export const projects = [
-  {
-    title: "MACRO PRINT PACK",
-    subtitle: "Printing & Packaging ERP",
-    status: "Live Business Application",
-    description: "An end-to-end business management application developed to streamline printing and packaging operations. Built from scratch based on client requirements, covering business workflows and operational management.",
-    tech: ["Next.js 15", "React", "TypeScript", "Tailwind CSS", "Firebase", "Firestore", "Auth"],
-    imageHint: "enterprise software dashboard",
-    featured: true
-  },
-  {
-    title: "KB PRINT HUB",
-    subtitle: "ERP & Business Management",
-    status: "Live Business Application",
-    description: "A comprehensive ERP application designed and developed from scratch to manage business operations through structured workflows, role-based access and dedicated dashboards.",
-    tech: ["Next.js", "React", "TypeScript", "Tailwind CSS", "Firebase", "Firestore", "Cloud Storage"],
-    imageHint: "business analytics dashboard",
-    featured: false
-  },
-  {
-    title: "ANAND FABRICS",
-    subtitle: "Textile Industry Application",
-    status: "Business Application",
-    description: "A business-focused application developed around the operational requirements of the textile industry, translating client requirements into practical software solutions.",
-    tech: ["React", "TypeScript", "Tailwind CSS", "Node.js", "SQL", "REST APIs"],
-    imageHint: "industrial management software",
-    featured: false
   }
 ];
