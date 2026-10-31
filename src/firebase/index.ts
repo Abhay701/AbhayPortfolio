@@ -1,9 +1,9 @@
 
 'use client';
 
-import { initializeApp, getApps, getApp, FirebaseApp } from 'firebase/app';
-import { getFirestore, Firestore } from 'firebase/firestore';
-import { getAuth, Auth } from 'firebase/auth';
+import { initializeApp, getApps, getApp } from 'firebase/app';
+import { getFirestore } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
 import { firebaseConfig } from './config';
 
 export function initializeFirebase() {
@@ -15,3 +15,4 @@ export function initializeFirebase() {
 
 export { FirebaseProvider, useFirebase, useFirestore, useAuth } from './provider';
 export { FirebaseClientProvider } from './client-provider';
+export { FirebaseErrorListener } from '@/components/FirebaseErrorListener';

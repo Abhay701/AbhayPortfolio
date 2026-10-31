@@ -8,13 +8,13 @@ service cloud.firestore {
                    && request.resource.data.name is string
                    && request.resource.data.name.size() > 0
                    && request.resource.data.email is string
-                   && request.resource.data.email.matches('^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$')
                    && request.resource.data.phone is string
                    && request.resource.data.phone.size() >= 10
                    && request.resource.data.countryCode is string
                    && request.resource.data.subject is string
                    && (request.resource.data.message == null || request.resource.data.message is string)
-                   && request.resource.data.status == 'unread';
+                   && request.resource.data.status == 'unread'
+                   && request.resource.data.createdAt == request.time;
       
       // Reading, updating, and deleting are restricted
       allow read, update, delete: if false;
