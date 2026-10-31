@@ -1,3 +1,4 @@
+
 import { Resend } from 'resend';
 import { NextResponse } from 'next/server';
 
@@ -34,12 +35,9 @@ export async function POST(request: Request) {
 
     const resend = new Resend(apiKey);
     const CONTACT_EMAIL = process.env.CONTACT_EMAIL || 'kumarabhay46790@gmail.com';
+    // Note: Resend requires a verified domain to send emails from. 
+    // If you haven't verified a domain, this will only work for sending to yourself if using onboarding@resend.dev
     const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
-
-    // Length validation
-    if (name.length > 100 || subject.length > 200 || message.length > 5000) {
-      return NextResponse.json({ error: 'Input exceeds character limits' }, { status: 400 });
-    }
 
     // 4. Sanitize inputs
     const sanitize = (str: string) => str.replace(/[&<>"']/g, (m) => ({
@@ -64,17 +62,33 @@ export async function POST(request: Request) {
       replyTo: email,
       subject: `New Portfolio Inquiry: ${safeSubject}`,
       html: `
-        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
-          <h2 style="color: #3b82f6; border-bottom: 2px solid #3b82f6; padding-bottom: 10px;">NEW CONTACT FORM SUBMISSION</h2>
-          <p style="margin-top: 20px;"><strong>Full Name:</strong> ${safeName}</p>
-          <p><strong>Email Address:</strong> ${safeEmail}</p>
-          <p><strong>Subject:</strong> ${safeSubject}</p>
-          <div style="background-color: #f9fafb; padding: 15px; border-radius: 8px; margin-top: 20px;">
-            <p style="font-weight: bold; margin-bottom: 10px;">Message:</p>
-            <p style="white-space: pre-wrap; line-height: 1.6; color: #374151;">${safeMessage}</p>
+        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 10px; background-color: #ffffff; color: #333333;">
+          <h2 style="color: #3b82f6; border-bottom: 2px solid #3b82f6; padding-bottom: 10px; margin-bottom: 20px;">New Contact Form Submission</h2>
+          
+          <div style="margin-bottom: 15px;">
+            <strong style="color: #666666;">Full Name:</strong>
+            <p style="margin: 5px 0 0 0; font-size: 16px;">${safeName}</p>
           </div>
+
+          <div style="margin-bottom: 15px;">
+            <strong style="color: #666666;">Email Address:</strong>
+            <p style="margin: 5px 0 0 0; font-size: 16px;">${safeEmail}</p>
+          </div>
+
+          <div style="margin-bottom: 15px;">
+            <strong style="color: #666666;">Subject:</strong>
+            <p style="margin: 5px 0 0 0; font-size: 16px;">${safeSubject}</p>
+          </div>
+
+          <div style="background-color: #f9fafb; padding: 20px; border-radius: 8px; margin-top: 25px; border-left: 4px solid #3b82f6;">
+            <strong style="display: block; margin-bottom: 10px; color: #666666;">Message:</strong>
+            <p style="white-space: pre-wrap; line-height: 1.6; color: #374151; margin: 0;">${safeMessage}</p>
+          </div>
+
           <hr style="border: 0; border-top: 1px solid #eee; margin: 30px 0;">
-          <p style="font-size: 12px; color: #9ca3af; text-align: center;">Submitted on: ${timestamp} (IST)</p>
+          <p style="font-size: 12px; color: #9ca3af; text-align: center;">
+            Submitted on: ${timestamp} (IST)
+          </p>
         </div>
       `,
     });

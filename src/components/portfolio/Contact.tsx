@@ -18,7 +18,7 @@ export function Contact() {
     email: '',
     subject: '',
     message: '',
-    honeypot: '', // Honeypot field for anti-spam
+    honeypot: '',
   });
 
   const socialLinks = [
@@ -41,7 +41,7 @@ export function Contact() {
     setIsSubmitting(true);
 
     try {
-      // 1. Save to Firestore
+      // 1. Save to Firestore (Primary Record)
       const contactRef = collection(db, 'contactMessages');
       const firestoreData = {
         name: formData.name,
@@ -52,7 +52,7 @@ export function Contact() {
         status: 'unread'
       };
 
-      // Initiation of Firestore write (Non-blocking as per guidelines)
+      // Firestore write is non-blocking to local UI flow
       addDoc(contactRef, firestoreData)
         .catch(async (error) => {
           const permissionError = new FirestorePermissionError({
@@ -63,7 +63,7 @@ export function Contact() {
           errorEmitter.emit('permission-error', permissionError);
         });
 
-      // 2. Send Email via API
+      // 2. Send Email Notification via API
       const response = await fetch('/api/contact', {
         method: 'POST',
         headers: {
@@ -81,17 +81,18 @@ export function Contact() {
         });
         setFormData({ name: '', email: '', subject: '', message: '', honeypot: '' });
       } else {
+        // If Firestore likely succeeded but email failed
         toast({
           variant: "destructive",
           title: "Email Notification Delayed",
-          description: result?.error || "Your message was saved to our database, but we couldn't send the email notification. Don't worry, we'll see it!",
+          description: result?.error || "Your message was saved to our records, but we couldn't send the email notification. Don't worry, I'll see it!",
         });
       }
     } catch (error: any) {
       toast({
         variant: "destructive",
         title: "Submission Error",
-        description: "Something went wrong while sending your message. Please try again.",
+        description: "Something went wrong while sending your message. Please check your connection and try again.",
       });
     } finally {
       setIsSubmitting(false);
