@@ -1,4 +1,3 @@
-
 'use client';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
@@ -53,8 +52,6 @@ export function Contact() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Simple anti-spam honeypot
     if (formData.honeypot) return;
 
     const error = validateForm();
@@ -64,7 +61,6 @@ export function Contact() {
     }
 
     setIsSubmitting(true);
-
     const contactRef = collection(db, 'contactMessages');
     
     const firestoreData = {
@@ -115,16 +111,17 @@ export function Contact() {
   };
 
   return (
-    <section id="contact" className="py-24 bg-card/30">
+    <section id="contact" className="py-16 md:py-24 bg-card/30 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
+            className="w-full"
           >
-            <h2 className="text-4xl font-bold mb-6">Let's Build Something Great Together</h2>
-            <p className="text-lg text-muted-foreground mb-10 max-w-md">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6">Let's Build Something Great Together</h2>
+            <p className="text-base md:text-lg text-muted-foreground mb-10 max-w-md">
               I'm open to Full Stack Developer, React.js Developer and Next.js Developer opportunities.
             </p>
 
@@ -133,12 +130,12 @@ export function Contact() {
                 <a 
                   key={i}
                   href={link.href}
-                  className="flex items-center gap-4 group hover:translate-x-2 transition-transform"
+                  className="flex items-center gap-4 group hover:translate-x-2 transition-transform w-fit"
                 >
-                  <div className="w-12 h-12 rounded-xl glass flex items-center justify-center group-hover:bg-primary/20 group-hover:border-primary/50 transition-all">
+                  <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl glass flex items-center justify-center group-hover:bg-primary/20 group-hover:border-primary/50 transition-all shrink-0">
                     <link.icon className="text-primary" size={20} />
                   </div>
-                  <span className="text-muted-foreground group-hover:text-primary transition-colors font-medium">
+                  <span className="text-sm md:text-base text-muted-foreground group-hover:text-primary transition-colors font-medium break-all">
                     {link.label}
                   </span>
                 </a>
@@ -150,9 +147,9 @@ export function Contact() {
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="glass p-8 md:p-10 rounded-[2.5rem]"
+            className="glass p-6 md:p-8 lg:p-10 rounded-2xl md:rounded-[2.5rem] w-full"
           >
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-5 md:space-y-6">
               <div className="hidden">
                 <input 
                   type="text" 
@@ -164,7 +161,7 @@ export function Contact() {
                 />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
                 <div className="space-y-2">
                   <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground ml-1">Name *</label>
                   <input 
@@ -173,7 +170,7 @@ export function Contact() {
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-primary transition-colors"
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-primary transition-colors text-sm md:text-base"
                   />
                 </div>
                 <div className="space-y-2">
@@ -184,22 +181,22 @@ export function Contact() {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-primary transition-colors"
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-primary transition-colors text-sm md:text-base"
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
                 <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground ml-1">Phone Number *</label>
-                <div className="flex gap-2">
+                <div className="flex flex-col sm:flex-row gap-2">
                   <select
                     name="countryCode"
                     value={formData.countryCode}
                     onChange={handleChange}
-                    className="bg-white/5 border border-white/10 rounded-xl px-2 py-3 focus:outline-none focus:border-primary transition-colors text-sm"
+                    className="w-full sm:w-32 bg-white/5 border border-white/10 rounded-xl px-2 py-3 focus:outline-none focus:border-primary transition-colors text-sm md:text-base"
                   >
                     {COUNTRY_CODES.map(c => (
-                      <option key={c.code} value={c.code} className="bg-background">{c.code} ({c.name})</option>
+                      <option key={c.code} value={c.code} className="bg-[#0d1117] text-white">{c.code} ({c.name})</option>
                     ))}
                   </select>
                   <input 
@@ -208,7 +205,7 @@ export function Contact() {
                     value={formData.phone}
                     onChange={handleChange}
                     required
-                    className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-primary transition-colors"
+                    className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-primary transition-colors text-sm md:text-base"
                   />
                 </div>
               </div>
@@ -221,7 +218,7 @@ export function Contact() {
                   value={formData.subject}
                   onChange={handleChange}
                   required
-                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-primary transition-colors"
+                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-primary transition-colors text-sm md:text-base"
                 />
               </div>
 
@@ -232,14 +229,14 @@ export function Contact() {
                   value={formData.message}
                   onChange={handleChange}
                   rows={4}
-                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-primary transition-colors resize-none"
+                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-primary transition-colors resize-none text-sm md:text-base"
                 />
               </div>
 
               <button 
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full bg-primary text-primary-foreground py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:translate-y-[-2px] transition-all shadow-lg shadow-primary/20 disabled:opacity-70 disabled:cursor-not-allowed"
+                className="w-full bg-primary text-primary-foreground py-3.5 md:py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:translate-y-[-2px] transition-all shadow-lg shadow-primary/20 disabled:opacity-70 disabled:cursor-not-allowed text-sm md:text-base active:scale-95"
               >
                 {isSubmitting ? (
                   <>

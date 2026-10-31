@@ -9,15 +9,16 @@ interface HeroProps {
 
 export function Hero({ onResumeClick }: HeroProps) {
   return (
-    <section id="home" className="relative min-h-screen flex items-center pt-20 overflow-hidden">
+    <section id="home" className="relative min-h-screen flex items-center pt-24 pb-12 overflow-hidden">
       <div className="absolute inset-0 hero-gradient -z-10" />
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
+            className="text-center lg:text-left"
           >
             <motion.div 
               initial={{ opacity: 0, scale: 0.9 }}
@@ -28,33 +29,33 @@ export function Hero({ onResumeClick }: HeroProps) {
               Available for Opportunities
             </motion.div>
             
-            <h1 className="text-5xl md:text-7xl font-bold leading-tight mb-4">
+            <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold leading-tight mb-4">
               Hi, I'm <span className="text-gradient">Abhay Kumar</span>
             </h1>
             
-            <div className="flex flex-wrap gap-2 mb-6">
+            <div className="flex flex-wrap justify-center lg:justify-start gap-2 mb-6">
               {["Full Stack Developer", "React.js Developer", "Next.js Developer"].map((t) => (
-                <span key={t} className="text-lg md:text-xl text-muted-foreground border-r last:border-0 border-muted pr-4">
+                <span key={t} className="text-base md:text-lg lg:text-xl text-muted-foreground border-r last:border-0 border-muted pr-4">
                   {t}
                 </span>
               ))}
             </div>
 
-            <p className="text-lg text-muted-foreground mb-8 max-w-xl">
+            <p className="text-base md:text-lg text-muted-foreground mb-8 max-w-xl mx-auto lg:mx-0">
               {profile.intro}
             </p>
 
-            <div className="flex items-center gap-2 text-muted-foreground mb-10">
+            <div className="flex items-center justify-center lg:justify-start gap-2 text-muted-foreground mb-10">
               <MapPin size={18} className="text-primary" />
               <span>{profile.location}</span>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4">
-              <a href="#projects" className="bg-primary text-primary-foreground px-8 py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:translate-y-[-2px] transition-all shadow-lg shadow-primary/20">
+            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+              <a href="#projects" className="w-full sm:w-auto bg-primary text-primary-foreground px-8 py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:translate-y-[-2px] transition-all shadow-lg shadow-primary/20 active:scale-95">
                 View My Projects
                 <ArrowRight size={20} />
               </a>
-              <a href="#contact" className="glass text-foreground px-8 py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-white/5 transition-all">
+              <a href="#contact" className="w-full sm:w-auto glass text-foreground px-8 py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-white/5 transition-all active:scale-95">
                 Contact Me
               </a>
               <button 
@@ -87,7 +88,6 @@ export function Hero({ onResumeClick }: HeroProps) {
               </div>
             </div>
             
-            {/* Decorative Elements */}
             <div className="absolute -top-10 -right-10 w-32 h-32 bg-primary/20 rounded-full blur-3xl" />
             <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-secondary/20 rounded-full blur-3xl" />
           </motion.div>

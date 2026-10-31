@@ -1,5 +1,4 @@
-
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import { Providers } from './providers';
@@ -18,6 +17,13 @@ export const metadata: Metadata = {
   }
 };
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -25,7 +31,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${inter.variable} dark scroll-smooth`}>
-      <body className="font-body antialiased bg-background text-foreground overflow-x-hidden">
+      <body className="font-body antialiased bg-background text-foreground overflow-x-hidden selection:bg-primary/30">
         <Providers>{children}</Providers>
         <Toaster />
       </body>
