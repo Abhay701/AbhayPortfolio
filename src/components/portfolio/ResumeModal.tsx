@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Download, Loader2, FileText, AlertCircle, RefreshCw } from 'lucide-react';
+import { X, Download, Loader2, FileText, AlertCircle, RefreshCw, ImageIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface ResumeModalProps {
@@ -13,6 +13,8 @@ interface ResumeModalProps {
 export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [downloadOpen, setDownloadOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   
   const resumeJpgUrl = '/Abhay_Kumar_Resume.jpg';
   const resumePdfUrl = '/Abhay_Kumar_Resume.pdf';
@@ -23,9 +25,9 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'unset';
-      // Reset states when closed
       setLoading(true);
       setError(false);
+      setDownloadOpen(false);
     }
     return () => {
       document.body.style.overflow = 'unset';
@@ -41,13 +43,29 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
     return () => window.removeEventListener('keydown', handleEsc);
   }, [onClose]);
 
-  const handleDownload = () => {
+  // Handle outside click for dropdown
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setDownloadOpen(false);
+      }
+    };
+    if (downloadOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [downloadOpen]);
+
+  const handleDownload = (type: 'pdf' | 'jpg') => {
     const link = document.createElement('a');
-    link.href = resumePdfUrl;
-    link.download = 'Abhay_Kumar_Resume.pdf';
+    link.href = type === 'pdf' ? resumePdfUrl : resumeJpgUrl;
+    link.download = `Abhay_Kumar_Resume.${type}`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    setDownloadOpen(false);
   };
 
   const retryLoad = () => {
@@ -58,83 +76,71 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-2 md:p-6">
           {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="absolute inset-0 bg-background/80 backdrop-blur-xl"
+            className="absolute inset-0 bg-background/90 backdrop-blur-md"
           />
 
           {/* Modal Container */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            initial={{ opacity: 0, scale: 0.95, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            className="relative w-full max-w-4xl max-h-[90vh] flex flex-col glass rounded-[2.5rem] overflow-hidden border border-white/10 shadow-2xl bg-card/50"
+            exit={{ opacity: 0, scale: 0.95, y: 10 }}
+            className="relative w-full max-w-5xl h-full max-h-[96vh] flex flex-col glass rounded-3xl overflow-hidden border border-white/10 shadow-2xl bg-card/60"
           >
-            {/* Animated Glow Effect */}
-            <div className="absolute inset-0 pointer-events-none overflow-hidden rounded-[2.5rem]">
-              <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-primary/20 rounded-full blur-[100px] animate-pulse" />
-              <div className="absolute -bottom-[10%] -right-[10%] w-[40%] h-[40%] bg-secondary/20 rounded-full blur-[100px] animate-pulse delay-700" />
-            </div>
-
-            {/* Header */}
-            <div className="relative z-10 flex items-center justify-between p-6 md:px-8 border-b border-white/10 bg-white/5">
+            {/* Minimal Header */}
+            <div className="relative z-10 flex items-center justify-between px-4 py-3 md:px-6 md:py-4 border-b border-white/5 bg-white/5">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center">
-                  <FileText className="text-primary" size={20} />
+                <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center">
+                  <FileText className="text-primary" size={16} />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold">Resume Preview</h3>
-                  <p className="text-xs text-muted-foreground uppercase tracking-widest">Abhay Kumar | Full Stack Developer</p>
+                  <h3 className="text-sm md:text-base font-bold leading-none mb-0.5">Resume Preview</h3>
+                  <p className="text-[10px] md:text-xs text-muted-foreground uppercase tracking-widest leading-none">Abhay Kumar | Full Stack Developer</p>
                 </div>
               </div>
               <button
                 onClick={onClose}
-                className="w-10 h-10 rounded-full glass flex items-center justify-center text-muted-foreground hover:text-primary hover:scale-110 transition-all active:scale-95"
+                className="w-8 h-8 rounded-full flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-white/10 transition-all active:scale-95"
+                title="Close"
               >
-                <X size={20} />
+                <X size={18} />
               </button>
             </div>
 
-            {/* Content Area */}
-            <div className="relative z-10 flex-1 overflow-y-auto p-4 md:p-8 flex flex-col items-center custom-scrollbar">
+            {/* Content Area - Maximized */}
+            <div className="relative z-10 flex-1 overflow-y-auto p-2 md:p-4 custom-scrollbar flex flex-col items-center">
               {loading && !error && (
-                <div className="flex flex-col items-center justify-center py-24 gap-6">
+                <div className="flex flex-col items-center justify-center h-full py-20 gap-4">
                   <div className="relative">
-                    <div className="absolute inset-0 bg-primary/20 blur-2xl rounded-full animate-pulse" />
                     <motion.div
                       animate={{ rotate: 360 }}
-                      transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                      className="w-20 h-20 rounded-full border-t-2 border-r-2 border-primary relative z-10"
+                      transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+                      className="w-12 h-12 rounded-full border-2 border-primary/20 border-t-primary"
                     />
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <Loader2 className="animate-spin text-primary" size={24} />
-                    </div>
                   </div>
-                  <div className="text-center">
-                    <p className="text-lg font-bold mb-2">Preparing Your Resume...</p>
-                    <p className="text-sm text-muted-foreground">High quality preview is being rendered</p>
-                  </div>
+                  <p className="text-sm font-medium text-muted-foreground animate-pulse">Preparing Your Resume...</p>
                 </div>
               )}
 
               {error && (
-                <div className="flex flex-col items-center justify-center py-24 gap-6 text-center">
-                  <div className="w-20 h-20 rounded-3xl bg-destructive/10 flex items-center justify-center text-destructive">
-                    <AlertCircle size={40} />
+                <div className="flex flex-col items-center justify-center h-full py-20 gap-4 text-center">
+                  <div className="w-16 h-16 rounded-2xl bg-destructive/10 flex items-center justify-center text-destructive">
+                    <AlertCircle size={32} />
                   </div>
                   <div>
-                    <h4 className="text-xl font-bold mb-2">Failed to Load Preview</h4>
-                    <p className="text-muted-foreground max-w-xs mx-auto mb-6">There was an issue loading the resume preview image. You can still download the PDF below.</p>
+                    <h4 className="text-lg font-bold mb-1">Failed to Load Preview</h4>
+                    <p className="text-sm text-muted-foreground mb-4">The resume preview image could not be loaded.</p>
                     <button
                       onClick={retryLoad}
-                      className="flex items-center gap-2 px-6 py-3 rounded-xl bg-white/5 border border-white/10 hover:border-primary/50 transition-all font-bold"
+                      className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 border border-white/10 hover:border-primary/50 transition-all text-sm font-bold"
                     >
-                      <RefreshCw size={18} />
+                      <RefreshCw size={14} />
                       Retry Preview
                     </button>
                   </div>
@@ -145,7 +151,7 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                 src={resumeJpgUrl}
                 alt="Abhay Kumar Resume Preview"
                 className={cn(
-                  "w-full h-auto object-contain rounded-xl shadow-2xl transition-opacity duration-500",
+                  "max-w-full h-auto object-contain rounded-lg shadow-xl transition-opacity duration-300",
                   loading || error ? "opacity-0" : "opacity-100"
                 )}
                 onLoad={() => setLoading(false)}
@@ -156,22 +162,44 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
               />
             </div>
 
-            {/* Footer Action Bar */}
-            <div className="relative z-10 p-6 md:px-8 bg-white/5 border-t border-white/10 flex flex-col sm:flex-row items-center justify-center gap-4">
-              <button
-                onClick={handleDownload}
-                className="w-full sm:w-auto min-w-[220px] bg-primary text-primary-foreground px-8 py-4 rounded-2xl font-bold flex items-center justify-center gap-2 hover:translate-y-[-2px] transition-all shadow-lg shadow-primary/20 active:scale-95"
-              >
-                <Download size={20} />
-                Download PDF
-              </button>
-              <button
-                onClick={onClose}
-                className="w-full sm:w-auto px-8 py-4 rounded-2xl glass font-bold hover:bg-white/10 transition-all active:scale-95"
-              >
-                Close Preview
-              </button>
-            </div>
+            {/* Subtle Floating Download Icon + Dropdown */}
+            {!loading && !error && (
+              <div className="absolute bottom-6 right-6 z-20 flex flex-col items-end gap-2" ref={dropdownRef}>
+                <AnimatePresence>
+                  {downloadOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.9, y: 10 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.9, y: 10 }}
+                      className="glass border border-white/10 rounded-2xl overflow-hidden shadow-2xl min-w-[140px] mb-2"
+                    >
+                      <button
+                        onClick={() => handleDownload('pdf')}
+                        className="w-full flex items-center gap-3 px-4 py-3 text-xs font-bold hover:bg-white/10 transition-colors border-b border-white/5"
+                      >
+                        <FileText size={14} className="text-primary" />
+                        Download PDF
+                      </button>
+                      <button
+                        onClick={() => handleDownload('jpg')}
+                        className="w-full flex items-center gap-3 px-4 py-3 text-xs font-bold hover:bg-white/10 transition-colors"
+                      >
+                        <ImageIcon size={14} className="text-secondary" />
+                        Download JPG
+                      </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                <button
+                  onClick={() => setDownloadOpen(!downloadOpen)}
+                  className="w-12 h-12 rounded-2xl glass flex items-center justify-center text-foreground border border-white/10 hover:border-primary/50 hover:bg-primary/10 hover:text-primary transition-all shadow-xl active:scale-95 group"
+                  title="Download Resume"
+                >
+                  <Download size={20} className={cn("transition-transform", downloadOpen ? "scale-90" : "group-hover:translate-y-0.5")} />
+                </button>
+              </div>
+            )}
           </motion.div>
         </div>
       )}
