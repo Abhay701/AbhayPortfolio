@@ -1,3 +1,4 @@
+
 'use client';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
@@ -49,11 +50,6 @@ export function Contact() {
       
       if (contentType && contentType.includes("application/json")) {
         result = await response.json();
-      } else {
-        // If not JSON, the server likely returned an HTML error page
-        const errorText = await response.text();
-        console.error('Non-JSON response received:', errorText);
-        throw new Error('Server returned an invalid response format. Please check if the API route is configured correctly.');
       }
 
       if (response.ok) {
@@ -63,14 +59,18 @@ export function Contact() {
         });
         setFormData({ name: '', email: '', subject: '', message: '', honeypot: '' });
       } else {
-        throw new Error(result.error || 'Something went wrong');
+        // Display the specific error message from the backend if available
+        toast({
+          variant: "destructive",
+          title: "Error Sending Message",
+          description: result?.error || "Sorry, your message couldn't be sent. Please try again or contact me directly by email.",
+        });
       }
     } catch (error: any) {
-      console.error('Contact form submission error:', error);
       toast({
         variant: "destructive",
-        title: "Error Sending Message",
-        description: error.message || "Sorry, your message couldn't be sent. Please try again or contact me directly by email.",
+        title: "Connection Error",
+        description: "Could not connect to the email service. Please check your internet connection and try again.",
       });
     } finally {
       setIsSubmitting(false);
