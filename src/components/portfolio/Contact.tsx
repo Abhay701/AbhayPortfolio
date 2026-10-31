@@ -53,6 +53,7 @@ export function Contact() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Simple anti-spam honeypot
     if (formData.honeypot) return;
 
     const error = validateForm();
@@ -64,13 +65,15 @@ export function Contact() {
     setIsSubmitting(true);
 
     const contactRef = collection(db, 'contactMessages');
+    
+    // Explicitly construct the data object to match security rules perfectly
     const firestoreData = {
       name: formData.name.trim(),
       email: formData.email.trim(),
       phone: formData.phone.trim(),
       countryCode: formData.countryCode,
       subject: formData.subject.trim(),
-      message: formData.message.trim() || null,
+      message: formData.message.trim() || null, // Convert empty string to null
       createdAt: serverTimestamp(),
       status: 'unread'
     };
@@ -81,15 +84,25 @@ export function Contact() {
           title: "Message Submitted!",
           description: "Your message has been submitted successfully! I'll get back to you soon.",
         });
-        setFormData({ name: '', email: '', phone: '', countryCode: '+91', subject: '', message: '', honeypot: '' });
+        setFormData({ 
+          name: '', 
+          email: '', 
+          phone: '', 
+          countryCode: '+91', 
+          subject: '', 
+          message: '', 
+          honeypot: '' 
+        });
       })
       .catch(async (err) => {
+        // Construct the rich, contextual error for the developer overlay
         const permissionError = new FirestorePermissionError({
           path: contactRef.path,
           operation: 'create',
           requestResourceData: firestoreData,
         } satisfies SecurityRuleContext);
         
+        // Emit the error to the global listener
         errorEmitter.emit('permission-error', permissionError);
         
         toast({

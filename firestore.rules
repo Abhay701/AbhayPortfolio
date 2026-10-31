@@ -2,33 +2,37 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     match /contactMessages/{messageId} {
-      // Allow anyone to create a message if it follows the strict schema
+      // Allow public creation of contact messages with strict validation
       allow create: if 
-        // Validate required fields and types
+        // 1. Check required fields exist and have correct types
         request.resource.data.name is string &&
         request.resource.data.name.size() > 0 &&
         request.resource.data.email is string &&
-        request.resource.data.email.matches('^[^@]+@[^@]+\\.[^@]+$') &&
+        request.resource.data.email.size() > 3 &&
         request.resource.data.phone is string &&
         request.resource.data.countryCode is string &&
         request.resource.data.subject is string &&
         request.resource.data.subject.size() > 0 &&
-        request.resource.data.status == 'unread' &&
         
-        // Validate server timestamp
+        // 2. Validate the message field (optional, can be string or null)
+        (
+          !('message' in request.resource.data) || 
+          request.resource.data.message == null || 
+          request.resource.data.message is string
+        ) &&
+        
+        // 3. System fields
+        request.resource.data.status == 'unread' &&
         request.resource.data.createdAt == request.time &&
         
-        // Handle optional message field (can be string or null)
-        (request.resource.data.message == null || request.resource.data.message is string) &&
-        
-        // Ensure no extra fields are added (Basic protection)
+        // 4. Ensure no extra fields are injected
         request.resource.data.keys().hasOnly(['name', 'email', 'phone', 'countryCode', 'subject', 'message', 'createdAt', 'status']);
       
-      // Strict lockdown: No one can read, update, or delete via the client SDK
+      // 5. Restrict all other access (Read, Update, Delete)
       allow read, update, delete: if false;
     }
     
-    // Default deny for everything else
+    // Default deny all
     match /{path=**} {
       allow read, write: if false;
     }
