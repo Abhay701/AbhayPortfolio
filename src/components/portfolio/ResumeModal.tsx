@@ -28,6 +28,7 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
   const [error, setError] = useState(false);
   const [downloadOpen, setDownloadOpen] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(false);
   
   // Zoom & Pan State
   const [scale, setScale] = useState(1);
@@ -47,6 +48,16 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
   const MIN_SCALE = 0.5;
   const MAX_SCALE = 3;
   const SCALE_STEP = 0.25;
+
+  // Responsive check
+  useEffect(() => {
+    const checkDesktop = () => {
+      setIsDesktop(window.innerWidth >= 768);
+    };
+    checkDesktop();
+    window.addEventListener('resize', checkDesktop);
+    return () => window.removeEventListener('resize', checkDesktop);
+  }, []);
 
   // Reset states when modal opens/closes
   useEffect(() => {
@@ -92,7 +103,10 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
 
   // Pan Logic (Mouse)
   const handleMouseDown = (e: React.MouseEvent) => {
-    if (scale <= 1) return;
+    // On desktop, allow standard scrolling if not zoomed in
+    if (isDesktop && scale <= 1) return;
+    if (!isDesktop && scale <= 1) return;
+    
     setIsDragging(true);
     setDragStart({ x: e.clientX - position.x, y: e.clientY - position.y });
   };
@@ -232,7 +246,10 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
             {/* Document Viewer Viewport */}
             <div 
               ref={viewportRef}
-              className="relative flex-1 overflow-hidden bg-black/20 flex items-center justify-center cursor-default select-none"
+              className={cn(
+                "relative flex-1 bg-black/20 flex items-center justify-center cursor-default select-none",
+                isDesktop && scale <= 1 ? "overflow-y-auto" : "overflow-hidden"
+              )}
               onMouseDown={handleMouseDown}
               onMouseMove={handleMouseMove}
               onMouseUp={handleMouseUp}
@@ -242,7 +259,7 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
               onTouchEnd={handleTouchEnd}
             >
               {loading && !error && (
-                <div className="flex flex-col items-center justify-center gap-4">
+                <div className="flex flex-col items-center justify-center gap-4 py-20">
                   <motion.div
                     animate={{ rotate: 360 }}
                     transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
@@ -253,7 +270,7 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
               )}
 
               {error && (
-                <div className="flex flex-col items-center justify-center gap-4 text-center">
+                <div className="flex flex-col items-center justify-center gap-4 text-center py-20">
                   <AlertCircle className="text-destructive" size={48} />
                   <div>
                     <h4 className="text-lg font-bold mb-1">Failed to Load</h4>
@@ -269,7 +286,10 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
 
               {/* Zoomable Image Container */}
               <div 
-                className="w-full h-full flex items-center justify-center transition-transform duration-200 ease-out"
+                className={cn(
+                  "w-full flex items-center justify-center transition-transform duration-200 ease-out",
+                  isDesktop && scale <= 1 ? "h-auto" : "h-full"
+                )}
                 style={{
                   transform: `translate(${position.x}px, ${position.y}px) scale(${scale})`,
                   cursor: scale > 1 ? (isDragging ? 'grabbing' : 'grab') : 'default'
@@ -280,7 +300,8 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                   src={resumeJpgUrl}
                   alt="Resume Preview"
                   className={cn(
-                    "max-w-full max-h-full object-contain shadow-2xl pointer-events-none transition-opacity duration-300",
+                    "object-contain shadow-2xl pointer-events-none transition-opacity duration-300",
+                    isDesktop ? "w-full max-w-[calc(100%-48px)] h-auto my-8" : "max-w-full max-h-full",
                     loading || error ? "opacity-0" : "opacity-100"
                   )}
                   onLoad={() => setLoading(false)}
