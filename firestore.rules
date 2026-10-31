@@ -1,3 +1,4 @@
+
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -10,6 +11,7 @@ service cloud.firestore {
         request.resource.data.email is string &&
         request.resource.data.email.size() > 3 &&
         request.resource.data.phone is string &&
+        request.resource.data.phone.size() > 0 &&
         request.resource.data.countryCode is string &&
         request.resource.data.subject is string &&
         request.resource.data.subject.size() > 0 &&

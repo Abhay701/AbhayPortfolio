@@ -1,3 +1,4 @@
+
 'use client';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
@@ -66,14 +67,13 @@ export function Contact() {
 
     const contactRef = collection(db, 'contactMessages');
     
-    // Explicitly construct the data object to match security rules perfectly
     const firestoreData = {
       name: formData.name.trim(),
       email: formData.email.trim(),
       phone: formData.phone.trim(),
       countryCode: formData.countryCode,
       subject: formData.subject.trim(),
-      message: formData.message.trim() || null, // Convert empty string to null
+      message: formData.message.trim() || null,
       createdAt: serverTimestamp(),
       status: 'unread'
     };
@@ -82,7 +82,7 @@ export function Contact() {
       .then(() => {
         toast({
           title: "Message Submitted!",
-          description: "Your message has been submitted successfully! I'll get back to you soon.",
+          description: "Your message has been submitted successfully!",
         });
         setFormData({ 
           name: '', 
@@ -95,20 +95,18 @@ export function Contact() {
         });
       })
       .catch(async (err) => {
-        // Construct the rich, contextual error for the developer overlay
         const permissionError = new FirestorePermissionError({
           path: contactRef.path,
           operation: 'create',
           requestResourceData: firestoreData,
         } satisfies SecurityRuleContext);
         
-        // Emit the error to the global listener
         errorEmitter.emit('permission-error', permissionError);
         
         toast({
           variant: "destructive",
           title: "Submission Failed",
-          description: "Something went wrong while saving your message. Please try again.",
+          description: "Permission denied. Check Firestore security rules.",
         });
       })
       .finally(() => {
@@ -127,7 +125,7 @@ export function Contact() {
           >
             <h2 className="text-4xl font-bold mb-6">Let's Build Something Great Together</h2>
             <p className="text-lg text-muted-foreground mb-10 max-w-md">
-              I'm open to Full Stack Developer, React.js Developer and Next.js Developer opportunities, collaborations and interesting projects.
+              I'm open to Full Stack Developer, React.js Developer and Next.js Developer opportunities.
             </p>
 
             <div className="space-y-6">
@@ -175,7 +173,6 @@ export function Contact() {
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    placeholder="John Doe"
                     className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-primary transition-colors"
                   />
                 </div>
@@ -187,7 +184,6 @@ export function Contact() {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    placeholder="john@example.com"
                     className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-primary transition-colors"
                   />
                 </div>
@@ -212,7 +208,6 @@ export function Contact() {
                     value={formData.phone}
                     onChange={handleChange}
                     required
-                    placeholder="9876543210"
                     className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-primary transition-colors"
                   />
                 </div>
@@ -226,7 +221,6 @@ export function Contact() {
                   value={formData.subject}
                   onChange={handleChange}
                   required
-                  placeholder="Project Inquiry"
                   className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-primary transition-colors"
                 />
               </div>
@@ -238,7 +232,6 @@ export function Contact() {
                   value={formData.message}
                   onChange={handleChange}
                   rows={4}
-                  placeholder="How can I help you?"
                   className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-primary transition-colors resize-none"
                 />
               </div>
