@@ -1,4 +1,3 @@
-
 'use client';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
@@ -45,7 +44,17 @@ export function Contact() {
         body: JSON.stringify(formData),
       });
 
-      const result = await response.json();
+      let result;
+      const contentType = response.headers.get("content-type");
+      
+      if (contentType && contentType.includes("application/json")) {
+        result = await response.json();
+      } else {
+        // If not JSON, the server likely returned an HTML error page
+        const errorText = await response.text();
+        console.error('Non-JSON response received:', errorText);
+        throw new Error('Server returned an invalid response format. Please check if the API route is configured correctly.');
+      }
 
       if (response.ok) {
         toast({
@@ -57,6 +66,7 @@ export function Contact() {
         throw new Error(result.error || 'Something went wrong');
       }
     } catch (error: any) {
+      console.error('Contact form submission error:', error);
       toast({
         variant: "destructive",
         title: "Error Sending Message",
