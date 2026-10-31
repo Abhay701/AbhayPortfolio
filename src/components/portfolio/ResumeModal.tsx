@@ -224,23 +224,59 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
             exit={{ opacity: 0, scale: 0.95, y: 10 }}
             className="relative w-full max-w-5xl h-full max-h-[96vh] flex flex-col glass rounded-3xl overflow-hidden border border-white/10 shadow-2xl bg-card/60"
           >
-            {/* Compact Header */}
-            <div className="relative z-20 flex items-center justify-between px-4 py-2 border-b border-white/5 bg-white/5">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center">
+            {/* Compact Header with Integrated Zoom Controls */}
+            <div className="relative z-20 flex items-center justify-between px-4 py-2 border-b border-white/5 bg-white/5 gap-2">
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center shrink-0">
                   <FileText className="text-primary" size={16} />
                 </div>
-                <div>
+                <div className="truncate">
                   <h3 className="text-xs font-bold leading-none mb-0.5">Resume Preview</h3>
-                  <p className="text-[9px] text-muted-foreground uppercase tracking-widest leading-none">Abhay Kumar | Full Stack Developer</p>
+                  <p className="text-[9px] text-muted-foreground uppercase tracking-widest leading-none truncate hidden sm:block">Abhay Kumar | Full Stack Developer</p>
                 </div>
               </div>
-              <button
-                onClick={onClose}
-                className="w-8 h-8 rounded-full flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-white/10 transition-all active:scale-95"
-              >
-                <X size={18} />
-              </button>
+
+              <div className="flex items-center gap-2 sm:gap-4 shrink-0">
+                {/* Integrated Zoom Controls Pill */}
+                {!loading && !error && (
+                  <div className="flex items-center gap-0.5 sm:gap-1 bg-white/5 p-1 rounded-xl border border-white/10 shadow-sm">
+                    <button 
+                      onClick={handleZoomOut}
+                      disabled={scale <= MIN_SCALE}
+                      className="w-7 h-7 rounded-lg flex items-center justify-center hover:bg-white/10 text-muted-foreground hover:text-foreground disabled:opacity-30 transition-colors"
+                    >
+                      <Minus size={14} />
+                    </button>
+                    <div className="px-1 sm:px-2 min-w-[40px] sm:min-w-[50px] text-center">
+                      <span className="text-[9px] font-bold uppercase tracking-wider text-primary">
+                        {Math.round(scale * 100)}%
+                      </span>
+                    </div>
+                    <button 
+                      onClick={handleZoomIn}
+                      disabled={scale >= MAX_SCALE}
+                      className="w-7 h-7 rounded-lg flex items-center justify-center hover:bg-white/10 text-muted-foreground hover:text-foreground disabled:opacity-30 transition-colors"
+                    >
+                      <Plus size={14} />
+                    </button>
+                    <div className="w-[1px] h-3 bg-white/10 mx-0.5" />
+                    <button 
+                      onClick={resetZoom}
+                      className="w-7 h-7 rounded-lg flex items-center justify-center hover:bg-white/10 text-muted-foreground hover:text-primary transition-colors"
+                      title="Reset Zoom"
+                    >
+                      <RotateCcw size={14} />
+                    </button>
+                  </div>
+                )}
+
+                <button
+                  onClick={onClose}
+                  className="w-8 h-8 rounded-full flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-white/10 transition-all active:scale-95"
+                >
+                  <X size={18} />
+                </button>
+              </div>
             </div>
 
             {/* Document Viewer Viewport */}
@@ -308,39 +344,6 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                   onError={() => { setLoading(false); setError(true); }}
                 />
               </div>
-
-              {/* Floating Zoom Controls */}
-              {!loading && !error && (
-                <div className="absolute top-4 left-1/2 -translate-x-1/2 z-30 flex items-center gap-1 glass p-1.5 rounded-2xl border border-white/10 shadow-lg">
-                  <button 
-                    onClick={handleZoomOut}
-                    disabled={scale <= MIN_SCALE}
-                    className="w-8 h-8 rounded-xl flex items-center justify-center hover:bg-white/10 text-muted-foreground hover:text-foreground disabled:opacity-30 transition-colors"
-                  >
-                    <Minus size={16} />
-                  </button>
-                  <div className="px-3 min-w-[60px] text-center">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-primary">
-                      {Math.round(scale * 100)}%
-                    </span>
-                  </div>
-                  <button 
-                    onClick={handleZoomIn}
-                    disabled={scale >= MAX_SCALE}
-                    className="w-8 h-8 rounded-xl flex items-center justify-center hover:bg-white/10 text-muted-foreground hover:text-foreground disabled:opacity-30 transition-colors"
-                  >
-                    <Plus size={16} />
-                  </button>
-                  <div className="w-[1px] h-4 bg-white/10 mx-1" />
-                  <button 
-                    onClick={resetZoom}
-                    className="w-8 h-8 rounded-xl flex items-center justify-center hover:bg-white/10 text-muted-foreground hover:text-primary transition-colors"
-                    title="Reset Zoom"
-                  >
-                    <RotateCcw size={16} />
-                  </button>
-                </div>
-              )}
             </div>
 
             {/* Floating Action Menu (Bottom-Right) */}
