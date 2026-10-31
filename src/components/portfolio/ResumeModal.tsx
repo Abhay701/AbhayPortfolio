@@ -13,7 +13,9 @@ interface ResumeModalProps {
 export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-  const resumeUrl = '/Abhay_Kumar_Resume.jpg';
+  
+  const resumeJpgUrl = '/Abhay_Kumar_Resume.jpg';
+  const resumePdfUrl = '/Abhay_Kumar_Resume.pdf';
 
   // Prevent background scroll when modal is open
   useEffect(() => {
@@ -41,8 +43,8 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
 
   const handleDownload = () => {
     const link = document.createElement('a');
-    link.href = resumeUrl;
-    link.download = 'Abhay_Kumar_Resume.jpg';
+    link.href = resumePdfUrl;
+    link.download = 'Abhay_Kumar_Resume.pdf';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -86,7 +88,7 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                   <FileText className="text-primary" size={20} />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold">My Resume</h3>
+                  <h3 className="text-xl font-bold">Resume Preview</h3>
                   <p className="text-xs text-muted-foreground uppercase tracking-widest">Abhay Kumar | Full Stack Developer</p>
                 </div>
               </div>
@@ -126,22 +128,22 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                     <AlertCircle size={40} />
                   </div>
                   <div>
-                    <h4 className="text-xl font-bold mb-2">Failed to Load Resume</h4>
-                    <p className="text-muted-foreground max-w-xs mx-auto mb-6">There was an issue loading the resume preview image. Please try again or download directly.</p>
+                    <h4 className="text-xl font-bold mb-2">Failed to Load Preview</h4>
+                    <p className="text-muted-foreground max-w-xs mx-auto mb-6">There was an issue loading the resume preview image. You can still download the PDF below.</p>
                     <button
                       onClick={retryLoad}
                       className="flex items-center gap-2 px-6 py-3 rounded-xl bg-white/5 border border-white/10 hover:border-primary/50 transition-all font-bold"
                     >
                       <RefreshCw size={18} />
-                      Retry
+                      Retry Preview
                     </button>
                   </div>
                 </div>
               )}
 
               <img
-                src={resumeUrl}
-                alt="Abhay Kumar Resume"
+                src={resumeJpgUrl}
+                alt="Abhay Kumar Resume Preview"
                 className={cn(
                   "w-full h-auto object-contain rounded-xl shadow-2xl transition-opacity duration-500",
                   loading || error ? "opacity-0" : "opacity-100"
@@ -158,11 +160,10 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
             <div className="relative z-10 p-6 md:px-8 bg-white/5 border-t border-white/10 flex flex-col sm:flex-row items-center justify-center gap-4">
               <button
                 onClick={handleDownload}
-                disabled={error}
-                className="w-full sm:w-auto min-w-[200px] bg-primary text-primary-foreground px-8 py-4 rounded-2xl font-bold flex items-center justify-center gap-2 hover:translate-y-[-2px] transition-all shadow-lg shadow-primary/20 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full sm:w-auto min-w-[220px] bg-primary text-primary-foreground px-8 py-4 rounded-2xl font-bold flex items-center justify-center gap-2 hover:translate-y-[-2px] transition-all shadow-lg shadow-primary/20 active:scale-95"
               >
                 <Download size={20} />
-                Download Resume
+                Download PDF
               </button>
               <button
                 onClick={onClose}
