@@ -4,11 +4,16 @@ service cloud.firestore {
   match /databases/{database}/documents {
     match /contactMessages/{messageId} {
       // Anyone can create a message
-      allow create: if request.resource.data.keys().hasAll(['name', 'email', 'subject', 'message', 'createdAt', 'status'])
+      allow create: if request.resource.data.keys().hasAll(['name', 'email', 'phone', 'countryCode', 'subject', 'createdAt', 'status'])
                    && request.resource.data.name is string
+                   && request.resource.data.name.size() > 0
                    && request.resource.data.email is string
+                   && request.resource.data.email.matches('^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$')
+                   && request.resource.data.phone is string
+                   && request.resource.data.phone.size() >= 10
+                   && request.resource.data.countryCode is string
                    && request.resource.data.subject is string
-                   && request.resource.data.message is string
+                   && (request.resource.data.message == null || request.resource.data.message is string)
                    && request.resource.data.status == 'unread';
       
       // Reading, updating, and deleting are restricted

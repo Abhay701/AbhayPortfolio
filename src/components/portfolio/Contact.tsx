@@ -2,7 +2,7 @@
 'use client';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Mail, Github, Linkedin, MapPin, Send, Loader2 } from 'lucide-react';
+import { Mail, Github, Linkedin, MapPin, Send, Loader2, Phone } from 'lucide-react';
 import { profile } from '@/lib/data';
 import { toast } from '../ui/toaster';
 import { useFirestore } from '@/firebase';
@@ -10,12 +10,22 @@ import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
 
+const COUNTRY_CODES = [
+  { code: '+91', name: 'India' },
+  { code: '+1', name: 'USA/Canada' },
+  { code: '+44', name: 'UK' },
+  { code: '+61', name: 'Australia' },
+  { code: '+971', name: 'UAE' },
+];
+
 export function Contact() {
   const db = useFirestore();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    phone: '',
+    countryCode: '+91',
     subject: '',
     message: '',
     honeypot: '',
@@ -28,9 +38,17 @@ export function Contact() {
     { icon: MapPin, href: "#", label: profile.location },
   ];
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const validateForm = () => {
+    if (!formData.name.trim()) return "Name is required";
+    if (!formData.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) return "Valid email is required";
+    if (!formData.phone.trim() || !/^\d{10,12}$/.test(formData.phone.replace(/\D/g, ''))) return "Valid phone number is required";
+    if (!formData.subject.trim()) return "Subject is required";
+    return null;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -38,65 +56,50 @@ export function Contact() {
     
     if (formData.honeypot) return;
 
+    const error = validateForm();
+    if (error) {
+      toast({ variant: "destructive", title: "Validation Error", description: error });
+      return;
+    }
+
     setIsSubmitting(true);
 
-    try {
-      // 1. Save to Firestore (Primary Record)
-      const contactRef = collection(db, 'contactMessages');
-      const firestoreData = {
-        name: formData.name,
-        email: formData.email,
-        subject: formData.subject,
-        message: formData.message,
-        createdAt: serverTimestamp(),
-        status: 'unread'
-      };
+    const contactRef = collection(db, 'contactMessages');
+    const firestoreData = {
+      name: formData.name.trim(),
+      email: formData.email.trim(),
+      phone: formData.phone.trim(),
+      countryCode: formData.countryCode,
+      subject: formData.subject.trim(),
+      message: formData.message.trim() || null,
+      createdAt: serverTimestamp(),
+      status: 'unread'
+    };
 
-      // Firestore write is non-blocking to local UI flow
-      addDoc(contactRef, firestoreData)
-        .catch(async (error) => {
-          const permissionError = new FirestorePermissionError({
-            path: contactRef.path,
-            operation: 'create',
-            requestResourceData: firestoreData,
-          });
-          errorEmitter.emit('permission-error', permissionError);
-        });
-
-      // 2. Send Email Notification via API
-      const response = await fetch('/api/contact', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-
-      const result = await response.json();
-
-      if (response.ok) {
+    addDoc(contactRef, firestoreData)
+      .then(() => {
         toast({
-          title: "Message Sent!",
-          description: "Thank you for reaching out! Your message has been sent successfully. I'll get back to you soon.",
+          title: "Message Submitted!",
+          description: "Your message has been submitted successfully! I'll get back to you soon.",
         });
-        setFormData({ name: '', email: '', subject: '', message: '', honeypot: '' });
-      } else {
-        // If Firestore likely succeeded but email failed
+        setFormData({ name: '', email: '', phone: '', countryCode: '+91', subject: '', message: '', honeypot: '' });
+      })
+      .catch(async (error) => {
+        const permissionError = new FirestorePermissionError({
+          path: contactRef.path,
+          operation: 'create',
+          requestResourceData: firestoreData,
+        });
+        errorEmitter.emit('permission-error', permissionError);
         toast({
           variant: "destructive",
-          title: "Email Notification Delayed",
-          description: result?.error || "Your message was saved to our records, but we couldn't send the email notification. Don't worry, I'll see it!",
+          title: "Submission Failed",
+          description: "Something went wrong while saving your message. Please try again.",
         });
-      }
-    } catch (error: any) {
-      toast({
-        variant: "destructive",
-        title: "Submission Error",
-        description: "Something went wrong while sending your message. Please check your connection and try again.",
+      })
+      .finally(() => {
+        setIsSubmitting(false);
       });
-    } finally {
-      setIsSubmitting(false);
-    }
   };
 
   return (
@@ -151,7 +154,7 @@ export function Contact() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground ml-1">Name</label>
+                  <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground ml-1">Name *</label>
                   <input 
                     type="text" 
                     name="name"
@@ -163,7 +166,7 @@ export function Contact() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground ml-1">Email</label>
+                  <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground ml-1">Email *</label>
                   <input 
                     type="email" 
                     name="email"
@@ -175,8 +178,34 @@ export function Contact() {
                   />
                 </div>
               </div>
+
               <div className="space-y-2">
-                <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground ml-1">Subject</label>
+                <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground ml-1">Phone Number *</label>
+                <div className="flex gap-2">
+                  <select
+                    name="countryCode"
+                    value={formData.countryCode}
+                    onChange={handleChange}
+                    className="bg-white/5 border border-white/10 rounded-xl px-2 py-3 focus:outline-none focus:border-primary transition-colors text-sm"
+                  >
+                    {COUNTRY_CODES.map(c => (
+                      <option key={c.code} value={c.code} className="bg-background">{c.code} ({c.name})</option>
+                    ))}
+                  </select>
+                  <input 
+                    type="tel" 
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    required
+                    placeholder="9876543210"
+                    className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-primary transition-colors"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground ml-1">Subject *</label>
                 <input 
                   type="text" 
                   name="subject"
@@ -187,18 +216,19 @@ export function Contact() {
                   className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-primary transition-colors"
                 />
               </div>
+
               <div className="space-y-2">
-                <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground ml-1">Message</label>
+                <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground ml-1">Message (Optional)</label>
                 <textarea 
                   name="message"
                   value={formData.message}
                   onChange={handleChange}
-                  required
                   rows={4}
                   placeholder="How can I help you?"
                   className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-primary transition-colors resize-none"
                 />
               </div>
+
               <button 
                 type="submit"
                 disabled={isSubmitting}
@@ -207,7 +237,7 @@ export function Contact() {
                 {isSubmitting ? (
                   <>
                     <Loader2 className="animate-spin" size={18} />
-                    Sending...
+                    Submitting...
                   </>
                 ) : (
                   <>

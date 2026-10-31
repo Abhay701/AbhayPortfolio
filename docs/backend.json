@@ -15,6 +15,14 @@
           "format": "email",
           "description": "The email of the sender."
         },
+        "phone": {
+          "type": "string",
+          "description": "The phone number of the sender."
+        },
+        "countryCode": {
+          "type": "string",
+          "description": "The country code for the phone number."
+        },
         "subject": {
           "type": "string",
           "description": "The subject of the message."
@@ -40,8 +48,9 @@
       "required": [
         "name",
         "email",
+        "phone",
+        "countryCode",
         "subject",
-        "message",
         "createdAt",
         "status"
       ]
