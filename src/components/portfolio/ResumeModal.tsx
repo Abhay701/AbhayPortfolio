@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Download, Loader2, FileText, AlertCircle, RefreshCw, ImageIcon } from 'lucide-react';
+import { X, Download, Loader2, FileText, AlertCircle, RefreshCw, ImageIcon, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from '@/components/ui/toaster';
 
@@ -15,6 +15,7 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [downloadOpen, setDownloadOpen] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   
   const resumeJpgUrl = '/Abhay_Kumar_Resume.jpg';
@@ -29,6 +30,7 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
       setLoading(true);
       setError(false);
       setDownloadOpen(false);
+      setIsDownloading(false);
     }
     return () => {
       document.body.style.overflow = 'unset';
@@ -60,38 +62,52 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
   }, [downloadOpen]);
 
   const handleDownload = async (type: 'pdf' | 'jpg') => {
+    if (isDownloading) return;
+    
+    setIsDownloading(true);
     const url = type === 'pdf' ? resumePdfUrl : resumeJpgUrl;
+    const filename = type === 'pdf' ? 'Abhay_Kumar_Resume.pdf' : 'Abhay_Kumar_Resume.jpg';
     
     try {
-      // 1. Verify if the file exists before attempting download (Head request)
-      // This fulfills the requirement to report errors rather than giving false success.
-      const response = await fetch(url, { method: 'HEAD' });
+      // 1. Fetch the asset as a blob
+      const response = await fetch(url);
       
       if (!response.ok) {
-        throw new Error(`File ${url} not found (Status: ${response.status})`);
+        throw new Error(`Failed to fetch ${filename} (Status: ${response.status})`);
       }
 
-      // 2. Trigger the actual download using a same-origin anchor link
-      // The 'download' attribute forces the browser to save instead of opening in a tab.
+      const blob = await response.blob();
+      
+      // 2. Create a temporary object URL
+      const blobUrl = window.URL.createObjectURL(blob);
+      
+      // 3. Create a temporary anchor element and trigger download
       const link = document.createElement('a');
-      link.href = url;
-      link.download = `Abhay_Kumar_Resume.${type}`;
+      link.href = blobUrl;
+      link.download = filename;
       document.body.appendChild(link);
       link.click();
+      
+      // 4. Cleanup
       document.body.removeChild(link);
+      window.URL.revokeObjectURL(blobUrl);
       
-      setDownloadOpen(false);
-    } catch (err) {
-      console.error('Download verification failed:', err);
-      
-      // 3. Report the specific error to the user
       toast({
-        variant: "destructive",
-        title: "Download Unavailable",
-        description: `The ${type.toUpperCase()} file could not be located on the server. Please try again later.`,
+        title: "Download Started",
+        description: `${filename} is being saved to your device.`,
       });
       
       setDownloadOpen(false);
+    } catch (err) {
+      console.error('Download process failed:', err);
+      
+      toast({
+        variant: "destructive",
+        title: "Download Failed",
+        description: `Could not download the ${type.toUpperCase()} file. Please try again later.`,
+      });
+    } finally {
+      setIsDownloading(false);
     }
   };
 
@@ -121,14 +137,14 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
             className="relative w-full max-w-5xl h-full max-h-[96vh] flex flex-col glass rounded-3xl overflow-hidden border border-white/10 shadow-2xl bg-card/60"
           >
             {/* Minimal Header */}
-            <div className="relative z-10 flex items-center justify-between px-4 py-3 md:px-6 md:py-4 border-b border-white/5 bg-white/5">
+            <div className="relative z-10 flex items-center justify-between px-4 py-2 md:px-6 md:py-3 border-b border-white/5 bg-white/5">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center">
                   <FileText className="text-primary" size={16} />
                 </div>
                 <div>
-                  <h3 className="text-sm md:text-base font-bold leading-none mb-0.5">Resume Preview</h3>
-                  <p className="text-[10px] md:text-xs text-muted-foreground uppercase tracking-widest leading-none">Abhay Kumar | Full Stack Developer</p>
+                  <h3 className="text-xs md:text-sm font-bold leading-none mb-0.5">Resume Preview</h3>
+                  <p className="text-[9px] md:text-[10px] text-muted-foreground uppercase tracking-widest leading-none">Abhay Kumar | Full Stack Developer</p>
                 </div>
               </div>
               <button
@@ -178,7 +194,7 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                 src={resumeJpgUrl}
                 alt="Abhay Kumar Resume Preview"
                 className={cn(
-                  "max-w-full h-auto object-contain rounded-lg shadow-xl transition-opacity duration-300",
+                  "max-w-full h-auto object-contain rounded-lg shadow-xl transition-opacity duration-300 mb-4",
                   loading || error ? "opacity-0" : "opacity-100"
                 )}
                 onLoad={() => setLoading(false)}
@@ -198,21 +214,29 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                       initial={{ opacity: 0, scale: 0.9, y: 10 }}
                       animate={{ opacity: 1, scale: 1, y: 0 }}
                       exit={{ opacity: 0, scale: 0.9, y: 10 }}
-                      className="glass border border-white/10 rounded-2xl overflow-hidden shadow-2xl min-w-[140px] mb-2"
+                      className="glass border border-white/10 rounded-2xl overflow-hidden shadow-2xl min-w-[160px] mb-2"
                     >
                       <button
                         onClick={() => handleDownload('pdf')}
-                        className="w-full flex items-center gap-3 px-4 py-3 text-xs font-bold hover:bg-white/10 transition-colors border-b border-white/5 text-left"
+                        disabled={isDownloading}
+                        className="w-full flex items-center justify-between px-4 py-3 text-xs font-bold hover:bg-white/10 transition-colors border-b border-white/5 text-left disabled:opacity-50"
                       >
-                        <FileText size={14} className="text-primary" />
-                        Download PDF
+                        <div className="flex items-center gap-3">
+                          <FileText size={14} className="text-primary" />
+                          Download PDF
+                        </div>
+                        {isDownloading && <Loader2 size={12} className="animate-spin" />}
                       </button>
                       <button
                         onClick={() => handleDownload('jpg')}
-                        className="w-full flex items-center gap-3 px-4 py-3 text-xs font-bold hover:bg-white/10 transition-colors text-left"
+                        disabled={isDownloading}
+                        className="w-full flex items-center justify-between px-4 py-3 text-xs font-bold hover:bg-white/10 transition-colors text-left disabled:opacity-50"
                       >
-                        <ImageIcon size={14} className="text-secondary" />
-                        Download JPG
+                        <div className="flex items-center gap-3">
+                          <ImageIcon size={14} className="text-secondary" />
+                          Download JPG
+                        </div>
+                        {isDownloading && <Loader2 size={12} className="animate-spin" />}
                       </button>
                     </motion.div>
                   )}
@@ -220,10 +244,18 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
 
                 <button
                   onClick={() => setDownloadOpen(!downloadOpen)}
-                  className="w-12 h-12 rounded-2xl glass flex items-center justify-center text-foreground border border-white/10 hover:border-primary/50 hover:bg-primary/10 hover:text-primary transition-all shadow-xl active:scale-95 group"
-                  title="Download Resume"
+                  disabled={isDownloading}
+                  className={cn(
+                    "w-12 h-12 rounded-2xl glass flex items-center justify-center text-foreground border border-white/10 hover:border-primary/50 hover:bg-primary/10 hover:text-primary transition-all shadow-xl active:scale-95 group",
+                    isDownloading && "opacity-70 cursor-not-allowed"
+                  )}
+                  title="Download Options"
                 >
-                  <Download size={20} className={cn("transition-transform", downloadOpen ? "scale-90" : "group-hover:translate-y-0.5")} />
+                  {isDownloading ? (
+                    <Loader2 size={20} className="animate-spin text-primary" />
+                  ) : (
+                    <Download size={20} className={cn("transition-transform", downloadOpen ? "scale-90" : "group-hover:translate-y-0.5")} />
+                  )}
                 </button>
               </div>
             )}
