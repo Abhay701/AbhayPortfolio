@@ -12,8 +12,7 @@ import {
   ImageIcon, 
   Plus, 
   Minus, 
-  RotateCcw,
-  Search
+  RotateCcw
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from '@/components/ui/toaster';
@@ -103,7 +102,6 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
 
   // Pan Logic (Mouse)
   const handleMouseDown = (e: React.MouseEvent) => {
-    // On desktop, allow standard scrolling if not zoomed in
     if (isDesktop && scale <= 1) return;
     if (!isDesktop && scale <= 1) return;
     
@@ -161,7 +159,6 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
     setTouchStartDist(null);
   };
 
-  // Generic Handlers
   const handleDownload = async (type: 'pdf' | 'jpg') => {
     if (isDownloading) return;
     setIsDownloading(true);
@@ -224,7 +221,7 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
             exit={{ opacity: 0, scale: 0.95, y: 10 }}
             className="relative w-full max-w-5xl h-full max-h-[96vh] flex flex-col glass rounded-3xl overflow-hidden border border-white/10 shadow-2xl bg-card/60"
           >
-            {/* Compact Header with Integrated Zoom Controls */}
+            {/* Compact Header with Zoom Controls */}
             <div className="relative z-20 flex items-center justify-between px-4 py-2 border-b border-white/5 bg-white/5 gap-2">
               <div className="flex items-center gap-3 min-w-0">
                 <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center shrink-0">
@@ -237,7 +234,6 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
               </div>
 
               <div className="flex items-center gap-2 sm:gap-4 shrink-0">
-                {/* Integrated Zoom Controls Pill */}
                 {!loading && !error && (
                   <div className="flex items-center gap-0.5 sm:gap-1 bg-white/5 p-1 rounded-xl border border-white/10 shadow-sm">
                     <button 
@@ -295,7 +291,7 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
               onTouchEnd={handleTouchEnd}
             >
               {loading && !error && (
-                <div className="flex flex-col items-center justify-center gap-4 py-20">
+                <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-4">
                   <motion.div
                     animate={{ rotate: 360 }}
                     transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
@@ -306,7 +302,7 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
               )}
 
               {error && (
-                <div className="flex flex-col items-center justify-center gap-4 text-center py-20">
+                <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 text-center">
                   <AlertCircle className="text-destructive" size={48} />
                   <div>
                     <h4 className="text-lg font-bold mb-1">Failed to Load</h4>
