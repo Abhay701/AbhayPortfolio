@@ -1,4 +1,3 @@
-
 import { 
   Code2, 
   Database, 
@@ -6,7 +5,8 @@ import {
   Layers, 
   Layout, 
   Smartphone, 
-  Wrench 
+  Wrench,
+  CheckCircle2
 } from 'lucide-react';
 
 export const profile = {
@@ -19,7 +19,17 @@ export const profile = {
   education: {
     degree: "B.Tech in Computer Science Engineering",
     school: "CGC Landran, Punjab"
-  }
+  },
+  contributions: [
+    "Client requirement gathering and analysis",
+    "Application planning and architecture",
+    "UI/UX design and frontend development",
+    "Backend and database implementation",
+    "Authentication and role-based access control",
+    "Application testing and debugging",
+    "Production deployment",
+    "Ongoing maintenance and feature enhancements"
+  ]
 };
 
 export const skills = [
@@ -75,39 +85,30 @@ export const experience = [
 
 export const projects = [
   {
-    title: "KB Print HUB",
-    subtitle: "Enterprise ERP Management System",
-    description: "A comprehensive ERP management platform developed for the printing and packaging industry. Features role-based dashboards for production, inventory, and business operations.",
+    title: "MACRO PRINT PACK",
+    subtitle: "Printing & Packaging ERP",
+    status: "Live Business Application",
+    description: "An end-to-end business management application developed to streamline printing and packaging operations. Built from scratch based on client requirements, covering business workflows and operational management.",
     tech: ["Next.js 15", "React", "TypeScript", "Tailwind CSS", "Firebase", "Firestore", "Auth"],
-    links: {
-      live: true,
-      other: true
-    },
-    featured: true,
-    imageHint: "enterprise software dashboard"
+    imageHint: "enterprise software dashboard",
+    featured: true
   },
   {
-    title: "SkyCast 2.0",
-    subtitle: "Modern Weather Forecast App",
-    description: "A sleek weather forecasting application featuring real-time data, city search, and location-based updates with a clean, responsive interface.",
-    tech: ["React Native", "Expo", "Weather API", "TypeScript"],
-    featured: false,
-    imageHint: "weather application mobile"
+    title: "KB PRINT HUB",
+    subtitle: "ERP & Business Management",
+    status: "Live Business Application",
+    description: "A comprehensive ERP application designed and developed from scratch to manage business operations through structured workflows, role-based access and dedicated dashboards.",
+    tech: ["Next.js", "React", "TypeScript", "Tailwind CSS", "Firebase", "Firestore", "Cloud Storage"],
+    imageHint: "business analytics dashboard",
+    featured: false
   },
   {
-    title: "Aura Messenger",
-    subtitle: "Real-Time Chat Application",
-    description: "A modern messaging application focused on real-time communication with a clean user interface and secure messaging capabilities.",
-    tech: ["React", "Firebase", "WebSockets", "Tailwind CSS"],
-    featured: false,
-    imageHint: "chat application interface"
-  },
-  {
-    title: "Daily To-Do List",
-    subtitle: "Productivity Management Tool",
-    description: "A feature-rich task management application designed to help users organize their daily work and increase productivity.",
-    tech: ["Next.js", "React", "Firebase", "Cloud Firestore"],
-    featured: false,
-    imageHint: "productivity app tasks"
+    title: "ANAND FABRICS",
+    subtitle: "Textile Industry Application",
+    status: "Business Application",
+    description: "A business-focused application developed around the operational requirements of the textile industry, translating client requirements into practical software solutions.",
+    tech: ["React", "TypeScript", "Tailwind CSS", "Node.js", "SQL", "REST APIs"],
+    imageHint: "industrial management software",
+    featured: false
   }
 ];

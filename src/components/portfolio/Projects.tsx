@@ -1,9 +1,8 @@
-
 'use client';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ExternalLink, Github, ArrowUpRight, X, Clock } from 'lucide-react';
-import { projects } from '@/lib/data';
+import { ExternalLink, Github, ArrowUpRight, X, Clock, CheckCircle2 } from 'lucide-react';
+import { projects, profile } from '@/lib/data';
 
 export function Projects() {
   const [showModal, setShowModal] = useState(false);
@@ -12,18 +11,46 @@ export function Projects() {
     <section id="projects" className="py-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col items-center text-center mb-16">
-          <motion.h2 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-3xl md:text-4xl font-bold mb-4"
+            className="space-y-4"
           >
-            Featured Projects
-          </motion.h2>
-          <div className="w-20 h-1.5 bg-primary rounded-full" />
+            <h2 className="text-3xl md:text-5xl font-bold tracking-tight">
+              Real-World <span className="text-gradient">Applications</span>
+            </h2>
+            <p className="text-muted-foreground text-lg max-w-2xl mx-auto leading-relaxed">
+              From understanding business requirements to building, testing and deploying complete applications — I develop solutions for real business operations.
+            </p>
+            <div className="w-20 h-1.5 bg-primary rounded-full mx-auto mt-4" />
+          </motion.div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {/* Contribution Highlights */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="glass rounded-[2rem] p-8 md:p-10 mb-16 border-primary/10"
+        >
+          <h3 className="text-2xl font-bold mb-6 flex items-center gap-2">
+            <span className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center">
+              <CheckCircle2 className="text-primary" size={20} />
+            </span>
+            Full-Cycle Development Expertise
+          </h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {profile.contributions.map((contribution, idx) => (
+              <div key={idx} className="flex items-start gap-3 p-3 rounded-xl hover:bg-white/5 transition-colors">
+                <CheckCircle2 size={16} className="text-primary mt-1 shrink-0" />
+                <span className="text-sm text-muted-foreground">{contribution}</span>
+              </div>
+            ))}
+          </div>
+        </motion.div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {projects.map((project, idx) => (
             <motion.div
               key={project.title}
@@ -31,69 +58,61 @@ export function Projects() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: idx * 0.1 }}
-              className={`group glass rounded-[2.5rem] overflow-hidden flex flex-col ${project.featured ? 'md:col-span-2' : ''}`}
+              className={`group glass rounded-[2.5rem] overflow-hidden flex flex-col h-full border border-white/5 ${
+                project.featured ? 'lg:col-span-12' : 'lg:col-span-6'
+              }`}
             >
               <div className={`grid grid-cols-1 ${project.featured ? 'lg:grid-cols-2' : ''} h-full`}>
                 {/* Image Section */}
-                <div className="relative h-64 lg:h-full min-h-[300px] overflow-hidden">
-                  <div className="absolute inset-0 bg-primary/10 group-hover:bg-primary/20 transition-all z-10" />
+                <div className="relative h-64 lg:h-full min-h-[320px] overflow-hidden">
+                  <div className="absolute inset-0 bg-primary/10 group-hover:bg-transparent transition-all z-10" />
                   <img 
                     src={`https://picsum.photos/seed/${project.title}/1200/800`} 
                     alt={project.title}
                     data-ai-hint={project.imageHint}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000"
                   />
-                  {project.featured && (
-                    <div className="absolute top-6 left-6 z-20">
-                      <span className="bg-primary text-primary-foreground px-4 py-1.5 rounded-full text-xs font-bold shadow-xl">
-                        Featured Work
-                      </span>
-                    </div>
-                  )}
+                  <div className="absolute top-6 left-6 z-20 flex flex-wrap gap-2">
+                    <span className="bg-primary text-primary-foreground px-4 py-1.5 rounded-full text-xs font-bold shadow-xl flex items-center gap-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                      {project.status}
+                    </span>
+                  </div>
                 </div>
 
                 {/* Content Section */}
-                <div className="p-8 md:p-12 flex flex-col justify-between">
+                <div className="p-8 md:p-12 flex flex-col justify-between bg-gradient-to-br from-transparent to-primary/5">
                   <div>
-                    <p className="text-primary font-bold text-sm uppercase tracking-widest mb-2">
-                      {project.subtitle}
-                    </p>
-                    <h3 className="text-3xl font-bold mb-4 group-hover:text-primary transition-colors">
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="text-primary font-bold text-xs uppercase tracking-[0.2em]">
+                        {project.subtitle}
+                      </span>
+                    </div>
+                    <h3 className="text-3xl md:text-4xl font-bold mb-6 group-hover:text-primary transition-colors">
                       {project.title}
                     </h3>
-                    <p className="text-muted-foreground leading-relaxed mb-8">
+                    <p className="text-muted-foreground text-lg leading-relaxed mb-8">
                       {project.description}
                     </p>
                     <div className="flex flex-wrap gap-2 mb-10">
                       {project.tech.map((t) => (
-                        <span key={t} className="px-3 py-1 rounded-lg bg-white/5 text-xs font-medium border border-white/5">
+                        <span key={t} className="px-3 py-1.5 rounded-lg bg-white/5 text-xs font-medium border border-white/10 hover:border-primary/50 transition-colors">
                           {t}
                         </span>
                       ))}
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-4">
-                    {project.links?.live && (
-                      <button 
-                        onClick={() => setShowModal(true)}
-                        className="bg-primary text-primary-foreground px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:translate-y-[-2px] transition-all"
-                      >
-                        Live Demo
-                        <ArrowUpRight size={18} />
-                      </button>
-                    )}
-                    {project.links?.other && (
-                      <button 
-                        onClick={() => setShowModal(true)}
-                        className="glass px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-white/5 transition-all"
-                      >
-                        Visit Site
-                        <ExternalLink size={18} />
-                      </button>
-                    )}
-                    <button className="text-muted-foreground hover:text-primary transition-colors">
-                      <Github size={24} />
+                  <div className="flex flex-wrap items-center gap-4">
+                    <button 
+                      onClick={() => setShowModal(true)}
+                      className="bg-primary text-primary-foreground px-8 py-4 rounded-2xl font-bold flex items-center gap-2 hover:translate-y-[-2px] transition-all shadow-lg shadow-primary/20 active:scale-95"
+                    >
+                      View Case Study
+                      <ArrowUpRight size={18} />
+                    </button>
+                    <button className="w-12 h-12 rounded-2xl glass flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/50 transition-all">
+                      <Github size={22} />
                     </button>
                   </div>
                 </div>
@@ -103,7 +122,7 @@ export function Projects() {
         </div>
       </div>
 
-      {/* professional Coming Soon Modal */}
+      {/* Professional Coming Soon Modal */}
       <AnimatePresence>
         {showModal && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center px-4">
@@ -112,34 +131,35 @@ export function Projects() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setShowModal(false)}
-              className="absolute inset-0 bg-background/80 backdrop-blur-md"
+              className="absolute inset-0 bg-background/90 backdrop-blur-xl"
             />
             <motion.div
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="relative glass max-w-md w-full p-8 rounded-[2.5rem] border border-white/10 shadow-2xl"
+              className="relative glass max-w-md w-full p-8 md:p-10 rounded-[2.5rem] border border-white/10 shadow-2xl"
             >
               <button 
                 onClick={() => setShowModal(false)}
-                className="absolute top-6 right-6 text-muted-foreground hover:text-primary transition-colors"
+                className="absolute top-6 right-6 w-10 h-10 rounded-full glass flex items-center justify-center text-muted-foreground hover:text-primary transition-all"
               >
-                <X size={24} />
+                <X size={20} />
               </button>
               
               <div className="flex flex-col items-center text-center">
-                <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-6">
-                  <Clock className="text-primary" size={32} />
+                <div className="w-20 h-20 rounded-3xl bg-primary/10 flex items-center justify-center mb-8 relative">
+                  <div className="absolute inset-0 bg-primary/20 blur-2xl rounded-full animate-pulse" />
+                  <Clock className="text-primary relative z-10" size={40} />
                 </div>
-                <h3 className="text-2xl font-bold mb-4">Live Demo Coming Soon</h3>
+                <h3 className="text-2xl font-bold mb-4">Case Study Coming Soon</h3>
                 <p className="text-muted-foreground leading-relaxed mb-8">
-                  This project is currently showcased through portfolio screenshots and descriptions. A public live demonstration will be available soon.
+                  I'm currently documenting the detailed development lifecycle, architecture decisions, and business impact for this application. A comprehensive case study will be available soon.
                 </p>
                 <button 
                   onClick={() => setShowModal(false)}
-                  className="w-full bg-primary text-primary-foreground py-4 rounded-xl font-bold hover:translate-y-[-2px] transition-all"
+                  className="w-full bg-primary text-primary-foreground py-4 rounded-2xl font-bold hover:translate-y-[-2px] transition-all shadow-lg shadow-primary/20 active:scale-95"
                 >
-                  Close
+                  Return to Portfolio
                 </button>
               </div>
             </motion.div>
