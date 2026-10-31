@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Download, Loader2, FileText, AlertCircle, RefreshCw, ImageIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { toast } from '@/components/ui/toaster';
 
 interface ResumeModalProps {
   isOpen: boolean;
@@ -58,14 +59,40 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
     };
   }, [downloadOpen]);
 
-  const handleDownload = (type: 'pdf' | 'jpg') => {
-    const link = document.createElement('a');
-    link.href = type === 'pdf' ? resumePdfUrl : resumeJpgUrl;
-    link.download = `Abhay_Kumar_Resume.${type}`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    setDownloadOpen(false);
+  const handleDownload = async (type: 'pdf' | 'jpg') => {
+    const url = type === 'pdf' ? resumePdfUrl : resumeJpgUrl;
+    
+    try {
+      // 1. Verify if the file exists before attempting download (Head request)
+      // This fulfills the requirement to report errors rather than giving false success.
+      const response = await fetch(url, { method: 'HEAD' });
+      
+      if (!response.ok) {
+        throw new Error(`File ${url} not found (Status: ${response.status})`);
+      }
+
+      // 2. Trigger the actual download using a same-origin anchor link
+      // The 'download' attribute forces the browser to save instead of opening in a tab.
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `Abhay_Kumar_Resume.${type}`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      setDownloadOpen(false);
+    } catch (err) {
+      console.error('Download verification failed:', err);
+      
+      // 3. Report the specific error to the user
+      toast({
+        variant: "destructive",
+        title: "Download Unavailable",
+        description: `The ${type.toUpperCase()} file could not be located on the server. Please try again later.`,
+      });
+      
+      setDownloadOpen(false);
+    }
   };
 
   const retryLoad = () => {
@@ -175,14 +202,14 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                     >
                       <button
                         onClick={() => handleDownload('pdf')}
-                        className="w-full flex items-center gap-3 px-4 py-3 text-xs font-bold hover:bg-white/10 transition-colors border-b border-white/5"
+                        className="w-full flex items-center gap-3 px-4 py-3 text-xs font-bold hover:bg-white/10 transition-colors border-b border-white/5 text-left"
                       >
                         <FileText size={14} className="text-primary" />
                         Download PDF
                       </button>
                       <button
                         onClick={() => handleDownload('jpg')}
-                        className="w-full flex items-center gap-3 px-4 py-3 text-xs font-bold hover:bg-white/10 transition-colors"
+                        className="w-full flex items-center gap-3 px-4 py-3 text-xs font-bold hover:bg-white/10 transition-colors text-left"
                       >
                         <ImageIcon size={14} className="text-secondary" />
                         Download JPG
