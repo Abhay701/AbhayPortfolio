@@ -1,0 +1,61 @@
+
+{
+  "entities": {
+    "ContactMessage": {
+      "title": "Contact Message",
+      "description": "A message submitted through the portfolio contact form.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the sender."
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "The email of the sender."
+        },
+        "subject": {
+          "type": "string",
+          "description": "The subject of the message."
+        },
+        "message": {
+          "type": "string",
+          "description": "The content of the message."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When the message was created."
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "unread",
+            "read"
+          ],
+          "description": "The status of the message."
+        }
+      },
+      "required": [
+        "name",
+        "email",
+        "subject",
+        "message",
+        "createdAt",
+        "status"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "contactMessages/{messageId}": {
+      "schema": "ContactMessage",
+      "description": "Collection of contact form submissions."
+    }
+  }
+}

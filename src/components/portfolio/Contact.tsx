@@ -5,8 +5,13 @@ import { motion } from 'framer-motion';
 import { Mail, Github, Linkedin, MapPin, Send, Loader2 } from 'lucide-react';
 import { profile } from '@/lib/data';
 import { toast } from '../ui/toaster';
+import { useFirestore } from '@/firebase';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { errorEmitter } from '@/firebase/error-emitter';
+import { FirestorePermissionError } from '@/firebase/errors';
 
 export function Contact() {
+  const db = useFirestore();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
@@ -31,12 +36,34 @@ export function Contact() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Honeypot check (extra client-side layer)
     if (formData.honeypot) return;
 
     setIsSubmitting(true);
 
     try {
+      // 1. Save to Firestore
+      const contactRef = collection(db, 'contactMessages');
+      const firestoreData = {
+        name: formData.name,
+        email: formData.email,
+        subject: formData.subject,
+        message: formData.message,
+        createdAt: serverTimestamp(),
+        status: 'unread'
+      };
+
+      // Initiation of Firestore write (Non-blocking as per guidelines)
+      addDoc(contactRef, firestoreData)
+        .catch(async (error) => {
+          const permissionError = new FirestorePermissionError({
+            path: contactRef.path,
+            operation: 'create',
+            requestResourceData: firestoreData,
+          });
+          errorEmitter.emit('permission-error', permissionError);
+        });
+
+      // 2. Send Email via API
       const response = await fetch('/api/contact', {
         method: 'POST',
         headers: {
@@ -45,12 +72,7 @@ export function Contact() {
         body: JSON.stringify(formData),
       });
 
-      let result;
-      const contentType = response.headers.get("content-type");
-      
-      if (contentType && contentType.includes("application/json")) {
-        result = await response.json();
-      }
+      const result = await response.json();
 
       if (response.ok) {
         toast({
@@ -59,18 +81,17 @@ export function Contact() {
         });
         setFormData({ name: '', email: '', subject: '', message: '', honeypot: '' });
       } else {
-        // Display the specific error message from the backend if available
         toast({
           variant: "destructive",
-          title: "Error Sending Message",
-          description: result?.error || "Sorry, your message couldn't be sent. Please try again or contact me directly by email.",
+          title: "Email Notification Delayed",
+          description: result?.error || "Your message was saved to our database, but we couldn't send the email notification. Don't worry, we'll see it!",
         });
       }
     } catch (error: any) {
       toast({
         variant: "destructive",
-        title: "Connection Error",
-        description: "Could not connect to the email service. Please check your internet connection and try again.",
+        title: "Submission Error",
+        description: "Something went wrong while sending your message. Please try again.",
       });
     } finally {
       setIsSubmitting(false);
@@ -116,7 +137,6 @@ export function Contact() {
             className="glass p-8 md:p-10 rounded-[2.5rem]"
           >
             <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Honeypot field hidden from humans */}
               <div className="hidden">
                 <input 
                   type="text" 

@@ -1,13 +1,7 @@
-import { getApps, initializeApp } from 'firebase/app';
 
-const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FB_API_KEY || 'demo',
-  authDomain: process.env.NEXT_PUBLIC_FB_AUTH_DOMAIN || 'demo.firebaseapp.com',
-  projectId: process.env.NEXT_PUBLIC_FB_PROJECT_ID || 'demo',
-  storageBucket: process.env.NEXT_PUBLIC_FB_STORAGE_BUCKET || 'demo.appspot.com',
-  appId: process.env.NEXT_PUBLIC_FB_APP_ID || 'demo',
-  messagingSenderId: process.env.NEXT_PUBLIC_FB_MESSAGING_SENDER_ID || 'demo',
-};
+// This file is now a proxy for the unified Firebase configuration
+import { initializeFirebase } from '@/firebase';
 
-export const firebaseApp =
-  getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+const { app, db, auth } = initializeFirebase();
+
+export { app as firebaseApp, db as firestore, auth };
