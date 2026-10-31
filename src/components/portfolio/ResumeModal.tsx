@@ -399,16 +399,6 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                 </button>
               </div>
             )}
-            
-            {/* Quick Helper Hint */}
-            {!loading && !error && (
-              <div className="absolute bottom-6 left-6 z-10 pointer-events-none hidden md:block">
-                <div className="flex items-center gap-2 glass px-3 py-1.5 rounded-full border border-white/5 opacity-40">
-                  <Search size={12} />
-                  <span className="text-[10px] font-medium">Ctrl + Scroll to Zoom</span>
-                </div>
-              </div>
-            )}
           </motion.div>
         </div>
       )}
