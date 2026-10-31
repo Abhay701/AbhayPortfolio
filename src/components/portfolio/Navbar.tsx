@@ -1,11 +1,14 @@
-
 'use client';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Download } from 'lucide-react';
+import { Menu, X, FileText } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-export function Navbar() {
+interface NavbarProps {
+  onResumeClick?: () => void;
+}
+
+export function Navbar({ onResumeClick }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -23,6 +26,11 @@ export function Navbar() {
     { name: 'Projects', href: '#projects' },
     { name: 'Contact', href: '#contact' },
   ];
+
+  const handleResumeClick = () => {
+    setIsOpen(false);
+    if (onResumeClick) onResumeClick();
+  };
 
   return (
     <nav className={cn(
@@ -55,11 +63,12 @@ export function Navbar() {
               </motion.a>
             ))}
             <motion.button
+              onClick={handleResumeClick}
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="bg-primary text-primary-foreground px-5 py-2 rounded-full text-sm font-bold flex items-center gap-2 hover:bg-primary/90 transition-all"
+              className="bg-primary text-primary-foreground px-5 py-2 rounded-full text-sm font-bold flex items-center gap-2 hover:bg-primary/90 transition-all active:scale-95"
             >
-              <Download size={16} />
+              <FileText size={16} />
               Resume
             </motion.button>
           </div>
@@ -94,9 +103,12 @@ export function Navbar() {
                 </a>
               ))}
               <div className="pt-4">
-                <button className="w-full bg-primary text-primary-foreground py-3 rounded-xl font-bold flex items-center justify-center gap-2">
-                  <Download size={18} />
-                  Download Resume
+                <button 
+                  onClick={handleResumeClick}
+                  className="w-full bg-primary text-primary-foreground py-3 rounded-xl font-bold flex items-center justify-center gap-2 active:scale-95 transition-transform"
+                >
+                  <FileText size={18} />
+                  View Resume
                 </button>
               </div>
             </div>

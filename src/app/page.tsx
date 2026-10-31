@@ -1,6 +1,6 @@
-
 'use client';
 
+import { useState } from 'react';
 import { Navbar } from '@/components/portfolio/Navbar';
 import { Hero } from '@/components/portfolio/Hero';
 import { About } from '@/components/portfolio/About';
@@ -9,18 +9,27 @@ import { Experience } from '@/components/portfolio/Experience';
 import { Projects } from '@/components/portfolio/Projects';
 import { Contact } from '@/components/portfolio/Contact';
 import { Footer } from '@/components/portfolio/Footer';
+import { ResumeModal } from '@/components/portfolio/ResumeModal';
 
 export default function Home() {
+  const [isResumeOpen, setIsResumeOpen] = useState(false);
+
   return (
     <main className="relative bg-background">
-      <Navbar />
-      <Hero />
+      <Navbar onResumeClick={() => setIsResumeOpen(true)} />
+      <Hero onResumeClick={() => setIsResumeOpen(true)} />
       <About />
       <Skills />
       <Experience />
       <Projects />
       <Contact />
       <Footer />
+      
+      {/* Resume Preview Modal */}
+      <ResumeModal 
+        isOpen={isResumeOpen} 
+        onClose={() => setIsResumeOpen(false)} 
+      />
       
       {/* Global Background Accents */}
       <div className="fixed top-0 left-0 w-full h-full pointer-events-none -z-20 overflow-hidden">

@@ -1,10 +1,13 @@
-
 'use client';
 import { motion } from 'framer-motion';
-import { ArrowRight, MapPin, Download } from 'lucide-react';
+import { ArrowRight, MapPin, FileText } from 'lucide-react';
 import { profile } from '@/lib/data';
 
-export function Hero() {
+interface HeroProps {
+  onResumeClick?: () => void;
+}
+
+export function Hero({ onResumeClick }: HeroProps) {
   return (
     <section id="home" className="relative min-h-screen flex items-center pt-20 overflow-hidden">
       <div className="absolute inset-0 hero-gradient -z-10" />
@@ -54,8 +57,11 @@ export function Hero() {
               <a href="#contact" className="glass text-foreground px-8 py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-white/5 transition-all">
                 Contact Me
               </a>
-              <button className="flex items-center justify-center gap-2 text-muted-foreground hover:text-primary transition-colors px-4 py-2 text-sm font-semibold">
-                <Download size={18} />
+              <button 
+                onClick={onResumeClick}
+                className="flex items-center justify-center gap-2 text-muted-foreground hover:text-primary transition-colors px-4 py-2 text-sm font-semibold active:scale-95"
+              >
+                <FileText size={18} />
                 Resume
               </button>
             </div>
