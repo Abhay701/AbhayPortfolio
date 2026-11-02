@@ -4,7 +4,7 @@ export interface Screenshot {
   id: string;
   title: string;
   description?: string;
-  category: string;
+  chapter: string;
   path: string;
 }
 
@@ -62,8 +62,32 @@ export const projectsData: Record<string, CaseStudyData> = {
       { title: "Production Workflow", icon: Layers, description: "Department-wise tracking of manufacturing progress." },
       { title: "Dispatch Tracking", icon: Truck, description: "Final delivery management and logistics logging." }
     ],
-    screenshotCategories: ["Dashboards", "Orders", "Production", "Employee Management", "Attendance", "Leave Management", "Dispatch"],
-    screenshots: [] // To be populated by user
+    screenshotCategories: ["ERP Overview", "Employee Management", "QR Attendance", "Orders & Jobs", "Approvals", "Manufacturing", "Accounts & Payroll", "Tracking"],
+    screenshots: [
+      { id: "mpp-1", title: "Main ERP Dashboard", description: "Centralized overview of all business metrics and module access.", chapter: "ERP Overview", path: "/projects/macro-print-pack/1.png" },
+      { id: "mpp-2", title: "System Analytics", description: "Visual breakdown of production status and order volume.", chapter: "ERP Overview", path: "/projects/macro-print-pack/2.png" },
+      { id: "mpp-3", title: "Module Navigation", description: "Unified navigation interface for different industrial units.", chapter: "ERP Overview", path: "/projects/macro-print-pack/3.png" },
+      { id: "mpp-4", title: "User Management", description: "Complete list of system users with active status tracking.", chapter: "Employee Management & Access Control", path: "/projects/macro-print-pack/4.png" },
+      { id: "mpp-5", title: "Role Configuration", description: "Defining granular permissions for different employee roles.", chapter: "Employee Management & Access Control", path: "/projects/macro-print-pack/5.png" },
+      { id: "mpp-6", title: "Employee Profiles", description: "Detailed data management for factory and office personnel.", chapter: "Employee Management & Access Control", path: "/projects/macro-print-pack/6.png" },
+      { id: "mpp-7", title: "QR Identity Card Generation", description: "Automatic generation of unique QR codes for every employee.", chapter: "QR-Based Employee Attendance System", path: "/projects/macro-print-pack/7.png" },
+      { id: "mpp-8", title: "Gateman Mobile Interface", description: "Restricted scanner view accessible only to security personnel.", chapter: "QR-Based Employee Attendance System", path: "/projects/macro-print-pack/8.png" },
+      { id: "mpp-9", title: "Live QR Verification", description: "Real-time employee identity validation during premises entry.", chapter: "QR-Based Employee Attendance System", path: "/projects/macro-print-pack/9.png" },
+      { id: "mpp-10", title: "Punch-In Recording", description: "Digital logging of arrival date and exact timestamp.", chapter: "QR-Based Employee Attendance System", path: "/projects/macro-print-pack/10.png" },
+      { id: "mpp-11", title: "Attendance Logs", description: "Historical record of daily punch-in and punch-out cycles.", chapter: "QR-Based Employee Attendance System", path: "/projects/macro-print-pack/11.png" },
+      { id: "mpp-12", title: "Customer Database", description: "Managing customer contact information and order history.", chapter: "Customer Orders & Job Creation", path: "/projects/macro-print-pack/12.png" },
+      { id: "mpp-13", title: "New Order Entry", description: "Interface for capturing specific printing and packaging requirements.", chapter: "Customer Orders & Job Creation", path: "/projects/macro-print-pack/13.png" },
+      { id: "mpp-14", title: "Job Card Generation", description: "Converting customer orders into technical production instructions.", chapter: "Customer Orders & Job Creation", path: "/projects/macro-print-pack/14.png" },
+      { id: "mpp-15", title: "Active Job Queue", description: "Real-time list of all jobs currently pending for production.", chapter: "Customer Orders & Job Creation", path: "/projects/macro-print-pack/15.png" },
+      { id: "mpp-16", title: "Designers Portal", description: "Workspace for design teams to upload and manage artwork.", chapter: "Job Approval & Design Workflow", path: "/projects/macro-print-pack/16.png" },
+      { id: "mpp-17", title: "Approval Dashboard", description: "Management interface for reviewing and approving production stages.", chapter: "Job Approval & Design Workflow", path: "/projects/macro-print-pack/17.png" },
+      { id: "mpp-18", title: "Production Pipeline", description: "Visual tracking of jobs moving through different factory units.", chapter: "Manufacturing & Production Pipeline", path: "/projects/macro-print-pack/18.png" },
+      { id: "mpp-19", title: "Printing Unit Dashboard", description: "Specific tracking for screen and offset printing operations.", chapter: "Manufacturing & Production Pipeline", path: "/projects/macro-print-pack/19.png" },
+      { id: "mpp-20", title: "Purchase Management", description: "Queue for raw material procurement based on job requirements.", chapter: "Manufacturing & Production Pipeline", path: "/projects/macro-print-pack/20.png" },
+      { id: "mpp-21", title: "Payroll Configuration", description: "Setting up salary structures and deduction rules.", chapter: "Accounts, Payroll & Administration", path: "/projects/macro-print-pack/21.png" },
+      { id: "mpp-22", title: "Employee Payroll Dashboard", description: "Automated salary calculation based on attendance records.", chapter: "Accounts, Payroll & Administration", path: "/projects/macro-print-pack/22.png" },
+      { id: "mpp-23", title: "Dispatch Tracking", description: "Final lifecycle tracking for delivered and shipped orders.", chapter: "Final Order Tracking", path: "/projects/macro-print-pack/23.png" }
+    ]
   },
   "kb-print-hub": {
     slug: "kb-print-hub",
@@ -84,7 +108,7 @@ export const projectsData: Record<string, CaseStudyData> = {
       { title: "Approval Workflows", icon: ShieldCheck, description: "Admin-controlled user verification and operation approvals." }
     ],
     screenshotCategories: ["Admin", "Order Builder", "Designer", "Kappa/Paper/Screen", "Inventory", "Production Tracking", "Dispatch"],
-    screenshots: [] // To be populated by user
+    screenshots: [] 
   },
   "anand-fabrics": {
     slug: "anand-fabrics",
@@ -103,6 +127,6 @@ export const projectsData: Record<string, CaseStudyData> = {
       { title: "Production Monitoring", icon: Layers, description: "Visibility into textile manufacturing stages." }
     ],
     screenshotCategories: ["General", "Operations", "Dashboards"],
-    screenshots: [] // To be populated by user
+    screenshots: [] 
   }
 };

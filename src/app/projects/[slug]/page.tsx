@@ -1,10 +1,22 @@
 'use client';
+import { useState, useMemo } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
-import { ArrowLeft, MapPin, Calendar, Briefcase, ChevronRight, LayoutList } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  ArrowLeft, 
+  Calendar, 
+  Briefcase, 
+  LayoutList, 
+  Play, 
+  ArrowRight,
+  ShieldCheck,
+  Zap,
+  Layers
+} from 'lucide-react';
 import { projectsData } from '@/lib/projects-data';
 import { ProjectGallery } from '@/components/portfolio/ProjectGallery';
 import { DevelopmentTimeline } from '@/components/portfolio/DevelopmentTimeline';
+import { ERPProductWalkthrough } from '@/components/portfolio/ERPProductWalkthrough';
 import { Badge } from '@/components/ui/badge';
 
 export default function CaseStudyPage() {
@@ -12,6 +24,8 @@ export default function CaseStudyPage() {
   const router = useRouter();
   const slug = params.slug as string;
   const project = projectsData[slug];
+  
+  const [isWalkthroughActive, setIsWalkthroughActive] = useState(false);
 
   if (!project) {
     return (
@@ -26,6 +40,8 @@ export default function CaseStudyPage() {
       </div>
     );
   }
+
+  const isMacroPrintPack = slug === 'macro-print-pack';
 
   return (
     <main className="min-h-screen pb-24">
@@ -77,10 +93,52 @@ export default function CaseStudyPage() {
         </div>
       </section>
 
+      {/* Product Walkthrough Call-to-Action */}
+      {isMacroPrintPack && (
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-12 relative z-10">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="glass p-8 md:p-12 rounded-[2.5rem] border-primary/30 bg-primary/5 shadow-2xl overflow-hidden relative"
+          >
+             <div className="absolute top-0 right-0 p-8 opacity-10">
+                <Zap size={120} className="text-primary" />
+             </div>
+             
+             <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-8">
+                <div className="max-w-2xl text-center lg:text-left">
+                  <h2 className="text-3xl md:text-4xl font-bold mb-4">Inside Macro PrintHub – Complete ERP Workflow</h2>
+                  <p className="text-muted-foreground text-lg leading-relaxed">
+                    Explore how a complete printing and packaging ERP manages employees, attendance, customer orders, job cards, manufacturing, inventory, payroll and dispatch through a unified platform.
+                  </p>
+                </div>
+                <button 
+                  onClick={() => setIsWalkthroughActive(true)}
+                  className="bg-primary text-primary-foreground px-10 py-5 rounded-[2rem] font-bold text-lg flex items-center gap-3 hover:scale-105 active:scale-95 transition-all shadow-xl shadow-primary/20"
+                >
+                  <Play className="fill-current" size={24} />
+                  Start Product Walkthrough
+                </button>
+             </div>
+          </motion.div>
+        </section>
+      )}
+
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-24">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
-          <div className="lg:col-span-8 space-y-16">
+          <div className="lg:col-span-8 space-y-24">
+            
+            {/* Interactive Walkthrough Modal */}
+            <AnimatePresence>
+              {isWalkthroughActive && isMacroPrintPack && (
+                <ERPProductWalkthrough 
+                  screenshots={project.screenshots} 
+                  onClose={() => setIsWalkthroughActive(false)} 
+                />
+              )}
+            </AnimatePresence>
+
             {/* Problem & Solution */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="glass p-8 rounded-[2rem] border-white/5">
@@ -102,6 +160,31 @@ export default function CaseStudyPage() {
                 </p>
               </div>
             </div>
+
+            {/* Attendance System Spotlight */}
+            {isMacroPrintPack && (
+              <section className="space-y-8">
+                <h3 className="text-2xl font-bold flex items-center gap-3">
+                  <span className="w-1.5 h-8 bg-primary rounded-full" />
+                  QR Attendance System Logic
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  {[
+                    { icon: ShieldCheck, title: "Access Restriction", desc: "Gateman access is strictly restricted to the scanner module only." },
+                    { icon: Zap, title: "Real-time Sync", desc: "Firestore ensures attendance logs are synced across all admin dashboards instantly." },
+                    { icon: Layers, title: "ID Logic", desc: "Unique QR IDs generated for each employee, verified against central records." }
+                  ].map((item, i) => (
+                    <div key={i} className="glass p-6 rounded-2xl border-white/5 text-center">
+                      <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mx-auto mb-4 text-primary">
+                        <item.icon size={24} />
+                      </div>
+                      <h4 className="font-bold mb-2">{item.title}</h4>
+                      <p className="text-xs text-muted-foreground">{item.desc}</p>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
 
             {/* Role & Ownership */}
             <DevelopmentTimeline />
@@ -127,7 +210,7 @@ export default function CaseStudyPage() {
               </div>
             </section>
 
-            {/* Gallery */}
+            {/* Default Gallery (For Manual Browsing) */}
             <ProjectGallery 
               screenshots={project.screenshots} 
               categories={project.screenshotCategories} 
@@ -170,6 +253,29 @@ export default function CaseStudyPage() {
           </aside>
         </div>
       </div>
+      
+      {/* Walkthrough Summary (Displayed at bottom of page for MPP) */}
+      {isMacroPrintPack && (
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-24">
+          <div className="glass p-12 rounded-[3rem] text-center border-white/10">
+            <h2 className="text-3xl font-bold mb-4">Macro PrintHub – Complete ERP Ecosystem</h2>
+            <p className="text-muted-foreground mb-8 max-w-2xl mx-auto">
+              An end-to-end ERP solution designed to streamline printing and packaging operations, employee management, attendance, order processing, production tracking and business administration.
+            </p>
+            <div className="flex flex-wrap justify-center gap-4 mb-8">
+               {["Next.js", "React", "TypeScript", "Tailwind CSS", "Firebase", "Firestore", "Auth"].map(t => (
+                 <span key={t} className="text-sm font-bold text-primary">{t}</span>
+               ))}
+            </div>
+            <button 
+              onClick={() => setIsWalkthroughActive(true)}
+              className="px-8 py-4 rounded-2xl glass hover:bg-white/5 transition-all font-bold flex items-center gap-2 mx-auto"
+            >
+              Explore Screenshots Again <ArrowRight size={18} />
+            </button>
+          </div>
+        </section>
+      )}
     </main>
   );
 }
