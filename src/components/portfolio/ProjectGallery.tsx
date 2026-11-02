@@ -38,7 +38,7 @@ export function ProjectGallery({ screenshots, categories }: ProjectGalleryProps)
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [selectedImageIdx]);
+  }, [selectedImageIdx, filteredScreenshots.length]);
 
   return (
     <section className="py-12">
