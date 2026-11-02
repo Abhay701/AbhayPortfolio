@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { Screenshot } from '@/lib/projects-data';
 import { cn } from '@/lib/utils';
+import Image from 'next/image';
 
 interface ERPProductWalkthroughProps {
   screenshots: Screenshot[];
@@ -125,10 +126,12 @@ export function ERPProductWalkthrough({ screenshots, onClose }: ERPProductWalkth
               transition={{ duration: 0.4 }}
               className="absolute inset-0 flex items-center justify-center p-4 md:p-8"
             >
-              <img 
+              <Image 
                 src={currentScreenshot.path} 
                 alt={currentScreenshot.title}
-                className="max-w-full max-h-full object-contain rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.5)]"
+                fill
+                priority
+                className="object-contain rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.5)]"
               />
             </motion.div>
           </AnimatePresence>

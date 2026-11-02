@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronLeft, ChevronRight, ImageIcon, Maximize2 } from 'lucide-react';
 import { Screenshot } from '@/lib/projects-data';
 import { cn } from '@/lib/utils';
+import Image from 'next/image';
 
 interface ProjectGalleryProps {
   screenshots: Screenshot[];
@@ -74,10 +75,11 @@ export function ProjectGallery({ screenshots, categories }: ProjectGalleryProps)
               onClick={() => setSelectedImageIdx(idx)}
               className="group relative aspect-video rounded-2xl overflow-hidden glass border border-white/5 cursor-pointer"
             >
-              <img 
+              <Image 
                 src={shot.path} 
                 alt={shot.title} 
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                fill
+                className="object-cover group-hover:scale-105 transition-transform duration-500"
                 loading="lazy"
               />
               <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center p-4 text-center">
@@ -118,10 +120,12 @@ export function ProjectGallery({ screenshots, categories }: ProjectGalleryProps)
               exit={{ opacity: 0, scale: 0.9 }}
               className="relative w-full max-w-6xl aspect-video rounded-3xl overflow-hidden glass border border-white/10 shadow-2xl z-10"
             >
-              <img 
+              <Image 
                 src={filteredScreenshots[selectedImageIdx].path} 
                 alt={filteredScreenshots[selectedImageIdx].title}
-                className="w-full h-full object-contain"
+                fill
+                className="object-contain"
+                priority
               />
               
               {/* Controls */}

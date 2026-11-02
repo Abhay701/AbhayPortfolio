@@ -4,6 +4,7 @@ import { ArrowUpRight, CheckCircle2 } from 'lucide-react';
 import { profile } from '@/lib/data';
 import { projectsData } from '@/lib/projects-data';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export function Projects() {
   const featuredProjects = Object.values(projectsData);
@@ -52,70 +53,75 @@ export function Projects() {
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          {featuredProjects.map((project, idx) => (
-            <motion.div
-              key={project.slug}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: idx * 0.1 }}
-              className={`group glass rounded-[2.5rem] overflow-hidden flex flex-col h-full border border-white/5 ${
-                idx === 0 ? 'lg:col-span-12' : 'lg:col-span-6'
-              }`}
-            >
-              <div className={`grid grid-cols-1 ${idx === 0 ? 'lg:grid-cols-2' : ''} h-full`}>
-                {/* Image Section */}
-                <div className="relative h-64 lg:h-full min-h-[320px] overflow-hidden">
-                  <div className="absolute inset-0 bg-primary/10 group-hover:bg-transparent transition-all z-10" />
-                  <img 
-                    src={`https://picsum.photos/seed/${project.slug}/1200/800`} 
-                    alt={project.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000"
-                  />
-                  <div className="absolute top-6 left-6 z-20 flex flex-wrap gap-2">
-                    <span className="bg-primary text-primary-foreground px-4 py-1.5 rounded-full text-xs font-bold shadow-xl flex items-center gap-1.5">
-                      <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-                      {project.status}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Content Section */}
-                <div className="p-8 md:p-12 flex flex-col justify-between bg-gradient-to-br from-transparent to-primary/5">
-                  <div>
-                    <div className="flex items-center gap-2 mb-3">
-                      <span className="text-primary font-bold text-xs uppercase tracking-[0.2em]">
-                        {project.category}
+          {featuredProjects.map((project, idx) => {
+            const firstScreenshot = project.screenshots[0]?.path || `https://picsum.photos/seed/${project.slug}/1200/800`;
+            
+            return (
+              <motion.div
+                key={project.slug}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.1 }}
+                className={`group glass rounded-[2.5rem] overflow-hidden flex flex-col h-full border border-white/5 ${
+                  idx === 0 ? 'lg:col-span-12' : 'lg:col-span-6'
+                }`}
+              >
+                <div className={`grid grid-cols-1 ${idx === 0 ? 'lg:grid-cols-2' : ''} h-full`}>
+                  {/* Image Section */}
+                  <div className="relative h-64 lg:h-full min-h-[320px] overflow-hidden">
+                    <div className="absolute inset-0 bg-primary/10 group-hover:bg-transparent transition-all z-10" />
+                    <Image 
+                      src={firstScreenshot} 
+                      alt={project.title}
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-1000"
+                    />
+                    <div className="absolute top-6 left-6 z-20 flex flex-wrap gap-2">
+                      <span className="bg-primary text-primary-foreground px-4 py-1.5 rounded-full text-xs font-bold shadow-xl flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                        {project.status}
                       </span>
                     </div>
-                    <h3 className="text-3xl md:text-4xl font-bold mb-6 group-hover:text-primary transition-colors">
-                      {project.title}
-                    </h3>
-                    <p className="text-muted-foreground text-lg leading-relaxed mb-8">
-                      {project.description}
-                    </p>
-                    <div className="flex flex-wrap gap-2 mb-10">
-                      {project.verifiedTech.map((t) => (
-                        <span key={t} className="px-3 py-1.5 rounded-lg bg-white/5 text-xs font-medium border border-white/10 hover:border-primary/50 transition-colors">
-                          {t}
-                        </span>
-                      ))}
-                    </div>
                   </div>
 
-                  <div className="flex flex-wrap items-center gap-4">
-                    <Link 
-                      href={`/projects/${project.slug}`}
-                      className="bg-primary text-primary-foreground px-8 py-4 rounded-2xl font-bold flex items-center gap-2 hover:translate-y-[-2px] transition-all shadow-lg shadow-primary/20 active:scale-95"
-                    >
-                      Explore Project
-                      <ArrowUpRight size={18} />
-                    </Link>
+                  {/* Content Section */}
+                  <div className="p-8 md:p-12 flex flex-col justify-between bg-gradient-to-br from-transparent to-primary/5">
+                    <div>
+                      <div className="flex items-center gap-2 mb-3">
+                        <span className="text-primary font-bold text-xs uppercase tracking-[0.2em]">
+                          {project.category}
+                        </span>
+                      </div>
+                      <h3 className="text-3xl md:text-4xl font-bold mb-6 group-hover:text-primary transition-colors">
+                        {project.title}
+                      </h3>
+                      <p className="text-muted-foreground text-lg leading-relaxed mb-8">
+                        {project.description}
+                      </p>
+                      <div className="flex flex-wrap gap-2 mb-10">
+                        {project.verifiedTech.map((t) => (
+                          <span key={t} className="px-3 py-1.5 rounded-lg bg-white/5 text-xs font-medium border border-white/10 hover:border-primary/50 transition-colors">
+                            {t}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-4">
+                      <Link 
+                        href={`/projects/${project.slug}`}
+                        className="bg-primary text-primary-foreground px-8 py-4 rounded-2xl font-bold flex items-center gap-2 hover:translate-y-[-2px] transition-all shadow-lg shadow-primary/20 active:scale-95"
+                      >
+                        Explore Project
+                        <ArrowUpRight size={18} />
+                      </Link>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </motion.div>
-          ))}
+              </motion.div>
+            );
+          })}
         </div>
       </div>
     </section>
