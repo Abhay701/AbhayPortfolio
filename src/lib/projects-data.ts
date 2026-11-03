@@ -108,7 +108,24 @@ export const projectsData: Record<string, CaseStudyData> = {
       { title: "Approval Workflows", icon: ShieldCheck, description: "Admin-controlled user verification and operation approvals." }
     ],
     screenshotCategories: ["Admin", "Order Builder", "Designer", "Kappa/Paper/Screen", "Inventory", "Production Tracking", "Dispatch"],
-    screenshots: [] 
+    screenshots: [
+      { id: "kb-1", title: "Admin Overview Dashboard", category: "Admin", chapter: "ERP Overview", path: "/projects/kb-print-hub/KBPH_1.png", description: "Central administrative dashboard for business-wide metrics." },
+      { id: "kb-2", title: "Order Builder Interface", category: "Order Builder", chapter: "Orders & Jobs", path: "/projects/kb-print-hub/KBPH_2.png", description: "Technical specification and order building module." },
+      { id: "kb-3", title: "Design Management Portal", category: "Designer", chapter: "Job Approval & Design Workflow", path: "/projects/kb-print-hub/KBPH_3.png", description: "Coordination hub for designers and artwork approvals." },
+      { id: "kb-4", title: "Kappa Production Unit", category: "Kappa/Paper/Screen", chapter: "Manufacturing & Production Pipeline", path: "/projects/kb-print-hub/KBPH_4.png", description: "Specialized dashboard for the Kappa processing department." },
+      { id: "kb-5", title: "Paper Processing Dashboard", category: "Kappa/Paper/Screen", chapter: "Manufacturing & Production Pipeline", path: "/projects/kb-print-hub/KBPH_5.png", description: "Workflow management for the paper processing unit." },
+      { id: "kb-6", title: "Screen Printing Dashboard", category: "Kappa/Paper/Screen", chapter: "Manufacturing & Production Pipeline", path: "/projects/kb-print-hub/KBPH_6.png", description: "Real-time tracking for the screen printing department." },
+      { id: "kb-7", title: "Jar Management Dashboard", category: "Production Tracking", chapter: "Manufacturing & Production Pipeline", path: "/projects/kb-print-hub/KBPH_7.png", description: "Inventory and production tracking for jar components." },
+      { id: "kb-8", title: "Dispatch Control Center", category: "Dispatch", chapter: "Final Order Tracking", path: "/projects/kb-print-hub/KBPH_8.png", description: "Logistics and shipping management dashboard." },
+      { id: "kb-9", title: "Stock & Inventory Control", category: "Inventory", chapter: "Manufacturing & Production Pipeline", path: "/projects/kb-print-hub/KBPH_9.png", description: "Real-time stock level monitoring and raw material tracking." },
+      { id: "kb-10", title: "Production Pipeline Overview", category: "Production Tracking", chapter: "Manufacturing & Production Pipeline", path: "/projects/kb-print-hub/KBPH_10.png", description: "High-level overview of the entire manufacturing pipeline." },
+      { id: "kb-11", title: "Automated Job Card Generation", category: "Admin", chapter: "Orders & Jobs", path: "/projects/kb-print-hub/KBPH_11.png", description: "System-generated job cards for production floor instructions." },
+      { id: "kb-12", title: "User Role Management", category: "Admin", chapter: "Employee Management & Access Control", path: "/projects/kb-print-hub/KBPH_12.png", description: "Configuring role-based access for system users." },
+      { id: "kb-13", title: "Inventory Audit Trail", category: "Inventory", chapter: "Manufacturing & Production Pipeline", path: "/projects/kb-print-hub/KBPH_13.png", description: "Detailed logs of inventory movement and adjustments." },
+      { id: "kb-14", title: "Cross-Departmental Sync", category: "Production Tracking", chapter: "Manufacturing & Production Pipeline", path: "/projects/kb-print-hub/KBPH_14.png", description: "Visualizing communication between production units." },
+      { id: "kb-15", title: "Order Lifecycle Tracking", category: "Order Builder", chapter: "Orders & Jobs", path: "/projects/kb-print-hub/KBPH_15.png", description: "Monitoring an order's progress through all business stages." },
+      { id: "kb-16", title: "Business Intelligence Analytics", category: "Admin", chapter: "ERP Overview", path: "/projects/kb-print-hub/KBPH_16.png", description: "Analytical views of business performance and production efficiency." }
+    ]
   },
   "anand-fabrics": {
     slug: "anand-fabrics",
