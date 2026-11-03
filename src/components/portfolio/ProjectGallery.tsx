@@ -1,3 +1,4 @@
+
 'use client';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -111,7 +112,7 @@ export function ProjectGallery({ screenshots, categories }: ProjectGalleryProps)
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setSelectedImageIdx(null)}
-              className="absolute inset-0 bg-background/95 backdrop-blur-xl"
+              className="absolute inset-0 bg-background/95 backdrop-blur-xl cursor-pointer"
             />
             
             <motion.div 
@@ -129,39 +130,54 @@ export function ProjectGallery({ screenshots, categories }: ProjectGalleryProps)
               />
               
               {/* Controls */}
-              <div className="absolute top-6 right-6 flex items-center gap-2">
+              <div className="absolute top-6 right-6 flex items-center gap-2 z-50">
                 <button 
-                  onClick={() => setSelectedImageIdx(null)}
-                  className="w-10 h-10 rounded-full glass flex items-center justify-center text-white hover:text-primary transition-colors"
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedImageIdx(null);
+                  }}
+                  className="w-10 h-10 rounded-full glass flex items-center justify-center text-white hover:text-primary transition-all hover:scale-110 active:scale-95 cursor-pointer"
+                  aria-label="Close lightbox"
                 >
                   <X size={20} />
                 </button>
               </div>
 
-              <div className="absolute inset-y-0 left-4 flex items-center">
+              <div className="absolute inset-y-0 left-4 flex items-center z-50">
                 <button 
-                  onClick={(e) => { e.stopPropagation(); handlePrev(); }}
-                  className="w-12 h-12 rounded-full glass flex items-center justify-center text-white hover:text-primary transition-colors"
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handlePrev();
+                  }}
+                  className="w-12 h-12 rounded-full glass flex items-center justify-center text-white hover:text-primary transition-all hover:scale-110 active:scale-95 cursor-pointer"
+                  aria-label="Previous image"
                 >
                   <ChevronLeft size={24} />
                 </button>
               </div>
 
-              <div className="absolute inset-y-0 right-4 flex items-center">
+              <div className="absolute inset-y-0 right-4 flex items-center z-50">
                 <button 
-                  onClick={(e) => { e.stopPropagation(); handleNext(); }}
-                  className="w-12 h-12 rounded-full glass flex items-center justify-center text-white hover:text-primary transition-colors"
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleNext();
+                  }}
+                  className="w-12 h-12 rounded-full glass flex items-center justify-center text-white hover:text-primary transition-all hover:scale-110 active:scale-95 cursor-pointer"
+                  aria-label="Next image"
                 >
                   <ChevronRight size={24} />
                 </button>
               </div>
 
               {/* Caption */}
-              <div className="absolute bottom-0 inset-x-0 p-8 bg-gradient-to-t from-black/80 to-transparent">
+              <div className="absolute bottom-0 inset-x-0 p-8 bg-gradient-to-t from-black/80 to-transparent z-20 pointer-events-none">
                 <p className="text-primary font-bold text-xs uppercase tracking-widest mb-1">
                   {filteredScreenshots[selectedImageIdx].category}
                 </p>
-                <h4 className="text-xl font-bold">{filteredScreenshots[selectedImageIdx].title}</h4>
+                <h4 className="text-xl font-bold text-white">{filteredScreenshots[selectedImageIdx].title}</h4>
                 {filteredScreenshots[selectedImageIdx].description && (
                   <p className="text-muted-foreground text-sm mt-2 max-w-2xl">{filteredScreenshots[selectedImageIdx].description}</p>
                 )}
