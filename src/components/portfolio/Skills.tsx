@@ -10,7 +10,7 @@ export function Skills() {
           <motion.h2 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "-100px" }}
             className="text-2xl md:text-4xl font-bold mb-4"
           >
             Technical Skills
@@ -24,9 +24,9 @@ export function Skills() {
               key={category.category}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: true, margin: "-100px" }}
               transition={{ delay: idx * 0.1 }}
-              className="glass p-5 md:p-6 rounded-2xl md:rounded-3xl hover:translate-y-[-5px] transition-all"
+              className="glass p-5 md:p-6 rounded-2xl md:rounded-3xl hover:translate-y-[-5px] transition-all transform-gpu"
             >
               <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl bg-primary/10 flex items-center justify-center mb-5 md:mb-6 shrink-0">
                 <category.icon className="text-primary" size={20} />

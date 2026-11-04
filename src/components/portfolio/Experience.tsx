@@ -11,7 +11,7 @@ export function Experience() {
           <motion.h2 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "-100px" }}
             className="text-2xl md:text-4xl font-bold mb-4"
           >
             Professional Experience
@@ -25,7 +25,7 @@ export function Experience() {
               key={idx}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: true, margin: "-100px" }}
               className="relative flex items-start justify-between md:justify-normal md:odd:flex-row-reverse group"
             >
               {/* Dot */}
@@ -34,7 +34,7 @@ export function Experience() {
               </div>
               
               {/* Content Card */}
-              <div className="w-[calc(100%-3rem)] md:w-[calc(50%-2.5rem)] glass p-5 md:p-8 rounded-2xl md:rounded-3xl transition-all group-hover:border-primary/50 ml-6 md:ml-0">
+              <div className="w-[calc(100%-3rem)] md:w-[calc(50%-2.5rem)] glass p-5 md:p-8 rounded-2xl md:rounded-3xl transition-all group-hover:border-primary/50 ml-6 md:ml-0 transform-gpu">
                 <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2 mb-4">
                   <div>
                     <h3 className="text-base md:text-xl font-bold leading-tight">{item.role}</h3>

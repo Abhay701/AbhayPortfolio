@@ -31,7 +31,7 @@ export function About() {
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-50px" }}
-            className="space-y-6 will-change-transform"
+            className="space-y-6"
           >
             <p className="text-base md:text-lg text-muted-foreground leading-relaxed">
               {profile.about}
@@ -51,7 +51,7 @@ export function About() {
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-50px" }}
-            className="relative w-full will-change-transform"
+            className="relative w-full"
           >
             <div className="glass p-6 md:p-8 rounded-2xl md:rounded-3xl relative overflow-hidden transform-gpu">
               <h3 className="text-xl md:text-2xl font-bold mb-6">Personal Highlights</h3>

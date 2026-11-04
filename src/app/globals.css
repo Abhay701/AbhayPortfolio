@@ -118,9 +118,9 @@
     @apply bg-background text-foreground transition-colors duration-300;
   }
 
+  /* Stabilized section rendering */
   section {
-    content-visibility: auto;
-    contain-intrinsic-size: 1px 1000px;
+    contain: layout style;
   }
 }
 
@@ -129,7 +129,6 @@
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--glass-border);
-  transform: translateZ(0);
 }
 
 .text-gradient {
@@ -138,7 +137,6 @@
 
 .hero-gradient {
   background: radial-gradient(circle at 50% 50%, hsla(var(--primary), 0.15) 0%, hsla(var(--background), 0) 50%);
-  transform: translateZ(0);
 }
 
 .custom-scrollbar::-webkit-scrollbar {

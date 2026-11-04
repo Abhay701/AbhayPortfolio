@@ -18,7 +18,10 @@ export function Navbar({ onResumeClick }: NavbarProps) {
     const handleScroll = () => {
       if (!ticking) {
         window.requestAnimationFrame(() => {
-          setScrolled(window.scrollY > 20);
+          const isScrolled = window.scrollY > 20;
+          if (isScrolled !== scrolled) {
+            setScrolled(isScrolled);
+          }
           ticking = false;
         });
         ticking = true;
@@ -26,7 +29,7 @@ export function Navbar({ onResumeClick }: NavbarProps) {
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [scrolled]);
 
   const navLinks = [
     { name: 'Home', href: '#home' },
@@ -48,7 +51,7 @@ export function Navbar({ onResumeClick }: NavbarProps) {
 
   return (
     <nav className={cn(
-      "fixed top-0 w-full z-[100] transition-all duration-300 transform-gpu",
+      "fixed top-0 w-full z-[100] transition-all duration-300",
       scrolled || isOpen ? "glass py-3" : "bg-transparent py-5"
     )}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
