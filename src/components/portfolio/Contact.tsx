@@ -201,10 +201,11 @@ export function Contact() {
           </motion.div>
 
           <motion.div
+            id="contact-form"
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="glass p-6 md:p-8 lg:p-6 rounded-2xl md:rounded-[2.5rem] w-full"
+            className="glass p-6 md:p-8 lg:p-6 rounded-2xl md:rounded-[2.5rem] w-full lg:mt-0 scroll-mt-24 md:scroll-mt-0"
           >
             <form onSubmit={handleSubmit} className="space-y-5 md:space-y-6 lg:space-y-4">
               <div className="hidden">

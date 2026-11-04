@@ -117,7 +117,7 @@ export function Navbar({ onResumeClick }: NavbarProps) {
               {navLinks.map((link) => (
                 <a
                   key={link.name}
-                  href={link.href}
+                  href={link.name === 'Contact' ? '#contact-form' : link.href}
                   onClick={handleLinkClick}
                   className="block px-4 py-5 text-lg font-medium text-muted-foreground hover:text-primary border-b border-white/5 active:bg-white/5 transition-colors"
                 >

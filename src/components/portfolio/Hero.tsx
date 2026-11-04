@@ -57,7 +57,12 @@ export function Hero({ onResumeClick }: HeroProps) {
                 <ArrowRight size={20} />
               </a>
               <div className="flex w-full sm:w-auto gap-4">
-                <a href="#contact" className="flex-1 sm:flex-none glass text-foreground px-6 py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-white/5 transition-all active:scale-95 text-sm md:text-base">
+                {/* Desktop Link */}
+                <a href="#contact" className="hidden md:flex flex-1 sm:flex-none glass text-foreground px-6 py-4 rounded-xl font-bold items-center justify-center gap-2 hover:bg-white/5 transition-all active:scale-95 text-sm md:text-base">
+                  Contact
+                </a>
+                {/* Mobile Link */}
+                <a href="#contact-form" className="flex md:hidden flex-1 sm:flex-none glass text-foreground px-6 py-4 rounded-xl font-bold items-center justify-center gap-2 hover:bg-white/5 transition-all active:scale-95 text-sm md:text-base">
                   Contact
                 </a>
                 <button 

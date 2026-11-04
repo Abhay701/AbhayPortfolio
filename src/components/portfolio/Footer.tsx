@@ -1,4 +1,3 @@
-
 'use client';
 import { Mail, Github, Linkedin, ArrowUp } from 'lucide-react';
 import { profile } from '@/lib/data';
@@ -46,7 +45,10 @@ export function Footer() {
           <div className="flex items-center gap-6">
             <a href="#about" className="hover:text-primary transition-colors">About</a>
             <a href="#projects" className="hover:text-primary transition-colors">Projects</a>
-            <a href="#contact" className="hover:text-primary transition-colors">Contact</a>
+            {/* Desktop link */}
+            <a href="#contact" className="hidden md:inline hover:text-primary transition-colors">Contact</a>
+            {/* Mobile link */}
+            <a href="#contact-form" className="inline md:hidden hover:text-primary transition-colors">Contact</a>
           </div>
         </div>
       </div>
