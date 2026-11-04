@@ -275,6 +275,20 @@ export default function CaseStudyPage() {
               </div>
             </section>
 
+            {/* Data Privacy & Confidentiality Notice */}
+            <div className="glass p-6 md:p-8 rounded-[2rem] border-white/5 bg-white/5">
+              <h4 className="text-lg font-bold mb-4 flex items-center gap-2">
+                <ShieldCheck size={20} className="text-primary" />
+                Data Privacy & Confidentiality Notice
+              </h4>
+              <p className="text-sm text-muted-foreground leading-relaxed mb-4">
+                The screenshots displayed in this portfolio represent the actual user interface, design, and workflows of the applications I developed. However, all records, names, figures, and business-related information shown in these screenshots are illustrative/demo data rather than actual company data.
+              </p>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                This information has been replaced or anonymized to protect client confidentiality, maintain data privacy, and prevent the exposure of sensitive business information. The original application functionality and UI design remain representative of the actual systems.
+              </p>
+            </div>
+
             {/* Default Gallery (For Manual Browsing) */}
             <ProjectGallery 
               screenshots={project.screenshots} 
