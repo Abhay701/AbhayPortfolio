@@ -30,7 +30,22 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} dark scroll-smooth`}>
+    <html lang="en" className={`${inter.variable} scroll-smooth`} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: `
+          (function() {
+            try {
+              const theme = localStorage.getItem('portfolio-theme') || 'midnight';
+              document.documentElement.setAttribute('data-theme', theme);
+              if (theme === 'light') {
+                document.documentElement.classList.remove('dark');
+              } else {
+                document.documentElement.classList.add('dark');
+              }
+            } catch (e) {}
+          })()
+        ` }} />
+      </head>
       <body className="font-body antialiased bg-background text-foreground overflow-x-clip selection:bg-primary/30">
         <Providers>{children}</Providers>
         <Toaster />

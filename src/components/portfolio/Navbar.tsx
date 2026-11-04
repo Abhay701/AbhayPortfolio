@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, FileText } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { ThemeSwitcher } from './ThemeSwitcher';
 
 interface NavbarProps {
   onResumeClick?: () => void;
@@ -66,19 +67,24 @@ export function Navbar({ onResumeClick }: NavbarProps) {
                 {link.name}
               </motion.a>
             ))}
-            <motion.button
-              onClick={handleResumeClick}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="bg-primary text-primary-foreground px-5 py-2 rounded-full text-sm font-bold flex items-center gap-2 hover:bg-primary/90 transition-all active:scale-95"
-            >
-              <FileText size={16} />
-              Resume
-            </motion.button>
+            
+            <div className="flex items-center gap-4 border-l border-white/10 pl-8">
+              <ThemeSwitcher />
+              <motion.button
+                onClick={handleResumeClick}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="bg-primary text-primary-foreground px-5 py-2 rounded-full text-sm font-bold flex items-center gap-2 hover:bg-primary/90 transition-all active:scale-95"
+              >
+                <FileText size={16} />
+                Resume
+              </motion.button>
+            </div>
           </div>
 
           {/* Mobile Toggle */}
-          <div className="md:hidden">
+          <div className="md:hidden flex items-center gap-4">
+            <ThemeSwitcher />
             <button onClick={() => setIsOpen(!isOpen)} className="text-foreground p-2" aria-label="Toggle menu">
               {isOpen ? <X size={28} /> : <Menu size={28} />}
             </button>
