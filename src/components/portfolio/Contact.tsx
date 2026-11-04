@@ -71,7 +71,9 @@ export function Contact() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCountry, setSelectedCountry] = useState(COUNTRIES[0]);
+  const [opensUp, setOpensUp] = useState(true);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   const [formData, setFormData] = useState({
@@ -101,10 +103,21 @@ export function Contact() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Focus search when dropdown opens
+  // Focus search when dropdown opens & calculate positioning
   useEffect(() => {
-    if (isDropdownOpen && searchInputRef.current) {
-      setTimeout(() => searchInputRef.current?.focus(), 100);
+    if (isDropdownOpen) {
+      if (searchInputRef.current) {
+        setTimeout(() => searchInputRef.current?.focus(), 100);
+      }
+      
+      // Intelligent Positioning Logic
+      if (triggerRef.current) {
+        const rect = triggerRef.current.getBoundingClientRect();
+        const spaceBelow = window.innerHeight - rect.bottom;
+        const spaceAbove = rect.top;
+        // If space below is limited (less than 400px) and there's more space above, open upwards.
+        setOpensUp(spaceBelow < 400 && spaceAbove > spaceBelow);
+      }
     }
   }, [isDropdownOpen]);
 
@@ -270,7 +283,7 @@ export function Contact() {
   };
 
   return (
-    <section id="contact" className="py-16 md:py-24 bg-card/30 overflow-hidden">
+    <section id="contact" className="py-16 md:py-24 bg-card/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
           <motion.div
@@ -360,6 +373,7 @@ export function Contact() {
                   {/* Premium Country Selector */}
                   <div className="relative" ref={dropdownRef}>
                     <button
+                      ref={triggerRef}
                       type="button"
                       onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                       className={cn(
@@ -375,13 +389,16 @@ export function Contact() {
                     <AnimatePresence>
                       {isDropdownOpen && (
                         <motion.div
-                          initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                          initial={{ opacity: 0, y: opensUp ? 10 : -10, scale: 0.95 }}
                           animate={{ opacity: 1, y: 0, scale: 1 }}
-                          exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                          className="absolute bottom-full left-0 mb-2 w-[280px] sm:w-[320px] bg-[#0d1117] border border-white/10 rounded-2xl shadow-2xl z-[150] overflow-hidden"
+                          exit={{ opacity: 0, y: opensUp ? 10 : -10, scale: 0.95 }}
+                          className={cn(
+                            "absolute left-0 w-[280px] sm:w-[320px] bg-[#0d1117] border border-white/10 rounded-2xl shadow-2xl z-[150] overflow-hidden",
+                            opensUp ? "bottom-full mb-2" : "top-full mt-2"
+                          )}
                         >
-                          {/* Search Header */}
-                          <div className="p-3 border-b border-white/5 bg-white/5">
+                          {/* Fixed Search Header */}
+                          <div className="p-3 border-b border-white/5 bg-white/5 shrink-0">
                             <div className="relative">
                               <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
                               <input 
@@ -399,8 +416,11 @@ export function Contact() {
                             </div>
                           </div>
 
-                          {/* Country List */}
-                          <div className="max-h-[300px] overflow-y-auto custom-scrollbar p-1">
+                          {/* Independently Scrollable Country List */}
+                          <div 
+                            className="max-h-[min(360px,52dvh)] overflow-y-auto custom-scrollbar p-1 overscroll-contain"
+                            style={{ WebkitOverflowScrolling: 'touch' }}
+                          >
                             {filteredCountries.length > 0 ? (
                               filteredCountries.map((country) => (
                                 <button
