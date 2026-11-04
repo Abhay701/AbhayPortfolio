@@ -85,12 +85,6 @@ export function Projects() {
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       className="object-contain transition-all duration-700"
                     />
-                    <div className="absolute top-4 left-4 md:top-6 md:left-6 z-20 flex flex-wrap gap-2">
-                      <span className="bg-primary text-primary-foreground px-3 py-1 md:px-4 md:py-1.5 rounded-full text-[10px] md:text-xs font-bold shadow-xl flex items-center gap-1.5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-                        {project.status}
-                      </span>
-                    </div>
                   </div>
 
                   {/* Content Section */}
@@ -99,6 +93,14 @@ export function Projects() {
                     isFeatured ? "p-6 md:p-12" : "p-5 md:p-8"
                   )}>
                     <div>
+                      {/* Status Badge positioned above Category */}
+                      <div className="flex mb-4">
+                        <span className="bg-primary text-primary-foreground px-3 py-1 md:px-4 md:py-1.5 rounded-full text-[10px] md:text-xs font-bold shadow-lg shadow-primary/20 flex items-center gap-1.5">
+                          <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                          {project.status}
+                        </span>
+                      </div>
+
                       <div className="flex items-center gap-2 mb-2 md:mb-3">
                         <span className="text-primary font-bold text-[10px] md:text-xs uppercase tracking-[0.2em]">
                           {project.category}
