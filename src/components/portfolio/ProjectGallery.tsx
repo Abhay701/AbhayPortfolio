@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight, ImageIcon, Maximize2 } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ImageIcon, Maximize2, X } from 'lucide-react';
 import { Screenshot } from '@/lib/projects-data';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
@@ -15,7 +15,6 @@ interface ProjectGalleryProps {
 export function ProjectGallery({ screenshots, categories }: ProjectGalleryProps) {
   const [selectedImageIdx, setSelectedImageIdx] = useState<number | null>(null);
   const [activeCategory, setActiveCategory] = useState<string>("All");
-
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -109,13 +108,11 @@ export function ProjectGallery({ screenshots, categories }: ProjectGalleryProps)
         </div>
       )}
 
-
-      {/* Lightbox - Rendered through Portal to avoid stacking context issues */}
+      {/* Lightbox - Rendered through Portal */}
       {isMounted && createPortal(
         <AnimatePresence>
           {selectedImageIdx !== null && filteredScreenshots[selectedImageIdx] && (
             <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 md:p-8">
-
               {/* Background Overlay */}
               <motion.div
                 initial={{ opacity: 0 }}
@@ -125,7 +122,7 @@ export function ProjectGallery({ screenshots, categories }: ProjectGalleryProps)
                 className="absolute inset-0 z-0 bg-background/95 backdrop-blur-xl cursor-pointer"
               />
 
-              {/* Main Lightbox */}
+              {/* Main Lightbox Container */}
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -135,6 +132,19 @@ export function ProjectGallery({ screenshots, categories }: ProjectGalleryProps)
                 aria-modal="true"
                 aria-label="Screenshot preview"
               >
+                {/* Close Button */}
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedImageIdx(null);
+                  }}
+                  className="absolute top-4 right-4 z-[110] w-10 h-10 rounded-full bg-black/60 border border-white/10 flex items-center justify-center text-white hover:bg-black/80 hover:text-primary transition-all cursor-pointer pointer-events-auto shadow-lg"
+                  aria-label="Close image preview"
+                >
+                  <X size={24} />
+                </button>
+
                 {/* Screenshot */}
                 <Image
                   src={filteredScreenshots[selectedImageIdx].path}
@@ -144,30 +154,29 @@ export function ProjectGallery({ screenshots, categories }: ProjectGalleryProps)
                   priority
                 />
 
-                {/* Previous Button */}
-                <div className="absolute inset-y-0 left-4 flex items-center z-[100]">
+                {/* Navigation Buttons */}
+                <div className="absolute inset-y-0 left-4 flex items-center z-20">
                   <button
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation();
                       handlePrev();
                     }}
-                    className="w-12 h-12 rounded-full glass flex items-center justify-center text-white hover:text-primary transition-all hover:scale-110 active:scale-95 cursor-pointer pointer-events-auto"
+                    className="w-12 h-12 rounded-full glass flex items-center justify-center text-white hover:text-primary transition-all hover:scale-110 active:scale-95 cursor-pointer"
                     aria-label="Previous image"
                   >
                     <ChevronLeft size={24} />
                   </button>
                 </div>
 
-                {/* Next Button */}
-                <div className="absolute inset-y-0 right-4 flex items-center z-[100]">
+                <div className="absolute inset-y-0 right-4 flex items-center z-20">
                   <button
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation();
                       handleNext();
                     }}
-                    className="w-12 h-12 rounded-full glass flex items-center justify-center text-white hover:text-primary transition-all hover:scale-110 active:scale-95 cursor-pointer pointer-events-auto"
+                    className="w-12 h-12 rounded-full glass flex items-center justify-center text-white hover:text-primary transition-all hover:scale-110 active:scale-95 cursor-pointer"
                     aria-label="Next image"
                   >
                     <ChevronRight size={24} />
@@ -179,11 +188,9 @@ export function ProjectGallery({ screenshots, categories }: ProjectGalleryProps)
                   <p className="text-primary font-bold text-xs uppercase tracking-widest mb-1">
                     {filteredScreenshots[selectedImageIdx].category}
                   </p>
-
                   <h4 className="text-xl font-bold text-white">
                     {filteredScreenshots[selectedImageIdx].title}
                   </h4>
-
                   {filteredScreenshots[selectedImageIdx].description && (
                     <p className="text-muted-foreground text-sm mt-2 max-w-2xl">
                       {filteredScreenshots[selectedImageIdx].description}
@@ -196,7 +203,6 @@ export function ProjectGallery({ screenshots, categories }: ProjectGalleryProps)
         </AnimatePresence>,
         document.body
       )}
-
     </section>
   );
 }

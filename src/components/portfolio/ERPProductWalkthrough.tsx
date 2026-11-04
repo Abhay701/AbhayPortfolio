@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Play, 
@@ -11,7 +12,8 @@ import {
   QrCode, 
   Smartphone, 
   CheckCircle2, 
-  Shield
+  Shield,
+  X
 } from 'lucide-react';
 import { Screenshot } from '@/lib/projects-data';
 import { cn } from '@/lib/utils';
@@ -28,7 +30,12 @@ export function ERPProductWalkthrough({ screenshots, onClose }: ERPProductWalkth
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isFullScreen, setIsFullScreen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const progressTimer = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const handleNext = useCallback(() => {
     setCurrentIndex((prev) => (prev + 1) % screenshots.length);
@@ -60,17 +67,28 @@ export function ERPProductWalkthrough({ screenshots, onClose }: ERPProductWalkth
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handleNext, handlePrev, onClose, isPlaying]);
 
+  if (!isMounted) return null;
+
   const currentScreenshot = screenshots[currentIndex];
-  // More generic check for special UI context
   const isQRChapter = currentScreenshot?.chapter?.toLowerCase().includes('qr-based');
 
   if (!currentScreenshot) return null;
 
-  return (
+  return createPortal(
     <div className={cn(
-      "fixed inset-0 z-[100] bg-background/95 backdrop-blur-xl flex flex-col transition-all duration-500",
+      "fixed inset-0 z-[9999] bg-background/95 backdrop-blur-xl flex flex-col transition-all duration-500",
       isFullScreen ? "p-0" : "p-4 md:p-8"
     )}>
+      {/* Close Button */}
+      <button
+        type="button"
+        onClick={onClose}
+        className="absolute top-6 right-6 z-[110] w-10 h-10 rounded-full bg-black/60 border border-white/10 flex items-center justify-center text-white hover:bg-black/80 hover:text-primary transition-all cursor-pointer shadow-lg"
+        aria-label="Close walkthrough"
+      >
+        <X size={24} />
+      </button>
+
       {/* Header Controls */}
       <div className="relative z-20 flex items-center justify-between mb-6 px-4">
         <div className="flex flex-col">
@@ -83,7 +101,7 @@ export function ERPProductWalkthrough({ screenshots, onClose }: ERPProductWalkth
           </h2>
         </div>
 
-        <div className="flex items-center gap-2 md:gap-4">
+        <div className="flex items-center gap-2 md:gap-4 mr-12">
           <div className="flex items-center gap-2 bg-white/5 p-1 rounded-xl border border-white/10">
             <button 
               onClick={() => setIsPlaying(!isPlaying)}
@@ -242,6 +260,7 @@ export function ERPProductWalkthrough({ screenshots, onClose }: ERPProductWalkth
           />
         ))}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
