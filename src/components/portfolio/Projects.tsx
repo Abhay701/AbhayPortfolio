@@ -74,7 +74,7 @@ export function Projects() {
                 <div className={cn("grid grid-cols-1 h-full", isFeatured && 'lg:grid-cols-2')}>
                   {/* Image Section */}
                   <div className={cn(
-                    "relative overflow-hidden",
+                    "relative overflow-hidden bg-black/40",
                     isFeatured ? "h-64 sm:h-80 lg:h-full" : "h-48 sm:h-56",
                     isHalfWidth && "md:h-[220px]"
                   )}>
@@ -84,7 +84,7 @@ export function Projects() {
                       alt={project.title}
                       fill
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                      className="object-cover group-hover:scale-105 transition-transform duration-700"
+                      className="object-contain transition-all duration-700"
                     />
                     <div className="absolute top-4 left-4 md:top-6 md:left-6 z-20 flex flex-wrap gap-2">
                       <span className="bg-primary text-primary-foreground px-3 py-1 md:px-4 md:py-1.5 rounded-full text-[10px] md:text-xs font-bold shadow-xl flex items-center gap-1.5">
