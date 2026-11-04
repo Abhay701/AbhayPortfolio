@@ -13,6 +13,8 @@ service cloud.firestore {
         request.resource.data.phone is string &&
         request.resource.data.phone.size() > 0 &&
         request.resource.data.countryCode is string &&
+        request.resource.data.countryName is string &&
+        request.resource.data.countryName.size() > 0 &&
         request.resource.data.subject is string &&
         request.resource.data.subject.size() > 0 &&
         
@@ -28,7 +30,7 @@ service cloud.firestore {
         request.resource.data.createdAt == request.time &&
         
         // 4. Ensure no extra fields are injected
-        request.resource.data.keys().hasOnly(['name', 'email', 'phone', 'countryCode', 'subject', 'message', 'createdAt', 'status']);
+        request.resource.data.keys().hasOnly(['name', 'email', 'phone', 'countryCode', 'countryName', 'subject', 'message', 'createdAt', 'status']);
       
       // 5. Restrict all other access (Read, Update, Delete)
       allow read, update, delete: if false;
