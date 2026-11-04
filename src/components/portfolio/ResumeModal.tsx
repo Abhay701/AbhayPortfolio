@@ -207,7 +207,7 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-0 xs:p-2 md:p-6 overflow-hidden">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-3 xs:p-4 md:p-6 overflow-hidden">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -220,16 +220,16 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
             initial={{ opacity: 0, scale: 0.95, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 10 }}
-            className="relative w-full max-w-5xl h-full max-h-screen xs:max-h-[96vh] flex flex-col glass rounded-none xs:rounded-3xl overflow-hidden border-0 xs:border border-white/10 shadow-2xl bg-card/60"
+            className="relative w-full max-w-5xl h-full max-h-[90vh] md:max-h-[96vh] flex flex-col glass rounded-2xl md:rounded-[2.5rem] overflow-hidden border border-white/10 shadow-2xl bg-card/60"
           >
             {/* Compact Header with Zoom Controls */}
-            <div className="relative z-20 flex items-center justify-between px-3 md:px-4 py-2 md:py-3 border-b border-white/5 bg-white/5 gap-2">
+            <div className="relative z-20 flex items-center justify-between px-3 md:px-4 py-2 md:py-4 border-b border-white/5 bg-white/5 gap-2">
               <div className="flex items-center gap-2 md:gap-3 min-w-0">
-                <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center shrink-0">
+                <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-primary/20 flex items-center justify-center shrink-0">
                   <FileText className="text-primary" size={16} />
                 </div>
                 <div className="truncate">
-                  <h3 className="text-[10px] md:text-xs font-bold leading-none mb-0.5">Resume</h3>
+                  <h3 className="text-[10px] md:text-xs font-bold leading-none mb-1">Resume Preview</h3>
                   <p className="text-[8px] md:text-[9px] text-muted-foreground uppercase tracking-widest leading-none truncate hidden xs:block">Abhay Kumar</p>
                 </div>
               </div>
@@ -240,26 +240,26 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                     <button 
                       onClick={handleZoomOut}
                       disabled={scale <= MIN_SCALE}
-                      className="w-7 h-7 rounded-md md:rounded-lg flex items-center justify-center hover:bg-white/10 text-muted-foreground hover:text-foreground disabled:opacity-30 transition-colors"
+                      className="w-7 h-7 md:w-10 md:h-10 rounded-md md:rounded-lg flex items-center justify-center hover:bg-white/10 text-muted-foreground hover:text-foreground disabled:opacity-30 transition-colors"
                     >
                       <Minus size={14} />
                     </button>
                     <div className="px-1 min-w-[30px] md:min-w-[50px] text-center">
-                      <span className="text-[8px] md:text-[9px] font-bold text-primary">
+                      <span className="text-[8px] md:text-[10px] font-bold text-primary">
                         {Math.round(scale * 100)}%
                       </span>
                     </div>
                     <button 
                       onClick={handleZoomIn}
                       disabled={scale >= MAX_SCALE}
-                      className="w-7 h-7 rounded-md md:rounded-lg flex items-center justify-center hover:bg-white/10 text-muted-foreground hover:text-foreground disabled:opacity-30 transition-colors"
+                      className="w-7 h-7 md:w-10 md:h-10 rounded-md md:rounded-lg flex items-center justify-center hover:bg-white/10 text-muted-foreground hover:text-foreground disabled:opacity-30 transition-colors"
                     >
                       <Plus size={14} />
                     </button>
-                    <div className="w-[1px] h-3 bg-white/10 mx-0.5" />
+                    <div className="w-[1px] h-3 bg-white/10 mx-0.5 md:mx-1" />
                     <button 
                       onClick={resetZoom}
-                      className="w-7 h-7 rounded-md md:rounded-lg flex items-center justify-center hover:bg-white/10 text-muted-foreground hover:text-primary transition-colors"
+                      className="w-7 h-7 md:w-10 md:h-10 rounded-md md:rounded-lg flex items-center justify-center hover:bg-white/10 text-muted-foreground hover:text-primary transition-colors"
                     >
                       <RotateCcw size={14} />
                     </button>
@@ -268,18 +268,18 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
 
                 <button
                   onClick={onClose}
-                  className="w-8 h-8 rounded-full flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-white/10 transition-all active:scale-95"
+                  className="w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-white/10 transition-all active:scale-95"
                 >
                   <X size={20} />
                 </button>
               </div>
             </div>
 
-            {/* Document Viewer Viewport */}
+            {/* Document Viewer Viewport - Now Scrollable */}
             <div 
               ref={viewportRef}
               className={cn(
-                "relative flex-1 bg-black/20 flex items-start justify-center cursor-default select-none overflow-hidden"
+                "relative flex-1 bg-black/20 flex items-start justify-center cursor-default select-none overflow-y-auto custom-scrollbar"
               )}
               onMouseDown={handleMouseDown}
               onMouseMove={handleMouseMove}
@@ -341,7 +341,7 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
 
             {/* Floating Action Menu (Bottom-Right) */}
             {!loading && !error && (
-              <div className="absolute bottom-4 right-4 md:bottom-6 md:right-6 z-40 flex flex-col items-end gap-2" ref={dropdownRef}>
+              <div className="absolute bottom-4 right-4 md:bottom-8 md:right-8 z-40 flex flex-col items-end gap-2" ref={dropdownRef}>
                 <AnimatePresence>
                   {downloadOpen && (
                     <motion.div
@@ -376,14 +376,14 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                   onClick={() => setDownloadOpen(!downloadOpen)}
                   disabled={isDownloading}
                   className={cn(
-                    "w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl glass flex items-center justify-center text-foreground border border-white/10 hover:border-primary/50 transition-all shadow-xl active:scale-95",
+                    "w-10 h-10 md:w-14 md:h-14 rounded-xl md:rounded-2xl glass flex items-center justify-center text-foreground border border-white/10 hover:border-primary/50 transition-all shadow-xl active:scale-95",
                     isDownloading && "opacity-70 cursor-not-allowed"
                   )}
                 >
                   {isDownloading ? (
-                    <Loader2 size={18} className="animate-spin text-primary" />
+                    <Loader2 size={20} className="animate-spin text-primary" />
                   ) : (
-                    <Download size={18} className={cn("transition-transform", downloadOpen && "scale-90")} />
+                    <Download size={20} className={cn("transition-transform", downloadOpen && "scale-90")} />
                   )}
                 </button>
               </div>
