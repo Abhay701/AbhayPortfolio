@@ -204,9 +204,9 @@ export function Contact() {
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="glass p-6 md:p-8 lg:p-10 rounded-2xl md:rounded-[2.5rem] w-full"
+            className="glass p-6 md:p-8 lg:p-6 rounded-2xl md:rounded-[2.5rem] w-full"
           >
-            <form onSubmit={handleSubmit} className="space-y-5 md:space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-5 md:space-y-6 lg:space-y-4">
               <div className="hidden">
                 <input 
                   type="text" 
@@ -218,8 +218,8 @@ export function Contact() {
                 />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
-                <div className="space-y-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 lg:gap-4">
+                <div className="space-y-2 lg:space-y-1">
                   <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground ml-1">Name *</label>
                   <input 
                     type="text" 
@@ -227,10 +227,10 @@ export function Contact() {
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-primary transition-colors text-sm md:text-base"
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 lg:py-2 focus:outline-none focus:border-primary transition-colors text-sm md:text-base"
                   />
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-2 lg:space-y-1">
                   <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground ml-1">Email *</label>
                   <input 
                     type="email" 
@@ -238,19 +238,19 @@ export function Contact() {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-primary transition-colors text-sm md:text-base"
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 lg:py-2 focus:outline-none focus:border-primary transition-colors text-sm md:text-base"
                   />
                 </div>
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-2 lg:space-y-1">
                 <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground ml-1">Phone Number *</label>
                 <div className="flex flex-col sm:flex-row gap-2">
                   <select
                     name="countryCode"
                     value={formData.countryCode}
                     onChange={handleChange}
-                    className="w-full sm:w-32 bg-white/5 border border-white/10 rounded-xl px-2 py-3 focus:outline-none focus:border-primary transition-colors text-sm md:text-base"
+                    className="w-full sm:w-32 bg-white/5 border border-white/10 rounded-xl px-2 py-3 lg:py-2 focus:outline-none focus:border-primary transition-colors text-sm md:text-base"
                   >
                     {COUNTRY_CODES.map(c => (
                       <option key={c.code} value={c.code} className="bg-[#0d1117] text-white">{c.code} ({c.name})</option>
@@ -262,12 +262,12 @@ export function Contact() {
                     value={formData.phone}
                     onChange={handleChange}
                     required
-                    className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-primary transition-colors text-sm md:text-base"
+                    className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 lg:py-2 focus:outline-none focus:border-primary transition-colors text-sm md:text-base"
                   />
                 </div>
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-2 lg:space-y-1">
                 <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground ml-1">Subject *</label>
                 <input 
                   type="text" 
@@ -275,25 +275,25 @@ export function Contact() {
                   value={formData.subject}
                   onChange={handleChange}
                   required
-                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-primary transition-colors text-sm md:text-base"
+                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 lg:py-2 focus:outline-none focus:border-primary transition-colors text-sm md:text-base"
                 />
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-2 lg:space-y-1">
                 <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground ml-1">Message (Optional)</label>
                 <textarea 
                   name="message"
                   value={formData.message}
                   onChange={handleChange}
                   rows={4}
-                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-primary transition-colors resize-none text-sm md:text-base"
+                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 lg:py-2 lg:h-24 lg:min-h-[80px] focus:outline-none focus:border-primary transition-colors resize-none text-sm md:text-base"
                 />
               </div>
 
               <button 
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full bg-primary text-primary-foreground py-3.5 md:py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:translate-y-[-2px] transition-all shadow-lg shadow-primary/20 disabled:opacity-70 disabled:cursor-not-allowed text-sm md:text-base active:scale-95"
+                className="w-full bg-primary text-primary-foreground py-3.5 md:py-4 lg:py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 hover:translate-y-[-2px] transition-all shadow-lg shadow-primary/20 disabled:opacity-70 disabled:cursor-not-allowed text-sm md:text-base active:scale-95"
               >
                 {isSubmitting ? (
                   <>

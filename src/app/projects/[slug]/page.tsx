@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -25,6 +25,7 @@ import { ProjectGallery } from '@/components/portfolio/ProjectGallery';
 import { DevelopmentTimeline } from '@/components/portfolio/DevelopmentTimeline';
 import { ERPProductWalkthrough } from '@/components/portfolio/ERPProductWalkthrough';
 import { Badge } from '@/components/ui/badge';
+import { cn } from '@/lib/utils';
 
 export default function CaseStudyPage() {
   const params = useParams();
@@ -33,6 +34,15 @@ export default function CaseStudyPage() {
   const project = projectsData[slug];
   
   const [isWalkthroughActive, setIsWalkthroughActive] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 80);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   if (!project) {
     return (
@@ -58,15 +68,33 @@ export default function CaseStudyPage() {
       <section className="relative py-20 overflow-hidden bg-card/30">
         <div className="absolute inset-0 hero-gradient -z-10 opacity-30" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <button 
-            onClick={() => router.push('/#projects')}
-            className="group flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors mb-12"
-          >
-            <div className="w-8 h-8 rounded-full glass flex items-center justify-center group-hover:-translate-x-1 transition-transform">
-              <ArrowLeft size={16} />
+          <div className="mb-12 h-8">
+            <div className={cn(
+              "z-[110] transition-all duration-300",
+              isScrolled ? "fixed top-4 left-4 md:relative md:top-0 md:left-0" : "relative"
+            )}>
+              <button 
+                onClick={() => router.push('/#projects')}
+                className={cn(
+                  "group flex items-center gap-2 text-muted-foreground hover:text-primary transition-all duration-300",
+                  isScrolled ? "bg-background/80 backdrop-blur-md p-1.5 rounded-full border border-white/10 shadow-xl md:bg-transparent md:p-0 md:border-0" : ""
+                )}
+              >
+                <div className={cn(
+                  "rounded-full glass flex items-center justify-center transition-all duration-300",
+                  isScrolled ? "w-10 h-10 md:w-8 md:h-8" : "w-8 h-8"
+                )}>
+                  <ArrowLeft size={16} />
+                </div>
+                <span className={cn(
+                  "transition-all duration-300 origin-left overflow-hidden whitespace-nowrap text-sm font-medium",
+                  isScrolled ? "w-0 opacity-0 md:w-auto md:opacity-100" : "w-auto opacity-100"
+                )}>
+                  Back to Projects
+                </span>
+              </button>
             </div>
-            Back to Projects
-          </button>
+          </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-end">
             <div className="lg:col-span-8">
