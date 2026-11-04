@@ -310,12 +310,12 @@ export function Contact() {
                     value={formData.countryCode}
                     onChange={handleChange}
                     className={cn(
-                      "w-auto shrink-0 bg-white/5 border border-white/10 rounded-xl px-2 py-3 lg:py-2 focus:outline-none focus:border-primary transition-colors text-sm md:text-base",
+                      "w-[70px] md:w-[80px] shrink-0 bg-white/5 border border-white/10 rounded-xl px-2 py-3 lg:py-2 focus:outline-none focus:border-primary transition-colors text-sm md:text-base cursor-pointer",
                       errors.phone && "border-destructive focus:border-destructive"
                     )}
                   >
                     {COUNTRY_CODES.map(c => (
-                      <option key={c.code} value={c.code} className="bg-[#0d1117] text-white">{c.code} ({c.name})</option>
+                      <option key={c.code} value={c.code} className="bg-[#0d1117] text-white">{c.code}</option>
                     ))}
                   </select>
                   <input 
@@ -324,7 +324,6 @@ export function Contact() {
                     inputMode="numeric"
                     value={formData.phone}
                     onChange={handleChange}
-                    placeholder="Enter 10-digit mobile number"
                     required
                     className={cn(
                       "flex-1 min-w-0 bg-white/5 border border-white/10 rounded-xl px-4 py-3 lg:py-2 focus:outline-none focus:border-primary transition-colors text-sm md:text-base",
