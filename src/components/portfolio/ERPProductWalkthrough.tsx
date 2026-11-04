@@ -12,7 +12,6 @@ import {
   QrCode, 
   Smartphone, 
   CheckCircle2, 
-  ArrowRight,
   Shield
 } from 'lucide-react';
 import { Screenshot } from '@/lib/projects-data';
@@ -56,14 +55,17 @@ export function ERPProductWalkthrough({ screenshots, onClose }: ERPProductWalkth
       if (e.key === 'ArrowRight') { setIsPlaying(false); handleNext(); }
       if (e.key === 'ArrowLeft') { setIsPlaying(false); handlePrev(); }
       if (e.key === 'Escape') onClose();
-      if (e.key === ' ') { setIsPlaying(!isPlaying); }
+      if (e.key === ' ') { e.preventDefault(); setIsPlaying(!isPlaying); }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handleNext, handlePrev, onClose, isPlaying]);
 
   const currentScreenshot = screenshots[currentIndex];
-  const isQRChapter = currentScreenshot.chapter.includes('QR-Based');
+  // More generic check for special UI context
+  const isQRChapter = currentScreenshot?.chapter?.toLowerCase().includes('qr-based');
+
+  if (!currentScreenshot) return null;
 
   return (
     <div className={cn(
@@ -176,7 +178,7 @@ export function ERPProductWalkthrough({ screenshots, onClose }: ERPProductWalkth
               {currentScreenshot.description}
             </p>
 
-            {/* QR Attendance Step-by-Step Visualization */}
+            {/* Special Workflow Visualization */}
             {isQRChapter && (
               <div className="space-y-4 pt-6 border-t border-white/10">
                 <h4 className="text-sm font-bold uppercase tracking-widest text-primary mb-6">Attendance Workflow</h4>

@@ -1,5 +1,5 @@
 'use client';
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -11,7 +11,11 @@ import {
   ArrowRight,
   ShieldCheck,
   Zap,
-  Layers
+  Layers,
+  Database,
+  Users,
+  Settings,
+  ClipboardCheck
 } from 'lucide-react';
 import { projectsData } from '@/lib/projects-data';
 import { ProjectGallery } from '@/components/portfolio/ProjectGallery';
@@ -42,6 +46,8 @@ export default function CaseStudyPage() {
   }
 
   const isMacroPrintPack = slug === 'macro-print-pack';
+  const isKBPrintHub = slug === 'kb-print-hub';
+  const isERP = isMacroPrintPack || isKBPrintHub;
 
   return (
     <main className="min-h-screen pb-24">
@@ -93,9 +99,34 @@ export default function CaseStudyPage() {
         </div>
       </section>
 
+      {/* Project Metrics Section */}
+      {project.metrics && (
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            {project.metrics.map((metric, i) => (
+              <motion.div 
+                key={i}
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                className="glass p-8 rounded-3xl border-white/5 text-center group hover:border-primary/30 transition-all"
+              >
+                <p className="text-3xl md:text-4xl font-bold text-primary mb-2 group-hover:scale-110 transition-transform">
+                  {metric.value}
+                </p>
+                <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
+                  {metric.label}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+        </section>
+      )}
+
       {/* Product Walkthrough Call-to-Action */}
-      {isMacroPrintPack && (
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-12 relative z-10">
+      {isERP && project.screenshots.length > 0 && (
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 relative z-10">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -107,9 +138,9 @@ export default function CaseStudyPage() {
              
              <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-8">
                 <div className="max-w-2xl text-center lg:text-left">
-                  <h2 className="text-3xl md:text-4xl font-bold mb-4">Inside Macro PrintHub – Complete ERP Workflow</h2>
+                  <h2 className="text-3xl md:text-4xl font-bold mb-4">Inside {project.title} – Complete ERP Workflow</h2>
                   <p className="text-muted-foreground text-lg leading-relaxed">
-                    Explore how a complete printing and packaging ERP manages employees, attendance, customer orders, job cards, manufacturing, inventory, payroll and dispatch through a unified platform.
+                    Explore the complete production workflow, management modules, and department coordination through a guided interactive walkthrough.
                   </p>
                 </div>
                 <button 
@@ -131,7 +162,7 @@ export default function CaseStudyPage() {
             
             {/* Interactive Walkthrough Modal */}
             <AnimatePresence>
-              {isWalkthroughActive && isMacroPrintPack && (
+              {isWalkthroughActive && (
                 <ERPProductWalkthrough 
                   screenshots={project.screenshots} 
                   onClose={() => setIsWalkthroughActive(false)} 
@@ -161,7 +192,7 @@ export default function CaseStudyPage() {
               </div>
             </div>
 
-            {/* Attendance System Spotlight */}
+            {/* Attendance System Spotlight (Macro Print Pack) */}
             {isMacroPrintPack && (
               <section className="space-y-8">
                 <h3 className="text-2xl font-bold flex items-center gap-3">
@@ -180,6 +211,34 @@ export default function CaseStudyPage() {
                       </div>
                       <h4 className="font-bold mb-2">{item.title}</h4>
                       <p className="text-xs text-muted-foreground">{item.desc}</p>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {/* Role-Based Spotlight (KB Print Hub) */}
+            {isKBPrintHub && (
+              <section className="space-y-8">
+                <h3 className="text-2xl font-bold flex items-center gap-3">
+                  <span className="w-1.5 h-8 bg-primary rounded-full" />
+                  9 Role-Based Dashboards & Access Control
+                </h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                  {[
+                    { icon: Settings, title: "Administrator", desc: "Complete oversight and control over all organizational modules." },
+                    { icon: ClipboardCheck, title: "Order Builder", desc: "Technical tool for configuring complex order specifications." },
+                    { icon: Users, title: "Production Units", desc: "Dedicated views for Kappa, Paper, Screen, and Jar departments." },
+                    { icon: ShieldCheck, title: "Designer Portal", desc: "Design-centric workflow management and approval tracking." },
+                    { icon: Database, title: "Stock & Inventory", desc: "Material lifecycle tracking and cross-unit stock allocation." },
+                    { icon: Truck, title: "Dispatch Center", desc: "Final order logistics and delivery fulfillment tracking." }
+                  ].map((item, i) => (
+                    <div key={i} className="glass p-6 rounded-2xl border-white/5">
+                      <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center mb-4 text-primary">
+                        <item.icon size={20} />
+                      </div>
+                      <h4 className="font-bold mb-2">{item.title}</h4>
+                      <p className="text-xs text-muted-foreground leading-relaxed">{item.desc}</p>
                     </div>
                   ))}
                 </div>
@@ -254,16 +313,16 @@ export default function CaseStudyPage() {
         </div>
       </div>
       
-      {/* Walkthrough Summary (Displayed at bottom of page for MPP) */}
-      {isMacroPrintPack && (
+      {/* ERP Ecosystem Summary */}
+      {isERP && (
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-24">
           <div className="glass p-12 rounded-[3rem] text-center border-white/10">
-            <h2 className="text-3xl font-bold mb-4">Macro PrintHub – Complete ERP Ecosystem</h2>
+            <h2 className="text-3xl font-bold mb-4">{project.title} – Complete ERP Ecosystem</h2>
             <p className="text-muted-foreground mb-8 max-w-2xl mx-auto">
-              An end-to-end ERP solution designed to streamline printing and packaging operations, employee management, attendance, order processing, production tracking and business administration.
+              An end-to-end business application designed to solve complex operational challenges, coordinate multi-departmental workflows, and provide data-driven insights through a unified real-time platform.
             </p>
             <div className="flex flex-wrap justify-center gap-4 mb-8">
-               {["Next.js", "React", "TypeScript", "Tailwind CSS", "Firebase", "Firestore", "Auth"].map(t => (
+               {project.verifiedTech.map(t => (
                  <span key={t} className="text-sm font-bold text-primary">{t}</span>
                ))}
             </div>
@@ -271,7 +330,7 @@ export default function CaseStudyPage() {
               onClick={() => setIsWalkthroughActive(true)}
               className="px-8 py-4 rounded-2xl glass hover:bg-white/5 transition-all font-bold flex items-center gap-2 mx-auto"
             >
-              Explore Screenshots Again <ArrowRight size={18} />
+              Explore Walkthrough Again <ArrowRight size={18} />
             </button>
           </div>
         </section>

@@ -29,6 +29,7 @@ export interface CaseStudyData {
   modules: ProjectModule[];
   screenshotCategories: string[];
   screenshots: Screenshot[];
+  metrics?: { label: string; value: string }[];
 }
 
 export const developmentSteps = [
@@ -51,10 +52,15 @@ export const projectsData: Record<string, CaseStudyData> = {
     status: "Live Business Application",
     period: "July 2025 – Present",
     description: "An end-to-end printing and packaging business management application independently developed to streamline order-to-dispatch operations.",
-    overview: "This ERP was built from the ground up to solve the complexities of the printing and packaging industry. It manages everything from initial order entry to production tracking and final dispatch.",
+    overview: "This ERP has successfully processed over 1,000 orders. It manages everything from initial order entry to production tracking and final dispatch, featuring dedicated role-based access for the entire organization.",
     businessProblem: "The client relied on manual paper-based tracking, leading to production delays, lost order information, and difficulty in managing a large workforce across different departments.",
     businessSolution: "A centralized ERP featuring 7-8 role-based dashboards, QR-code employee IDs, and real-time production tracking. It currently handles over 1,000 orders with high performance and reliability.",
     verifiedTech: ["Next.js", "React", "TypeScript", "Tailwind CSS", "Firebase", "Firestore", "Auth"],
+    metrics: [
+      { label: "Orders Processed", value: "1,000+" },
+      { label: "Business Roles", value: "8" },
+      { label: "User Dashboards", value: "8" }
+    ],
     modules: [
       { title: "Role-Based Dashboards", icon: Layout, description: "Dedicated views for Admin, Designer, Accountant, and operational teams." },
       { title: "Order Management", icon: ClipboardList, description: "Complete lifecycle tracking from order creation to dispatch." },
@@ -96,10 +102,15 @@ export const projectsData: Record<string, CaseStudyData> = {
     status: "Live Business Application",
     period: "July 2025 – Present",
     description: "A production-grade printing management platform independently developed to manage complete business workflows.",
-    overview: "KB Print Hub is a sophisticated multi-departmental application designed to coordinate production across specialized units like Kappa, Screen, and Paper processing.",
+    overview: "KB Print Hub is a sophisticated multi-departmental application that has successfully processed over 1,600 orders. It coordinates production across 9 specialized units like Kappa, Screen, and Paper processing.",
     businessProblem: "Coordination between 9 different departments was highly fragmented. Tracking stock levels and production stage progress was impossible in real-time.",
     businessSolution: "Implemented 9 role-based dashboards with strict approval-based access control. Real-time Firestore synchronization allows departments to see exactly which jobs are pending for them.",
     verifiedTech: ["Next.js", "React", "TypeScript", "Tailwind CSS", "Firebase", "Firestore", "Cloud Storage"],
+    metrics: [
+      { label: "Orders Processed", value: "1,600+" },
+      { label: "Role-Based Dashboards", value: "9" },
+      { label: "Production Units", value: "9" }
+    ],
     modules: [
       { title: "9 Role-Based Dashboards", icon: Layout, description: "Admin, Order Builder, Designer, Kappa, Paper, Screen, Jar, Dispatch, and Stock." },
       { title: "Real-Time Tracking", icon: Clock, description: "Department-wise progress monitoring using Firestore live updates." },
@@ -109,22 +120,22 @@ export const projectsData: Record<string, CaseStudyData> = {
     ],
     screenshotCategories: ["Admin", "Order Builder", "Designer", "Kappa/Paper/Screen", "Inventory", "Production Tracking", "Dispatch"],
     screenshots: [
-      { id: "kb-1", title: "Admin Overview Dashboard", category: "Admin", chapter: "ERP Overview", path: "/projects/kb-print-hub/Admin%20Overview%20Dashboard_1.png", description: "Central administrative dashboard for business-wide metrics." },
-      { id: "kb-2", title: "Order Builder Interface", category: "Order Builder", chapter: "Orders & Jobs", path: "/projects/kb-print-hub/Order%20Builder%20Interface_2.png", description: "Technical specification and order building module." },
-      { id: "kb-3", title: "Design Management Portal", category: "Designer", chapter: "Job Approval & Design Workflow", path: "/projects/kb-print-hub/Design%20Management%20Portal_3.png", description: "Coordination hub for designers and artwork approvals." },
-      { id: "kb-4", title: "Kappa Production Unit", category: "Kappa/Paper/Screen", chapter: "Manufacturing & Production Pipeline", path: "/projects/kb-print-hub/Kappa%20Production%20Unit_4.png", description: "Specialized dashboard for the Kappa processing department." },
-      { id: "kb-5", title: "Paper Processing Dashboard", category: "Kappa/Paper/Screen", chapter: "Manufacturing & Production Pipeline", path: "/projects/kb-print-hub/Paper%20Processing%20Dashboard_5.png", description: "Workflow management for the paper processing unit." },
-      { id: "kb-6", title: "Screen Printing Dashboard", category: "Kappa/Paper/Screen", chapter: "Manufacturing & Production Pipeline", path: "/projects/kb-print-hub/Screen%20Printing%20Dashboard_6.png", description: "Real-time tracking for the screen printing department." },
-      { id: "kb-7", title: "Jar Management Dashboard", category: "Production Tracking", chapter: "Manufacturing & Production Pipeline", path: "/projects/kb-print-hub/Jar%20Management%20Dashboard_7.png", description: "Inventory and production tracking for jar components." },
-      { id: "kb-8", title: "Dispatch Control Center", category: "Dispatch", chapter: "Final Order Tracking", path: "/projects/kb-print-hub/Dispatch%20Control%20Center_8.png", description: "Logistics and shipping management dashboard." },
-      { id: "kb-9", title: "Stock & Inventory Control", category: "Inventory", chapter: "Manufacturing & Production Pipeline", path: "/projects/kb-print-hub/Stock%20&%20Inventory%20Control_9.png", description: "Real-time stock level monitoring and raw material tracking." },
-      { id: "kb-10", title: "Production Pipeline Overview", category: "Production Tracking", chapter: "Manufacturing & Production Pipeline", path: "/projects/kb-print-hub/Production%20Pipeline%20Overview_10.png", description: "High-level overview of the entire manufacturing pipeline." },
-      { id: "kb-11", title: "Automated Job Card Generation", category: "Admin", chapter: "Orders & Jobs", path: "/projects/kb-print-hub/Automated%20Job%20Card%20Generation_11.png", description: "System-generated job cards for production floor instructions." },
-      { id: "kb-12", title: "User Role Management", category: "Admin", chapter: "Employee Management & Access Control", path: "/projects/kb-print-hub/User%20Role%20Management_12.png", description: "Configuring role-based access for system users." },
-      { id: "kb-13", title: "Inventory Audit Trail", category: "Inventory", chapter: "Manufacturing & Production Pipeline", path: "/projects/kb-print-hub/Inventory%20Audit%20Trail_13.png", description: "Detailed logs of inventory movement and adjustments." },
-      { id: "kb-14", title: "Cross-Departmental Sync", category: "Production Tracking", chapter: "Manufacturing & Production Pipeline", path: "/projects/kb-print-hub/Cross-Departmental%20Sync_14.png", description: "Visualizing communication between production units." },
-      { id: "kb-15", title: "Order Lifecycle Tracking", category: "Order Builder", chapter: "Orders & Jobs", path: "/projects/kb-print-hub/Order%20Lifecycle%20Tracking_15.png", description: "Monitoring an order's progress through all business stages." },
-      { id: "kb-16", title: "Business Intelligence Analytics", category: "Admin", chapter: "ERP Overview", path: "/projects/kb-print-hub/Business%20Intelligence%20Analytics_16.png", description: "Analytical views of business performance and production efficiency." }
+      { id: "kb-1", title: "Admin Overview Dashboard", category: "Admin", chapter: "Application Overview", path: "/projects/kb-print-hub/Admin%20Overview%20Dashboard_1.png", description: "Central administrative dashboard for business-wide metrics, performance indicators, and organizational oversight." },
+      { id: "kb-2", title: "Order Builder Interface", category: "Order Builder", chapter: "Customer & Order Management", path: "/projects/kb-print-hub/Order%20Builder%20Interface_2.png", description: "Technical specification and order building module for defining precise manufacturing parameters." },
+      { id: "kb-3", title: "Design Management Portal", category: "Designer", chapter: "Design & Approval", path: "/projects/kb-print-hub/Design%20Management%20Portal_3.png", description: "Coordination hub for designers to manage assets, track design stages, and handle artwork approvals." },
+      { id: "kb-4", title: "Kappa Production Unit", category: "Kappa/Paper/Screen", chapter: "Manufacturing & Production Tracking", path: "/projects/kb-print-hub/Kappa%20Production%20Unit_4.png", description: "Specialized dashboard for the Kappa processing department showing department-specific job queues." },
+      { id: "kb-5", title: "Paper Processing Dashboard", category: "Kappa/Paper/Screen", chapter: "Manufacturing & Production Tracking", path: "/projects/kb-print-hub/Paper%20Processing%20Dashboard_5.png", description: "Workflow management for the paper processing unit, tracking material readiness and preparation status." },
+      { id: "kb-6", title: "Screen Printing Dashboard", category: "Kappa/Paper/Screen", chapter: "Manufacturing & Production Tracking", path: "/projects/kb-print-hub/Screen%20Printing%20Dashboard_6.png", description: "Real-time tracking for the screen printing department, managing multi-stage print schedules." },
+      { id: "kb-7", title: "Jar Management Dashboard", category: "Production Tracking", chapter: "Manufacturing & Production Tracking", path: "/projects/kb-print-hub/Jar%20Management%20Dashboard_7.png", description: "Inventory and production tracking for jar components used in specialized packaging projects." },
+      { id: "kb-8", title: "Dispatch Control Center", category: "Dispatch", chapter: "Dispatch & Delivery", path: "/projects/kb-print-hub/Dispatch%20Control%20Center_8.png", description: "Logistics hub for shipping management, delivery scheduling, and final order fulfillment confirmation." },
+      { id: "kb-9", title: "Stock & Inventory Control", category: "Inventory", chapter: "Inventory & Stock Management", path: "/projects/kb-print-hub/Stock%20&%20Inventory%20Control_9.png", description: "Real-time stock level monitoring and raw material tracking across all manufacturing units." },
+      { id: "kb-10", title: "Production Pipeline Overview", category: "Production Tracking", chapter: "Manufacturing & Production Tracking", path: "/projects/kb-print-hub/Production%20Pipeline%20Overview_10.png", description: "High-level visual summary of the entire manufacturing pipeline across all 9 departments." },
+      { id: "kb-11", title: "Automated Job Card Generation", category: "Admin", chapter: "Job Card Generation", path: "/projects/kb-print-hub/Automated%20Job%20Card%20Generation_11.png", description: "System-generated job cards that convert order data into technical instructions for production teams." },
+      { id: "kb-12", title: "User Role Management", category: "Admin", chapter: "User Authentication & Role-Based Access", path: "/projects/kb-print-hub/User%20Role%20Management_12.png", description: "Configuring role-based access control and feature-level permissions for all system users." },
+      { id: "kb-13", title: "Inventory Audit Trail", category: "Inventory", chapter: "Inventory & Stock Management", path: "/projects/kb-print-hub/Inventory%20Audit%20Trail_13.png", description: "Detailed logs of inventory movement, adjustments, and material consumption for audit transparency." },
+      { id: "kb-14", title: "Cross-Departmental Sync", category: "Production Tracking", chapter: "Manufacturing & Production Tracking", path: "/projects/kb-print-hub/Cross-Departmental%20Sync_14.png", description: "Visualizing real-time data hand-off and coordination between sequential production departments." },
+      { id: "kb-15", title: "Order Lifecycle Tracking", category: "Order Builder", chapter: "Complete Order Lifecycle", path: "/projects/kb-print-hub/Order%20Lifecycle%20Tracking_15.png", description: "Comprehensive monitoring of a customer order's progress through all 9 departmental stages." },
+      { id: "kb-16", title: "Business Intelligence Analytics", category: "Admin", chapter: "Application Overview", path: "/projects/kb-print-hub/Business%20Intelligence%20Analytics_16.png", description: "Analytical dashboard providing data-driven insights into production efficiency and business growth." }
     ]
   },
   "anand-fabrics": {
