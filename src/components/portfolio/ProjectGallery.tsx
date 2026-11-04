@@ -1,8 +1,17 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight, ImageIcon, Maximize2, X } from 'lucide-react';
+import { 
+  ChevronLeft, 
+  ChevronRight, 
+  ImageIcon, 
+  Maximize2, 
+  X, 
+  Plus, 
+  Minus, 
+  RotateCcw 
+} from 'lucide-react';
 import { Screenshot } from '@/lib/projects-data';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
@@ -16,6 +25,15 @@ export function ProjectGallery({ screenshots, categories }: ProjectGalleryProps)
   const [selectedImageIdx, setSelectedImageIdx] = useState<number | null>(null);
   const [activeCategory, setActiveCategory] = useState<string>("All");
   const [isMounted, setIsMounted] = useState(false);
+  
+  // Mobile Zoom State
+  const [scale, setScale] = useState(1);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const [lastPinchDist, setLastPinchDist] = useState<number | null>(null);
+
+  const viewportRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setIsMounted(true);
@@ -25,26 +43,85 @@ export function ProjectGallery({ screenshots, categories }: ProjectGalleryProps)
     ? screenshots 
     : screenshots.filter(s => s.category === activeCategory);
 
-  const handleNext = () => {
-    if (selectedImageIdx === null) return;
-    setSelectedImageIdx((selectedImageIdx + 1) % filteredScreenshots.length);
-  };
+  const resetZoom = useCallback(() => {
+    setScale(1);
+    setPosition({ x: 0, y: 0 });
+    setLastPinchDist(null);
+  }, []);
 
-  const handlePrev = () => {
+  const handleNext = useCallback(() => {
     if (selectedImageIdx === null) return;
+    resetZoom();
+    setSelectedImageIdx((selectedImageIdx + 1) % filteredScreenshots.length);
+  }, [selectedImageIdx, filteredScreenshots.length, resetZoom]);
+
+  const handlePrev = useCallback(() => {
+    if (selectedImageIdx === null) return;
+    resetZoom();
     setSelectedImageIdx((selectedImageIdx - 1 + filteredScreenshots.length) % filteredScreenshots.length);
-  };
+  }, [selectedImageIdx, filteredScreenshots.length, resetZoom]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (selectedImageIdx === null) return;
       if (e.key === 'ArrowRight') handleNext();
       if (e.key === 'ArrowLeft') handlePrev();
-      if (e.key === 'Escape') setSelectedImageIdx(null);
+      if (e.key === 'Escape') {
+        resetZoom();
+        setSelectedImageIdx(null);
+      }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [selectedImageIdx, filteredScreenshots.length]);
+  }, [selectedImageIdx, handleNext, handlePrev, resetZoom]);
+
+  // Mobile Touch Handlers
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (window.innerWidth >= 768) return; // Only mobile
+
+    if (e.touches.length === 2) {
+      const dist = Math.hypot(
+        e.touches[0].pageX - e.touches[1].pageX,
+        e.touches[0].pageY - e.touches[1].pageY
+      );
+      setLastPinchDist(dist);
+    } else if (e.touches.length === 1 && scale > 1) {
+      setIsDragging(true);
+      setDragStart({
+        x: e.touches[0].pageX - position.x,
+        y: e.touches[0].pageY - position.y
+      });
+    }
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (window.innerWidth >= 768) return;
+
+    if (e.touches.length === 2 && lastPinchDist !== null) {
+      e.preventDefault();
+      const dist = Math.hypot(
+        e.touches[0].pageX - e.touches[1].pageX,
+        e.touches[0].pageY - e.touches[1].pageY
+      );
+      const delta = dist / lastPinchDist;
+      setScale(prev => Math.min(4, Math.max(1, prev * delta)));
+      setLastPinchDist(dist);
+    } else if (e.touches.length === 1 && isDragging && scale > 1) {
+      e.preventDefault();
+      setPosition({
+        x: e.touches[0].pageX - dragStart.x,
+        y: e.touches[0].pageY - dragStart.y
+      });
+    }
+  };
+
+  const handleTouchEnd = () => {
+    setIsDragging(false);
+    setLastPinchDist(null);
+  };
+
+  const zoomIn = () => setScale(prev => Math.min(4, prev + 0.5));
+  const zoomOut = () => setScale(prev => Math.max(1, prev - 0.5));
 
   return (
     <section className="py-12">
@@ -113,58 +190,93 @@ export function ProjectGallery({ screenshots, categories }: ProjectGalleryProps)
       {isMounted && createPortal(
         <AnimatePresence>
           {selectedImageIdx !== null && filteredScreenshots[selectedImageIdx] && (
-            <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 xs:p-6 md:p-10">
-              {/* Background Overlay */}
+            <div className="fixed inset-0 z-[9999] flex items-center justify-center p-3 xs:p-4 md:p-10">
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                onClick={() => setSelectedImageIdx(null)}
+                onClick={() => { resetZoom(); setSelectedImageIdx(null); }}
                 className="absolute inset-0 z-0 bg-background/95 backdrop-blur-xl cursor-pointer"
               />
 
-              {/* Main Lightbox Container */}
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
                 className="relative z-10 pointer-events-auto w-full max-w-6xl h-full flex flex-col rounded-2xl md:rounded-3xl overflow-hidden glass border border-white/10 shadow-2xl bg-black/40"
-                role="dialog"
-                aria-modal="true"
-                aria-label="Screenshot preview"
               >
-                {/* Close Button - Stays inside the card top-right */}
+                {/* Close Button */}
                 <button
                   type="button"
                   onClick={(e) => {
                     e.stopPropagation();
+                    resetZoom();
                     setSelectedImageIdx(null);
                   }}
-                  className="absolute top-4 right-4 z-[110] w-10 h-10 rounded-full bg-black/60 border border-white/10 flex items-center justify-center text-white hover:bg-black/80 hover:text-primary transition-all cursor-pointer pointer-events-auto shadow-lg"
+                  className="absolute top-4 right-4 z-[110] w-10 h-10 rounded-full bg-black/60 border border-white/10 flex items-center justify-center text-white hover:bg-black/80 hover:text-primary transition-all cursor-pointer shadow-lg"
                   aria-label="Close image preview"
                 >
                   <X size={24} />
                 </button>
 
-                {/* Top Image Area */}
-                <div className="relative flex-1 min-h-0 w-full flex items-center justify-center p-2 md:p-4">
-                  <Image
-                    src={filteredScreenshots[selectedImageIdx].path}
-                    alt={filteredScreenshots[selectedImageIdx].title}
-                    fill
-                    sizes="100vw"
-                    className="object-contain"
-                    priority
-                  />
+                {/* Mobile Zoom Controls - Only visible on small screens */}
+                <div className="absolute top-4 left-4 z-[110] flex items-center gap-2 md:hidden">
+                  <div className="flex items-center gap-1 glass p-1 rounded-xl border border-white/10 bg-black/40 shadow-lg">
+                    <button 
+                      onClick={zoomOut}
+                      className="w-8 h-8 rounded-lg flex items-center justify-center text-white hover:text-primary active:bg-white/10 transition-all"
+                    >
+                      <Minus size={18} />
+                    </button>
+                    <span className="text-[10px] font-bold min-w-[30px] text-center text-primary">
+                      {Math.round(scale * 100)}%
+                    </span>
+                    <button 
+                      onClick={zoomIn}
+                      className="w-8 h-8 rounded-lg flex items-center justify-center text-white hover:text-primary active:bg-white/10 transition-all"
+                    >
+                      <Plus size={18} />
+                    </button>
+                    <div className="w-[1px] h-4 bg-white/10 mx-1" />
+                    <button 
+                      onClick={resetZoom}
+                      className="w-8 h-8 rounded-lg flex items-center justify-center text-white hover:text-primary active:bg-white/10 transition-all"
+                    >
+                      <RotateCcw size={16} />
+                    </button>
+                  </div>
+                </div>
 
-                  {/* Navigation Buttons - Centered in image area */}
+                {/* Image Area */}
+                <div 
+                  ref={viewportRef}
+                  className="relative flex-1 min-h-0 w-full flex items-center justify-center p-2 md:p-4 overflow-hidden"
+                  onTouchStart={handleTouchStart}
+                  onTouchMove={handleTouchMove}
+                  onTouchEnd={handleTouchEnd}
+                >
+                  <div 
+                    className="relative w-full h-full flex items-center justify-center transition-transform duration-100 ease-out"
+                    style={{ 
+                      transform: `translate(${position.x}px, ${position.y}px) scale(${scale})`,
+                      cursor: scale > 1 ? (isDragging ? 'grabbing' : 'grab') : 'default'
+                    }}
+                  >
+                    <Image
+                      src={filteredScreenshots[selectedImageIdx].path}
+                      alt={filteredScreenshots[selectedImageIdx].title}
+                      fill
+                      sizes="100vw"
+                      className="object-contain pointer-events-none"
+                      priority
+                    />
+                  </div>
+
+                  {/* Navigation Buttons */}
                   <div className="absolute inset-y-0 left-2 md:left-4 flex items-center z-20 pointer-events-none">
                     <button
                       type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handlePrev();
-                      }}
+                      onClick={(e) => { e.stopPropagation(); handlePrev(); }}
                       className="w-10 h-10 md:w-12 md:h-12 rounded-full glass flex items-center justify-center text-white hover:text-primary transition-all hover:scale-110 active:scale-95 cursor-pointer pointer-events-auto shadow-lg"
                       aria-label="Previous image"
                     >
@@ -175,10 +287,7 @@ export function ProjectGallery({ screenshots, categories }: ProjectGalleryProps)
                   <div className="absolute inset-y-0 right-2 md:right-4 flex items-center z-20 pointer-events-none">
                     <button
                       type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleNext();
-                      }}
+                      onClick={(e) => { e.stopPropagation(); handleNext(); }}
                       className="w-10 h-10 md:w-12 md:h-12 rounded-full glass flex items-center justify-center text-white hover:text-primary transition-all hover:scale-110 active:scale-95 cursor-pointer pointer-events-auto shadow-lg"
                       aria-label="Next image"
                     >
@@ -187,7 +296,7 @@ export function ProjectGallery({ screenshots, categories }: ProjectGalleryProps)
                   </div>
                 </div>
 
-                {/* Bottom Caption Area - Dedicated section */}
+                {/* Bottom Caption Area */}
                 <div className="w-full p-4 md:p-8 bg-black/80 border-t border-white/10 shrink-0 overflow-y-auto custom-scrollbar">
                   <p className="text-primary font-bold text-[10px] md:text-xs uppercase tracking-widest mb-1">
                     {filteredScreenshots[selectedImageIdx].category}
