@@ -4,14 +4,23 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, FileText } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ThemeSwitcher } from './ThemeSwitcher';
+import { useTheme, type Theme } from '@/providers/theme-provider';
 
 interface NavbarProps {
   onResumeClick?: () => void;
 }
 
+const themeBackgrounds: Record<Theme, string> = {
+  midnight: '#080D18',
+  sunset: '#1A100D',
+  ocean: '#071827',
+  light: '#FFFFFF',
+};
+
 export function Navbar({ onResumeClick }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const { theme } = useTheme();
 
   useEffect(() => {
     let ticking = false;
@@ -50,10 +59,15 @@ export function Navbar({ onResumeClick }: NavbarProps) {
   };
 
   return (
-    <nav className={cn(
-      "fixed top-0 w-full z-[100] transition-all duration-300",
-      scrolled || isOpen ? "glass py-3" : "bg-transparent py-5"
-    )}>
+    <nav 
+      style={{ 
+        backgroundColor: isOpen ? themeBackgrounds[theme] : undefined 
+      }}
+      className={cn(
+        "fixed top-0 w-full z-[100] transition-all duration-300",
+        isOpen ? "py-3" : (scrolled ? "glass py-3" : "bg-transparent py-5")
+      )}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center">
           <motion.a 
@@ -111,7 +125,11 @@ export function Navbar({ onResumeClick }: NavbarProps) {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="md:hidden absolute top-full left-0 w-full glass border-b border-white/10 overflow-hidden"
+            style={{ backgroundColor: themeBackgrounds[theme] }}
+            className={cn(
+              "md:hidden absolute top-full left-0 w-full border-b overflow-hidden",
+              theme === 'light' ? "border-black/5" : "border-white/10"
+            )}
           >
             <div className="px-4 pt-2 pb-8 space-y-1">
               {navLinks.map((link) => (
