@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Mail, Github, Linkedin, MapPin, Send, Loader2 } from 'lucide-react';
+import { Mail, Github, Linkedin, MapPin, Send, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
 import { profile } from '@/lib/data';
 import { toast } from '../ui/toaster';
 import { useFirestore } from '@/firebase';
@@ -62,7 +62,6 @@ export function Contact() {
 
     setIsSubmitting(true);
     
-    // Data for Firestore (Unchanged)
     const firestoreData = {
       name: formData.name.trim(),
       email: formData.email.trim(),
@@ -74,31 +73,22 @@ export function Contact() {
       status: 'unread'
     };
 
-    // Format IST Timestamp for professional email notification
     const timestampIST = new Date().toLocaleString('en-IN', { 
       timeZone: 'Asia/Kolkata',
       dateStyle: 'full',
       timeStyle: 'medium'
     });
 
-    // Data for Web3Forms (Upgraded for professional notification)
     const web3FormsData = {
       access_key: process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY || "ccdd135d-3d05-4ae6-a82d-2e150fe4dc36",
       from_name: "Abhay Kumar | Portfolio Contact Form",
-      // Dynamic professional subject for the email header
       subject: `New Portfolio Enquiry | ${formData.subject.trim()} | Abhay Kumar Portfolio`,
-      
-      // Visitor Information
       name: formData.name.trim(),
       email: formData.email.trim(),
       phone: formData.phone.trim(),
       country_code: formData.countryCode,
-      
-      // Enquiry Details (inquiry_subject ensures it appears in body since 'subject' is reserved for header)
       inquiry_subject: formData.subject.trim(),
       message: formData.message.trim() || "No message provided",
-      
-      // Metadata
       replyto: formData.email.trim(),
       submitted_at: `${timestampIST} (IST)`,
     };
@@ -106,41 +96,22 @@ export function Contact() {
     const contactRef = collection(db, 'contactMessages');
 
     try {
-      // 1. Submit to Firestore first
+      // 1. Primary Operation: Save to Firestore first
       await addDoc(contactRef, firestoreData);
       
-      let emailSuccess = false;
-      try {
-        // 2. Submit to Web3Forms
-        const response = await fetch("https://api.web3forms.com/submit", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-          body: JSON.stringify(web3FormsData),
-        });
+      // 2. Success Feedback (Green Toast) - Triggered immediately after Firestore succeeds
+      toast({
+        variant: "success",
+        title: (
+          <div className="flex items-center gap-2">
+            <CheckCircle2 size={18} />
+            <span>Message Sent Successfully!</span>
+          </div>
+        ),
+        description: "Your enquiry has been received. I'll get back to you soon.",
+      });
 
-        const result = await response.json();
-        emailSuccess = result.success;
-      } catch (emailErr) {
-        console.error("Web3Forms error:", emailErr);
-      }
-
-      // Success feedback based on both operations
-      if (emailSuccess) {
-        toast({
-          title: "Message Sent!",
-          description: "Your message has been saved and sent successfully!",
-        });
-      } else {
-        toast({
-          title: "Message Saved",
-          description: "Saved to database, but email failed. I'll still see your message!",
-        });
-      }
-
-      // Reset form
+      // 3. Reset form immediately after DB success
       setFormData({ 
         name: '', 
         email: '', 
@@ -151,7 +122,28 @@ export function Contact() {
         honeypot: '' 
       });
 
+      // 4. Secondary Operation: Attempt Web3Forms independently (Background)
+      fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(web3FormsData),
+      })
+      .then(async (response) => {
+        const result = await response.json();
+        if (!result.success) {
+          // Log failure internally but do not show error to user as message is safe in DB
+          console.info("Web3Forms Notification Fallback: Message stored in DB, but email failed.", result.message);
+        }
+      })
+      .catch((emailErr) => {
+        console.info("Web3Forms Network Fallback: Message stored in DB, but email network failed.");
+      });
+
     } catch (err) {
+      // Handle actual Firestore failure
       const permissionError = new FirestorePermissionError({
         path: contactRef.path,
         operation: 'create',
@@ -162,8 +154,13 @@ export function Contact() {
       
       toast({
         variant: "destructive",
-        title: "Submission Failed",
-        description: "Something went wrong. Please check your connection and try again.",
+        title: (
+          <div className="flex items-center gap-2">
+            <AlertCircle size={18} />
+            <span>Submission Failed</span>
+          </div>
+        ),
+        description: "Something went wrong saving your message. Please check your connection and try again.",
       });
     } finally {
       setIsSubmitting(false);
