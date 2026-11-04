@@ -44,7 +44,7 @@ export function ThemeSwitcher() {
             initial={{ opacity: 0, scale: 0.95, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 10 }}
-            className="absolute right-0 top-full mt-4 w-56 glass p-2 rounded-2xl border border-white/10 shadow-2xl z-[110]"
+            className="absolute right-0 top-full mt-4 w-56 bg-background/98 backdrop-blur-2xl p-2 rounded-2xl border border-white/10 shadow-2xl z-[110]"
           >
             <div className="px-3 py-2 border-b border-white/5 mb-2">
               <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Select Theme</p>
