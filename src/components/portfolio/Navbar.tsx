@@ -40,6 +40,18 @@ export function Navbar({ onResumeClick }: NavbarProps) {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [scrolled]);
 
+  // Prevent body scroll when menu is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
+
   const navLinks = [
     { name: 'Home', href: '#home' },
     { name: 'About', href: '#about' },
@@ -59,102 +71,129 @@ export function Navbar({ onResumeClick }: NavbarProps) {
   };
 
   return (
-    <nav 
-      style={{ 
-        backgroundColor: isOpen ? themeBackgrounds[theme] : undefined 
-      }}
-      className={cn(
-        "fixed top-0 w-full z-[100] transition-all duration-300",
-        isOpen ? "py-3" : (scrolled ? "glass py-3" : "bg-transparent py-5")
-      )}
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center">
-          <motion.a 
-            href="#home"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="text-2xl font-bold text-primary tracking-tighter"
-          >
-            AK<span className="text-foreground">.</span>
-          </motion.a>
+    <>
+      <nav 
+        style={{ 
+          backgroundColor: isOpen ? themeBackgrounds[theme] : undefined 
+        }}
+        className={cn(
+          "fixed top-0 w-full z-[100] transition-all duration-300",
+          isOpen ? "py-3" : (scrolled ? "glass py-3" : "bg-transparent py-5")
+        )}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center">
+            <motion.a 
+              href="#home"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="text-2xl font-bold text-primary tracking-tighter"
+            >
+              AK<span className="text-foreground">.</span>
+            </motion.a>
 
-          {/* Desktop Nav */}
-          <div className="hidden md:flex items-center space-x-8">
-            {navLinks.map((link, i) => (
-              <motion.a
-                key={link.name}
-                href={link.href}
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.05 }}
-                className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
-              >
-                {link.name}
-              </motion.a>
-            ))}
-            
-            <div className="flex items-center gap-4 border-l border-white/10 pl-8">
+            {/* Desktop Nav */}
+            <div className="hidden md:flex items-center space-x-8">
+              {navLinks.map((link, i) => (
+                <motion.a
+                  key={link.name}
+                  href={link.href}
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.05 }}
+                  className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+                >
+                  {link.name}
+                </motion.a>
+              ))}
+              
+              <div className="flex items-center gap-4 border-l border-white/10 pl-8">
+                <ThemeSwitcher />
+                <motion.button
+                  onClick={handleResumeClick}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="bg-primary text-primary-foreground px-5 py-2 rounded-full text-sm font-bold flex items-center gap-2 hover:bg-primary/90 transition-all active:scale-95"
+                >
+                  <FileText size={16} />
+                  Resume
+                </motion.button>
+              </div>
+            </div>
+
+            {/* Mobile Toggle */}
+            <div className="md:hidden flex items-center gap-4">
               <ThemeSwitcher />
-              <motion.button
-                onClick={handleResumeClick}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="bg-primary text-primary-foreground px-5 py-2 rounded-full text-sm font-bold flex items-center gap-2 hover:bg-primary/90 transition-all active:scale-95"
-              >
-                <FileText size={16} />
-                Resume
-              </motion.button>
+              <button onClick={() => setIsOpen(!isOpen)} className="text-foreground p-2" aria-label="Toggle menu">
+                {isOpen ? <X size={28} /> : <Menu size={28} />}
+              </button>
             </div>
           </div>
-
-          {/* Mobile Toggle */}
-          <div className="md:hidden flex items-center gap-4">
-            <ThemeSwitcher />
-            <button onClick={() => setIsOpen(!isOpen)} className="text-foreground p-2" aria-label="Toggle menu">
-              {isOpen ? <X size={28} /> : <Menu size={28} />}
-            </button>
-          </div>
         </div>
-      </div>
+      </nav>
 
-      {/* Mobile Nav */}
+      {/* Mobile Nav Overlay */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             style={{ backgroundColor: themeBackgrounds[theme] }}
             className={cn(
-              "md:hidden absolute top-full left-0 w-full border-b overflow-hidden",
-              theme === 'light' ? "border-black/5" : "border-white/10"
+              "md:hidden fixed inset-0 z-[110] flex flex-col",
+              theme === 'light' ? "text-foreground" : "text-white"
             )}
           >
-            <div className="px-4 pt-2 pb-8 space-y-1">
+            {/* Mobile Menu Header (Replicated for visual consistency when fixed) */}
+            <div className={cn(
+              "px-4 py-3 flex justify-between items-center border-b shrink-0",
+              theme === 'light' ? "border-black/5" : "border-white/10"
+            )}>
+              <a href="#home" onClick={handleLinkClick} className="text-2xl font-bold text-primary tracking-tighter">
+                AK<span className="text-foreground">.</span>
+              </a>
+              <div className="flex items-center gap-4">
+                <ThemeSwitcher />
+                <button onClick={() => setIsOpen(false)} className="text-foreground p-2" aria-label="Close menu">
+                  <X size={28} />
+                </button>
+              </div>
+            </div>
+
+            {/* Scrollable Nav Links Area */}
+            <div className="flex-1 overflow-y-auto custom-scrollbar px-4 py-4 space-y-1 overscroll-contain">
               {navLinks.map((link) => (
                 <a
                   key={link.name}
                   href={link.name === 'Contact' ? '#contact-form' : link.href}
                   onClick={handleLinkClick}
-                  className="block px-4 py-5 text-lg font-medium text-muted-foreground hover:text-primary border-b border-white/5 active:bg-white/5 transition-colors"
+                  className={cn(
+                    "block px-4 py-5 text-lg font-medium text-muted-foreground hover:text-primary border-b active:bg-white/5 transition-colors",
+                    theme === 'light' ? "border-black/5" : "border-white/5"
+                  )}
                 >
                   {link.name}
                 </a>
               ))}
-              <div className="pt-6">
-                <button 
-                  onClick={handleResumeClick}
-                  className="w-full bg-primary text-primary-foreground py-4 rounded-xl font-bold flex items-center justify-center gap-2 active:scale-95 transition-transform text-base"
-                >
-                  <FileText size={20} />
-                  View Resume
-                </button>
-              </div>
+            </div>
+
+            {/* Bottom Section - Resume Button Always Visible */}
+            <div className={cn(
+              "p-6 border-t mt-auto shrink-0",
+              theme === 'light' ? "border-black/5" : "border-white/10"
+            )}>
+              <button 
+                onClick={handleResumeClick}
+                className="w-full bg-primary text-primary-foreground py-4 rounded-xl font-bold flex items-center justify-center gap-2 active:scale-95 transition-transform text-base shadow-lg shadow-primary/20"
+              >
+                <FileText size={20} />
+                View Resume
+              </button>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
-    </nav>
+    </>
   );
 }
