@@ -1,7 +1,20 @@
 'use client';
-import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Mail, Github, Linkedin, MapPin, Send, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
+import { useState, useRef, useEffect, useMemo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  Mail, 
+  Github, 
+  Linkedin, 
+  MapPin, 
+  Send, 
+  Loader2, 
+  CheckCircle2, 
+  AlertCircle,
+  Search,
+  ChevronDown,
+  Check,
+  X
+} from 'lucide-react';
 import { profile } from '@/lib/data';
 import { toast } from '../ui/toaster';
 import { useFirestore } from '@/firebase';
@@ -10,23 +23,61 @@ import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError, type SecurityRuleContext } from '@/firebase/errors';
 import { cn } from '@/lib/utils';
 
-const COUNTRY_CODES = [
-  { code: '+91', name: 'India' },
-  { code: '+1', name: 'USA/Canada' },
-  { code: '+44', name: 'UK' },
-  { code: '+61', name: 'Australia' },
-  { code: '+971', name: 'UAE' },
+// Comprehensive Country Data
+const COUNTRIES = [
+  { code: 'IN', name: 'India', dialCode: '+91', flag: '🇮🇳' },
+  { code: 'US', name: 'United States', dialCode: '+1', flag: '🇺🇸' },
+  { code: 'GB', name: 'United Kingdom', dialCode: '+44', flag: '🇬🇧' },
+  { code: 'CA', name: 'Canada', dialCode: '+1', flag: '🇨🇦' },
+  { code: 'AU', name: 'Australia', dialCode: '+61', flag: '🇦🇺' },
+  { code: 'AE', name: 'United Arab Emirates', dialCode: '+971', flag: '🇦🇪' },
+  { code: 'DE', name: 'Germany', dialCode: '+49', flag: '🇩🇪' },
+  { code: 'FR', name: 'France', dialCode: '+33', flag: '🇫🇷' },
+  { code: 'JP', name: 'Japan', dialCode: '+81', flag: '🇯🇵' },
+  { code: 'SG', name: 'Singapore', dialCode: '+65', flag: '🇸🇬' },
+  { code: 'NZ', name: 'New Zealand', dialCode: '+64', flag: '🇳🇿' },
+  { code: 'ZA', name: 'South Africa', dialCode: '+27', flag: '🇿🇦' },
+  { code: 'BR', name: 'Brazil', dialCode: '+55', flag: '🇧🇷' },
+  { code: 'MX', name: 'Mexico', dialCode: '+52', flag: '🇲🇽' },
+  { code: 'IT', name: 'Italy', dialCode: '+39', flag: '🇮🇹' },
+  { code: 'ES', name: 'Spain', dialCode: '+34', flag: '🇪🇸' },
+  { code: 'NL', name: 'Netherlands', dialCode: '+31', flag: '🇳🇱' },
+  { code: 'CH', name: 'Switzerland', dialCode: '+41', flag: '🇨🇭' },
+  { code: 'SE', name: 'Sweden', dialCode: '+46', flag: '🇸🇪' },
+  { code: 'NO', name: 'Norway', dialCode: '+47', flag: '🇳🇴' },
+  { code: 'IE', name: 'Ireland', dialCode: '+353', flag: '🇮🇪' },
+  { code: 'MY', name: 'Malaysia', dialCode: '+60', flag: '🇲🇾' },
+  { code: 'ID', name: 'Indonesia', dialCode: '+62', flag: '🇮🇩' },
+  { code: 'PH', name: 'Philippines', dialCode: '+63', flag: '🇵🇭' },
+  { code: 'TH', name: 'Thailand', dialCode: '+66', flag: '🇹🇭' },
+  { code: 'VN', name: 'Vietnam', dialCode: '+84', flag: '🇻🇳' },
+  { code: 'SA', name: 'Saudi Arabia', dialCode: '+966', flag: '🇸🇦' },
+  { code: 'QA', name: 'Qatar', dialCode: '+974', flag: '🇶🇦' },
+  { code: 'KW', name: 'Kuwait', dialCode: '+965', flag: '🇰🇼' },
+  { code: 'OM', name: 'Oman', dialCode: '+968', flag: '🇴🇲' },
+  { code: 'IL', name: 'Israel', dialCode: '+972', flag: '🇮🇱' },
+  { code: 'TR', name: 'Turkey', dialCode: '+90', flag: '🇹🇷' },
+  { code: 'RU', name: 'Russia', dialCode: '+7', flag: '🇷🇺' },
+  { code: 'KR', name: 'South Korea', dialCode: '+82', flag: '🇰🇷' },
+  { code: 'HK', name: 'Hong Kong', dialCode: '+852', flag: '🇭🇰' },
 ];
 
 export function Contact() {
   const db = useFirestore();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  
+  // Country Selector State
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCountry, setSelectedCountry] = useState(COUNTRIES[0]);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
-    countryCode: '+91',
     subject: '',
     message: '',
     honeypot: '',
@@ -39,18 +90,43 @@ export function Contact() {
     { icon: MapPin, href: "#", label: profile.location },
   ];
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  // Close dropdown on click outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // Focus search when dropdown opens
+  useEffect(() => {
+    if (isDropdownOpen && searchInputRef.current) {
+      setTimeout(() => searchInputRef.current?.focus(), 100);
+    }
+  }, [isDropdownOpen]);
+
+  const filteredCountries = useMemo(() => {
+    const query = searchQuery.toLowerCase().trim();
+    if (!query) return COUNTRIES;
+    return COUNTRIES.filter(c => 
+      c.name.toLowerCase().includes(query) || 
+      c.dialCode.includes(query)
+    );
+  }, [searchQuery]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     let newValue = value;
 
-    // Sanitize phone number: digits only, max 10
     if (name === 'phone') {
       newValue = value.replace(/\D/g, '').slice(0, 10);
     }
 
     setFormData(prev => ({ ...prev, [name]: newValue }));
 
-    // Clear error for this field when user types
     if (errors[name]) {
       setErrors(prev => {
         const newErrors = { ...prev };
@@ -94,15 +170,12 @@ export function Contact() {
     const validationErrors = validateForm();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
-      
-      // Focus and scroll to first error
       const firstErrorKey = Object.keys(validationErrors)[0];
       const element = document.getElementsByName(firstErrorKey)[0];
       if (element) {
         element.focus();
         element.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
-
       toast({ 
         variant: "destructive", 
         title: "Validation Error", 
@@ -117,7 +190,8 @@ export function Contact() {
       name: formData.name.trim(),
       email: formData.email.trim(),
       phone: formData.phone.trim(),
-      countryCode: formData.countryCode,
+      countryCode: selectedCountry.dialCode,
+      countryName: selectedCountry.name,
       subject: formData.subject.trim(),
       message: formData.message.trim() || null,
       createdAt: serverTimestamp(),
@@ -136,8 +210,8 @@ export function Contact() {
       subject: `New Portfolio Enquiry | ${formData.subject.trim()} | Abhay Kumar Portfolio`,
       name: formData.name.trim(),
       email: formData.email.trim(),
-      phone: `${formData.countryCode} ${formData.phone.trim()}`,
-      country_code: formData.countryCode,
+      phone: `${selectedCountry.dialCode} ${formData.phone.trim()}`,
+      country: selectedCountry.name,
       inquiry_subject: formData.subject.trim(),
       message: formData.message.trim() || "No message provided",
       replyto: formData.email.trim(),
@@ -147,10 +221,7 @@ export function Contact() {
     const contactRef = collection(db, 'contactMessages');
 
     try {
-      // 1. Primary Operation: Save to Firestore
       await addDoc(contactRef, firestoreData);
-      
-      // 2. Success Feedback
       toast({
         variant: "success",
         title: (
@@ -162,19 +233,16 @@ export function Contact() {
         description: "Your enquiry has been received. I'll get back to you soon.",
       });
 
-      // 3. Reset form
       setFormData({ 
         name: '', 
         email: '', 
         phone: '', 
-        countryCode: '+91', 
         subject: '', 
         message: '', 
         honeypot: '' 
       });
       setErrors({});
 
-      // 4. Secondary Operation: Attempt Web3Forms independently
       fetch("https://api.web3forms.com/submit", {
         method: "POST",
         headers: {
@@ -182,16 +250,7 @@ export function Contact() {
           Accept: "application/json",
         },
         body: JSON.stringify(web3FormsData),
-      })
-      .then(async (response) => {
-        const result = await response.json();
-        if (!result.success) {
-          console.info("Web3Forms Notification Fallback: Message stored in DB, but email notification failed.", result.message);
-        }
-      })
-      .catch((emailErr) => {
-        console.info("Web3Forms Network Fallback: Message stored in DB, but email notification network failed.");
-      });
+      }).catch(console.error);
 
     } catch (err) {
       const permissionError = new FirestorePermissionError({
@@ -199,18 +258,11 @@ export function Contact() {
         operation: 'create',
         requestResourceData: firestoreData,
       } satisfies SecurityRuleContext);
-      
       errorEmitter.emit('permission-error', permissionError);
-      
       toast({
         variant: "destructive",
-        title: (
-          <div className="flex items-center gap-2">
-            <AlertCircle size={18} />
-            <span>Submission Failed</span>
-          </div>
-        ),
-        description: "Something went wrong saving your message. Please check your connection and try again.",
+        title: "Submission Failed",
+        description: "Something went wrong. Please check your connection.",
       });
     } finally {
       setIsSubmitting(false);
@@ -263,7 +315,7 @@ export function Contact() {
                   type="text" 
                   name="honeypot" 
                   value={formData.honeypot} 
-                  onChange={handleChange} 
+                  onChange={() => {}} 
                   tabIndex={-1} 
                   autoComplete="off" 
                 />
@@ -304,20 +356,87 @@ export function Contact() {
 
               <div className="space-y-2 lg:space-y-1">
                 <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground ml-1">Phone Number *</label>
-                <div className="flex items-center gap-2">
-                  <select
-                    name="countryCode"
-                    value={formData.countryCode}
-                    onChange={handleChange}
-                    className={cn(
-                      "w-[70px] md:w-[80px] shrink-0 bg-white/5 border border-white/10 rounded-xl px-2 py-3 lg:py-2 focus:outline-none focus:border-primary transition-colors text-sm md:text-base cursor-pointer",
-                      errors.phone && "border-destructive focus:border-destructive"
-                    )}
-                  >
-                    {COUNTRY_CODES.map(c => (
-                      <option key={c.code} value={c.code} className="bg-[#0d1117] text-white">{c.code}</option>
-                    ))}
-                  </select>
+                <div className="flex items-center gap-2 relative">
+                  {/* Premium Country Selector */}
+                  <div className="relative" ref={dropdownRef}>
+                    <button
+                      type="button"
+                      onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                      className={cn(
+                        "w-[70px] flex items-center justify-center gap-1 bg-white/5 border border-white/10 rounded-xl py-3 lg:py-2 focus:outline-none focus:border-primary transition-colors text-sm md:text-base cursor-pointer hover:bg-white/10",
+                        isDropdownOpen && "border-primary",
+                        errors.phone && "border-destructive"
+                      )}
+                    >
+                      <span>{selectedCountry.dialCode}</span>
+                      <ChevronDown size={14} className={cn("transition-transform", isDropdownOpen && "rotate-180")} />
+                    </button>
+
+                    <AnimatePresence>
+                      {isDropdownOpen && (
+                        <motion.div
+                          initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                          className="absolute bottom-full left-0 mb-2 w-[280px] sm:w-[320px] bg-[#0d1117] border border-white/10 rounded-2xl shadow-2xl z-[150] overflow-hidden"
+                        >
+                          {/* Search Header */}
+                          <div className="p-3 border-b border-white/5 bg-white/5">
+                            <div className="relative">
+                              <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                              <input 
+                                ref={searchInputRef}
+                                type="text"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                placeholder="Search country or code..."
+                                className="w-full bg-white/5 border border-white/10 rounded-lg pl-9 pr-4 py-2 text-xs focus:outline-none focus:border-primary transition-colors"
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Escape') setIsDropdownOpen(false);
+                                  e.stopPropagation();
+                                }}
+                              />
+                            </div>
+                          </div>
+
+                          {/* Country List */}
+                          <div className="max-h-[300px] overflow-y-auto custom-scrollbar p-1">
+                            {filteredCountries.length > 0 ? (
+                              filteredCountries.map((country) => (
+                                <button
+                                  key={country.code}
+                                  type="button"
+                                  onClick={() => {
+                                    setSelectedCountry(country);
+                                    setIsDropdownOpen(false);
+                                    setSearchQuery('');
+                                  }}
+                                  className={cn(
+                                    "w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs transition-colors hover:bg-white/5 group",
+                                    selectedCountry.code === country.code && "bg-primary/10 text-primary"
+                                  )}
+                                >
+                                  <div className="flex items-center gap-3">
+                                    <span className="text-base">{country.flag}</span>
+                                    <span className="font-medium group-hover:text-primary transition-colors">{country.name}</span>
+                                  </div>
+                                  <div className="flex items-center gap-2">
+                                    <span className="text-muted-foreground font-mono">{country.dialCode}</span>
+                                    {selectedCountry.code === country.code && <Check size={14} />}
+                                  </div>
+                                </button>
+                              ))
+                            ) : (
+                              <div className="py-8 text-center text-muted-foreground text-xs">
+                                No country found.
+                              </div>
+                            )}
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+
                   <input 
                     type="tel" 
                     name="phone"
