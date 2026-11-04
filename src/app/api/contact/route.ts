@@ -1,11 +1,10 @@
-
 import { Resend } from 'resend';
 import { NextResponse } from 'next/server';
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { name, email, subject, message, honeypot } = body;
+    const { name, email, subject, message, phone, countryCode, honeypot } = body;
 
     // 1. Honeypot check for bots
     if (honeypot) {
@@ -13,7 +12,7 @@ export async function POST(request: Request) {
     }
 
     // 2. Server-side validation
-    if (!name || !email || !subject || !message) {
+    if (!name || !email || !subject || !phone || !countryCode) {
       return NextResponse.json({ error: 'All fields are required' }, { status: 400 });
     }
 
@@ -21,6 +20,11 @@ export async function POST(request: Request) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return NextResponse.json({ error: 'Invalid email address' }, { status: 400 });
+    }
+
+    // Phone format validation (strictly 10 digits)
+    if (!/^\d{10}$/.test(phone)) {
+      return NextResponse.json({ error: 'Phone number must be exactly 10 digits' }, { status: 400 });
     }
 
     // 3. Environment Variable Check
@@ -35,8 +39,6 @@ export async function POST(request: Request) {
 
     const resend = new Resend(apiKey);
     const CONTACT_EMAIL = process.env.CONTACT_EMAIL || 'kumarabhay46790@gmail.com';
-    // Note: Resend requires a verified domain to send emails from. 
-    // If you haven't verified a domain, this will only work for sending to yourself if using onboarding@resend.dev
     const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
 
     // 4. Sanitize inputs
@@ -51,7 +53,9 @@ export async function POST(request: Request) {
     const safeName = sanitize(name);
     const safeEmail = sanitize(email);
     const safeSubject = sanitize(subject);
-    const safeMessage = sanitize(message);
+    const safeMessage = sanitize(message || 'No message provided');
+    const safePhone = sanitize(phone);
+    const safeCountryCode = sanitize(countryCode);
 
     const timestamp = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
 
@@ -73,6 +77,11 @@ export async function POST(request: Request) {
           <div style="margin-bottom: 15px;">
             <strong style="color: #666666;">Email Address:</strong>
             <p style="margin: 5px 0 0 0; font-size: 16px;">${safeEmail}</p>
+          </div>
+
+          <div style="margin-bottom: 15px;">
+            <strong style="color: #666666;">Phone Number:</strong>
+            <p style="margin: 5px 0 0 0; font-size: 16px;">${safeCountryCode} ${safePhone}</p>
           </div>
 
           <div style="margin-bottom: 15px;">

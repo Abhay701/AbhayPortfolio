@@ -64,15 +64,41 @@ export default function CaseStudyPage() {
 
   return (
     <main className="min-h-screen pb-24">
+      
+
+      {/* Responsive Compact Sticky Back Button */}
+      {isScrolled && (
+        <div className="fixed inset-x-0 top-0 z-[110] md:inset-x-auto md:top-4 md:left-4">
+          <div
+            className="bg-background/95 backdrop-blur-md border-b border-border md:bg-transparent md:backdrop-blur-none md:border-0"
+            style={{ paddingTop: 'env(safe-area-inset-top)' }}
+          >
+            <div className="h-14 flex items-center px-4 md:h-auto md:px-0">
+              <button
+                type="button"
+                aria-label="Back to Projects"
+                onClick={() => router.push('/#projects')}
+                className="w-10 h-10 shrink-0 rounded-full glass border border-white/10 shadow-lg flex items-center justify-center text-foreground transition-transform active:scale-95"
+              >
+                <ArrowLeft size={18} />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+
       {/* Header Section */}
       <section className="relative py-20 overflow-hidden bg-card/30">
         <div className="absolute inset-0 hero-gradient -z-10 opacity-30" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-12 h-8">
-            <div className={cn(
-              "z-[110] transition-all duration-300",
-              isScrolled ? "fixed top-4 left-4 md:relative md:top-0 md:left-0" : "relative"
-            )}>
+
+          <div className={cn(
+  "relative z-[1] transition-opacity duration-200",
+isScrolled ? "invisible" : "visible"
+)}>
+
               <button 
                 onClick={() => router.push('/#projects')}
                 className={cn(

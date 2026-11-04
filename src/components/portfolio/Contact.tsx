@@ -8,6 +8,7 @@ import { useFirestore } from '@/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError, type SecurityRuleContext } from '@/firebase/errors';
+import { cn } from '@/lib/utils';
 
 const COUNTRY_CODES = [
   { code: '+91', name: 'India' },
@@ -20,6 +21,7 @@ const COUNTRY_CODES = [
 export function Contact() {
   const db = useFirestore();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -39,24 +41,73 @@ export function Contact() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    let newValue = value;
+
+    // Sanitize phone number: digits only, max 10
+    if (name === 'phone') {
+      newValue = value.replace(/\D/g, '').slice(0, 10);
+    }
+
+    setFormData(prev => ({ ...prev, [name]: newValue }));
+
+    // Clear error for this field when user types
+    if (errors[name]) {
+      setErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[name];
+        return newErrors;
+      });
+    }
   };
 
   const validateForm = () => {
-    if (!formData.name.trim()) return "Name is required";
-    if (!formData.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) return "Valid email is required";
-    if (!formData.phone.trim()) return "Phone number is required";
-    if (!formData.subject.trim()) return "Subject is required";
-    return null;
+    const newErrors: Record<string, string> = {};
+    
+    if (!formData.name.trim()) {
+      newErrors.name = "Please enter your name.";
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!formData.email.trim()) {
+      newErrors.email = "Please enter your email address.";
+    } else if (!emailRegex.test(formData.email.trim())) {
+      newErrors.email = "Please enter a valid email address.";
+    }
+
+    if (!formData.phone.trim()) {
+      newErrors.phone = "Please enter your phone number.";
+    } else if (formData.phone.length !== 10) {
+      newErrors.phone = "Please enter a valid 10-digit mobile number.";
+    }
+
+    if (!formData.subject.trim()) {
+      newErrors.subject = "Please enter a subject.";
+    }
+
+    return newErrors;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (formData.honeypot) return;
 
-    const error = validateForm();
-    if (error) {
-      toast({ variant: "destructive", title: "Validation Error", description: error });
+    const validationErrors = validateForm();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      
+      // Focus and scroll to first error
+      const firstErrorKey = Object.keys(validationErrors)[0];
+      const element = document.getElementsByName(firstErrorKey)[0];
+      if (element) {
+        element.focus();
+        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+
+      toast({ 
+        variant: "destructive", 
+        title: "Validation Error", 
+        description: "Please correct the highlighted fields." 
+      });
       return;
     }
 
@@ -85,7 +136,7 @@ export function Contact() {
       subject: `New Portfolio Enquiry | ${formData.subject.trim()} | Abhay Kumar Portfolio`,
       name: formData.name.trim(),
       email: formData.email.trim(),
-      phone: formData.phone.trim(),
+      phone: `${formData.countryCode} ${formData.phone.trim()}`,
       country_code: formData.countryCode,
       inquiry_subject: formData.subject.trim(),
       message: formData.message.trim() || "No message provided",
@@ -96,10 +147,10 @@ export function Contact() {
     const contactRef = collection(db, 'contactMessages');
 
     try {
-      // 1. Primary Operation: Save to Firestore first
+      // 1. Primary Operation: Save to Firestore
       await addDoc(contactRef, firestoreData);
       
-      // 2. Success Feedback (Green Toast) - Triggered immediately after Firestore succeeds
+      // 2. Success Feedback
       toast({
         variant: "success",
         title: (
@@ -111,7 +162,7 @@ export function Contact() {
         description: "Your enquiry has been received. I'll get back to you soon.",
       });
 
-      // 3. Reset form immediately after DB success
+      // 3. Reset form
       setFormData({ 
         name: '', 
         email: '', 
@@ -121,8 +172,9 @@ export function Contact() {
         message: '', 
         honeypot: '' 
       });
+      setErrors({});
 
-      // 4. Secondary Operation: Attempt Web3Forms independently (Background)
+      // 4. Secondary Operation: Attempt Web3Forms independently
       fetch("https://api.web3forms.com/submit", {
         method: "POST",
         headers: {
@@ -134,16 +186,14 @@ export function Contact() {
       .then(async (response) => {
         const result = await response.json();
         if (!result.success) {
-          // Log failure internally but do not show error to user as message is safe in DB
-          console.info("Web3Forms Notification Fallback: Message stored in DB, but email failed.", result.message);
+          console.info("Web3Forms Notification Fallback: Message stored in DB, but email notification failed.", result.message);
         }
       })
       .catch((emailErr) => {
-        console.info("Web3Forms Network Fallback: Message stored in DB, but email network failed.");
+        console.info("Web3Forms Network Fallback: Message stored in DB, but email notification network failed.");
       });
 
     } catch (err) {
-      // Handle actual Firestore failure
       const permissionError = new FirestorePermissionError({
         path: contactRef.path,
         operation: 'create',
@@ -205,9 +255,9 @@ export function Contact() {
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="glass p-6 md:p-8 lg:p-6 rounded-2xl md:rounded-[2.5rem] w-full lg:mt-0 scroll-mt-24 md:scroll-mt-0"
+            className="glass p-6 md:p-8 lg:p-6 rounded-2xl md:rounded-[2.5rem] w-full lg:mt-0 lg:p-4 scroll-mt-24 md:scroll-mt-0"
           >
-            <form onSubmit={handleSubmit} className="space-y-5 md:space-y-6 lg:space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-5 md:space-y-6 lg:space-y-3">
               <div className="hidden">
                 <input 
                   type="text" 
@@ -219,7 +269,7 @@ export function Contact() {
                 />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 lg:gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 lg:gap-3">
                 <div className="space-y-2 lg:space-y-1">
                   <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground ml-1">Name *</label>
                   <input 
@@ -228,30 +278,41 @@ export function Contact() {
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 lg:py-2 focus:outline-none focus:border-primary transition-colors text-sm md:text-base"
+                    className={cn(
+                      "w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 lg:py-2 focus:outline-none focus:border-primary transition-colors text-sm md:text-base",
+                      errors.name && "border-destructive focus:border-destructive"
+                    )}
                   />
+                  {errors.name && <p className="text-destructive text-[10px] font-bold mt-1 ml-1 uppercase tracking-wider">{errors.name}</p>}
                 </div>
                 <div className="space-y-2 lg:space-y-1">
-                  <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground ml-1">Email *</label>
+                  <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground ml-1">Email Address *</label>
                   <input 
                     type="email" 
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 lg:py-2 focus:outline-none focus:border-primary transition-colors text-sm md:text-base"
+                    className={cn(
+                      "w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 lg:py-2 focus:outline-none focus:border-primary transition-colors text-sm md:text-base",
+                      errors.email && "border-destructive focus:border-destructive"
+                    )}
                   />
+                  {errors.email && <p className="text-destructive text-[10px] font-bold mt-1 ml-1 uppercase tracking-wider">{errors.email}</p>}
                 </div>
               </div>
 
               <div className="space-y-2 lg:space-y-1">
                 <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground ml-1">Phone Number *</label>
-                <div className="flex flex-col sm:flex-row gap-2">
+                <div className="flex items-center gap-2">
                   <select
                     name="countryCode"
                     value={formData.countryCode}
                     onChange={handleChange}
-                    className="w-full sm:w-32 bg-white/5 border border-white/10 rounded-xl px-2 py-3 lg:py-2 focus:outline-none focus:border-primary transition-colors text-sm md:text-base"
+                    className={cn(
+                      "w-auto shrink-0 bg-white/5 border border-white/10 rounded-xl px-2 py-3 lg:py-2 focus:outline-none focus:border-primary transition-colors text-sm md:text-base",
+                      errors.phone && "border-destructive focus:border-destructive"
+                    )}
                   >
                     {COUNTRY_CODES.map(c => (
                       <option key={c.code} value={c.code} className="bg-[#0d1117] text-white">{c.code} ({c.name})</option>
@@ -260,12 +321,18 @@ export function Contact() {
                   <input 
                     type="tel" 
                     name="phone"
+                    inputMode="numeric"
                     value={formData.phone}
                     onChange={handleChange}
+                    placeholder="Enter 10-digit mobile number"
                     required
-                    className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 lg:py-2 focus:outline-none focus:border-primary transition-colors text-sm md:text-base"
+                    className={cn(
+                      "flex-1 min-w-0 bg-white/5 border border-white/10 rounded-xl px-4 py-3 lg:py-2 focus:outline-none focus:border-primary transition-colors text-sm md:text-base",
+                      errors.phone && "border-destructive focus:border-destructive"
+                    )}
                   />
                 </div>
+                {errors.phone && <p className="text-destructive text-[10px] font-bold mt-1 ml-1 uppercase tracking-wider">{errors.phone}</p>}
               </div>
 
               <div className="space-y-2 lg:space-y-1">
@@ -276,8 +343,12 @@ export function Contact() {
                   value={formData.subject}
                   onChange={handleChange}
                   required
-                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 lg:py-2 focus:outline-none focus:border-primary transition-colors text-sm md:text-base"
+                  className={cn(
+                    "w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 lg:py-2 focus:outline-none focus:border-primary transition-colors text-sm md:text-base",
+                    errors.subject && "border-destructive focus:border-destructive"
+                  )}
                 />
+                {errors.subject && <p className="text-destructive text-[10px] font-bold mt-1 ml-1 uppercase tracking-wider">{errors.subject}</p>}
               </div>
 
               <div className="space-y-2 lg:space-y-1">
@@ -294,7 +365,7 @@ export function Contact() {
               <button 
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full bg-primary text-primary-foreground py-3.5 md:py-4 lg:py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 hover:translate-y-[-2px] transition-all shadow-lg shadow-primary/20 disabled:opacity-70 disabled:cursor-not-allowed text-sm md:text-base active:scale-95"
+                className="w-full bg-primary text-primary-foreground py-3.5 md:py-4 lg:py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 hover:translate-y-[-2px] transition-all shadow-lg shadow-primary/20 disabled:opacity-70 disabled:cursor-not-allowed text-sm md:text-base active:scale-95 mt-2"
               >
                 {isSubmitting ? (
                   <>
