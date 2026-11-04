@@ -283,6 +283,15 @@ export const projectsData: Record<string, CaseStudyData> = {
       { title: "Production Monitoring", icon: Layers, description: "Visibility into textile manufacturing stages." }
     ],
     screenshotCategories: ["General", "Operations", "Dashboards"],
-    screenshots: [] 
+    screenshots: [
+      {
+        id: "af-1",
+        title: "Fabric Stock Management Dashboard",
+        category: "Dashboards",
+        chapter: "Inventory Management",
+        path: "/projects/anand-fabrics/Fabric_Stock_1.png",
+        description: "Comprehensive view of fabric stock inventory, tracking batch numbers, weights, suppliers, and real-time status updates."
+      }
+    ] 
   }
 };
