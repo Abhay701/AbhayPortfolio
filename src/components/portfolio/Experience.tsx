@@ -34,30 +34,30 @@ export function Experience() {
               </div>
               
               {/* Content Card */}
-              <div className="w-[calc(100%-3.5rem)] md:w-[calc(50%-2.5rem)] glass p-5 md:p-8 rounded-2xl md:rounded-3xl transition-all group-hover:border-primary/50 ml-4 md:ml-0">
+              <div className="w-[calc(100%-3rem)] md:w-[calc(50%-2.5rem)] glass p-5 md:p-8 rounded-2xl md:rounded-3xl transition-all group-hover:border-primary/50 ml-6 md:ml-0">
                 <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2 mb-4">
                   <div>
-                    <h3 className="text-lg md:text-xl font-bold leading-tight">{item.role}</h3>
-                    <p className="text-primary font-semibold text-sm md:text-base">{item.company}</p>
+                    <h3 className="text-base md:text-xl font-bold leading-tight">{item.role}</h3>
+                    <p className="text-primary font-semibold text-xs md:text-base">{item.company}</p>
                   </div>
-                  <div className="flex items-center gap-1.5 text-[10px] md:text-xs text-muted-foreground bg-white/5 px-2.5 py-1 rounded-full w-fit shrink-0">
-                    <Calendar size={12} />
+                  <div className="flex items-center gap-1.5 text-[9px] md:text-xs text-muted-foreground bg-white/5 px-2 py-0.5 md:px-2.5 md:py-1 rounded-full w-fit shrink-0">
+                    <Calendar size={10} className="md:w-3 md:h-3" />
                     {item.period}
                   </div>
                 </div>
 
-                <div className="flex flex-wrap items-center gap-2 text-xs md:text-sm text-muted-foreground mb-4 md:mb-6">
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[10px] md:text-sm text-muted-foreground mb-4 md:mb-6">
                   <div className="flex items-center gap-1">
-                    <MapPin size={12} />
+                    <MapPin size={10} className="md:w-3 md:h-3" />
                     <span>{item.location}</span>
                   </div>
-                  <span className="hidden sm:inline mx-1">•</span>
+                  <span className="hidden sm:inline mx-1 text-primary/30">•</span>
                   <span>{item.type}</span>
                 </div>
 
                 <ul className="space-y-2 md:space-y-3">
                   {item.responsibilities.map((res, i) => (
-                    <li key={i} className="flex items-start gap-3 text-xs md:text-sm text-muted-foreground leading-relaxed">
+                    <li key={i} className="flex items-start gap-2 text-[11px] md:text-sm text-muted-foreground leading-relaxed">
                       <span className="w-1.5 h-1.5 rounded-full bg-primary/50 mt-1.5 shrink-0" />
                       {res}
                     </li>

@@ -32,10 +32,14 @@ export function Navbar({ onResumeClick }: NavbarProps) {
     if (onResumeClick) onResumeClick();
   };
 
+  const handleLinkClick = () => {
+    setIsOpen(false);
+  };
+
   return (
     <nav className={cn(
-      "fixed top-0 w-full z-50 transition-all duration-300",
-      scrolled ? "glass py-3" : "bg-transparent py-5"
+      "fixed top-0 w-full z-[100] transition-all duration-300",
+      scrolled || isOpen ? "glass py-3" : "bg-transparent py-5"
     )}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center">
@@ -75,8 +79,8 @@ export function Navbar({ onResumeClick }: NavbarProps) {
 
           {/* Mobile Toggle */}
           <div className="md:hidden">
-            <button onClick={() => setIsOpen(!isOpen)} className="text-foreground">
-              {isOpen ? <X size={24} /> : <Menu size={24} />}
+            <button onClick={() => setIsOpen(!isOpen)} className="text-foreground p-2" aria-label="Toggle menu">
+              {isOpen ? <X size={28} /> : <Menu size={28} />}
             </button>
           </div>
         </div>
@@ -86,28 +90,28 @@ export function Navbar({ onResumeClick }: NavbarProps) {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="md:hidden glass border-t border-white/10"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="md:hidden absolute top-full left-0 w-full glass border-b border-white/10 overflow-hidden"
           >
-            <div className="px-4 pt-2 pb-6 space-y-1">
+            <div className="px-4 pt-2 pb-8 space-y-1">
               {navLinks.map((link) => (
                 <a
                   key={link.name}
                   href={link.href}
-                  onClick={() => setIsOpen(false)}
-                  className="block px-3 py-4 text-base font-medium text-muted-foreground hover:text-primary border-b border-white/5"
+                  onClick={handleLinkClick}
+                  className="block px-4 py-5 text-lg font-medium text-muted-foreground hover:text-primary border-b border-white/5 active:bg-white/5 transition-colors"
                 >
                   {link.name}
                 </a>
               ))}
-              <div className="pt-4">
+              <div className="pt-6">
                 <button 
                   onClick={handleResumeClick}
-                  className="w-full bg-primary text-primary-foreground py-3 rounded-xl font-bold flex items-center justify-center gap-2 active:scale-95 transition-transform"
+                  className="w-full bg-primary text-primary-foreground py-4 rounded-xl font-bold flex items-center justify-center gap-2 active:scale-95 transition-transform text-base"
                 >
-                  <FileText size={18} />
+                  <FileText size={20} />
                   View Resume
                 </button>
               </div>

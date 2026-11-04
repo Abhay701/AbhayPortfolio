@@ -44,7 +44,7 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
   const resumePdfUrl = '/Abhay_Kumar_Resume.pdf';
 
   // Constants
-  const MIN_SCALE = 0.5;
+  const MIN_SCALE = 0.4;
   const MAX_SCALE = 3;
   const SCALE_STEP = 0.25;
 
@@ -62,7 +62,6 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
-      // Reset scroll position to top when opening
       if (viewportRef.current) {
         viewportRef.current.scrollTop = 0;
       }
@@ -106,9 +105,7 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
 
   // Pan Logic (Mouse)
   const handleMouseDown = (e: React.MouseEvent) => {
-    if (isDesktop && scale <= 1) return;
-    if (!isDesktop && scale <= 1) return;
-    
+    if (scale <= 1) return;
     setIsDragging(true);
     setDragStart({ x: e.clientX - position.x, y: e.clientY - position.y });
   };
@@ -210,7 +207,7 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-2 md:p-6 overflow-hidden">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-0 xs:p-2 md:p-6 overflow-hidden">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -223,47 +220,46 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
             initial={{ opacity: 0, scale: 0.95, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 10 }}
-            className="relative w-full max-w-5xl h-full max-h-[96vh] flex flex-col glass rounded-3xl overflow-hidden border border-white/10 shadow-2xl bg-card/60"
+            className="relative w-full max-w-5xl h-full max-h-screen xs:max-h-[96vh] flex flex-col glass rounded-none xs:rounded-3xl overflow-hidden border-0 xs:border border-white/10 shadow-2xl bg-card/60"
           >
             {/* Compact Header with Zoom Controls */}
-            <div className="relative z-20 flex items-center justify-between px-4 py-2 border-b border-white/5 bg-white/5 gap-2">
-              <div className="flex items-center gap-3 min-w-0">
+            <div className="relative z-20 flex items-center justify-between px-3 md:px-4 py-2 md:py-3 border-b border-white/5 bg-white/5 gap-2">
+              <div className="flex items-center gap-2 md:gap-3 min-w-0">
                 <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center shrink-0">
                   <FileText className="text-primary" size={16} />
                 </div>
                 <div className="truncate">
-                  <h3 className="text-xs font-bold leading-none mb-0.5">Resume Preview</h3>
-                  <p className="text-[9px] text-muted-foreground uppercase tracking-widest leading-none truncate hidden sm:block">Abhay Kumar | Full Stack Developer</p>
+                  <h3 className="text-[10px] md:text-xs font-bold leading-none mb-0.5">Resume</h3>
+                  <p className="text-[8px] md:text-[9px] text-muted-foreground uppercase tracking-widest leading-none truncate hidden xs:block">Abhay Kumar</p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 sm:gap-4 shrink-0">
+              <div className="flex items-center gap-2 md:gap-4 shrink-0">
                 {!loading && !error && (
-                  <div className="flex items-center gap-0.5 sm:gap-1 bg-white/5 p-1 rounded-xl border border-white/10 shadow-sm">
+                  <div className="flex items-center gap-0.5 sm:gap-1 bg-white/5 p-0.5 md:p-1 rounded-lg md:rounded-xl border border-white/10 shadow-sm">
                     <button 
                       onClick={handleZoomOut}
                       disabled={scale <= MIN_SCALE}
-                      className="w-7 h-7 rounded-lg flex items-center justify-center hover:bg-white/10 text-muted-foreground hover:text-foreground disabled:opacity-30 transition-colors"
+                      className="w-7 h-7 rounded-md md:rounded-lg flex items-center justify-center hover:bg-white/10 text-muted-foreground hover:text-foreground disabled:opacity-30 transition-colors"
                     >
                       <Minus size={14} />
                     </button>
-                    <div className="px-1 sm:px-2 min-w-[40px] sm:min-w-[50px] text-center">
-                      <span className="text-[9px] font-bold uppercase tracking-wider text-primary">
+                    <div className="px-1 min-w-[30px] md:min-w-[50px] text-center">
+                      <span className="text-[8px] md:text-[9px] font-bold text-primary">
                         {Math.round(scale * 100)}%
                       </span>
                     </div>
                     <button 
                       onClick={handleZoomIn}
                       disabled={scale >= MAX_SCALE}
-                      className="w-7 h-7 rounded-lg flex items-center justify-center hover:bg-white/10 text-muted-foreground hover:text-foreground disabled:opacity-30 transition-colors"
+                      className="w-7 h-7 rounded-md md:rounded-lg flex items-center justify-center hover:bg-white/10 text-muted-foreground hover:text-foreground disabled:opacity-30 transition-colors"
                     >
                       <Plus size={14} />
                     </button>
                     <div className="w-[1px] h-3 bg-white/10 mx-0.5" />
                     <button 
                       onClick={resetZoom}
-                      className="w-7 h-7 rounded-lg flex items-center justify-center hover:bg-white/10 text-muted-foreground hover:text-primary transition-colors"
-                      title="Reset Zoom"
+                      className="w-7 h-7 rounded-md md:rounded-lg flex items-center justify-center hover:bg-white/10 text-muted-foreground hover:text-primary transition-colors"
                     >
                       <RotateCcw size={14} />
                     </button>
@@ -274,7 +270,7 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                   onClick={onClose}
                   className="w-8 h-8 rounded-full flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-white/10 transition-all active:scale-95"
                 >
-                  <X size={18} />
+                  <X size={20} />
                 </button>
               </div>
             </div>
@@ -283,8 +279,7 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
             <div 
               ref={viewportRef}
               className={cn(
-                "relative flex-1 bg-black/20 flex items-start justify-center cursor-default select-none",
-                isDesktop && scale <= 1 ? "overflow-y-auto" : "overflow-hidden"
+                "relative flex-1 bg-black/20 flex items-start justify-center cursor-default select-none overflow-hidden"
               )}
               onMouseDown={handleMouseDown}
               onMouseMove={handleMouseMove}
@@ -299,20 +294,20 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                   <motion.div
                     animate={{ rotate: 360 }}
                     transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
-                    className="w-12 h-12 rounded-full border-2 border-primary/20 border-t-primary"
+                    className="w-10 h-10 md:w-12 md:h-12 rounded-full border-2 border-primary/20 border-t-primary"
                   />
-                  <p className="text-sm font-medium text-muted-foreground animate-pulse">Preparing Your Resume...</p>
+                  <p className="text-xs font-medium text-muted-foreground animate-pulse">Loading Document...</p>
                 </div>
               )}
 
               {error && (
-                <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 text-center">
-                  <AlertCircle className="text-destructive" size={48} />
+                <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 text-center p-4">
+                  <AlertCircle className="text-destructive" size={40} />
                   <div>
-                    <h4 className="text-lg font-bold mb-1">Failed to Load</h4>
+                    <h4 className="text-base font-bold mb-2">Failed to Load</h4>
                     <button
                       onClick={() => { setLoading(true); setError(false); }}
-                      className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 border border-white/10 hover:border-primary/50 transition-all text-sm font-bold"
+                      className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 border border-white/10 hover:border-primary/50 transition-all text-xs font-bold"
                     >
                       <RefreshCw size={14} /> Retry
                     </button>
@@ -322,10 +317,7 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
 
               {/* Zoomable Image Container */}
               <div 
-                className={cn(
-                  "w-full flex items-start justify-center transition-transform duration-200 ease-out",
-                  isDesktop && scale <= 1 ? "h-auto" : "h-full"
-                )}
+                className="w-full flex items-start justify-center transition-transform duration-200 ease-out"
                 style={{
                   transform: `translate(${position.x}px, ${position.y}px) scale(${scale})`,
                   transformOrigin: 'top center',
@@ -338,7 +330,7 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                   alt="Resume Preview"
                   className={cn(
                     "object-contain shadow-2xl pointer-events-none transition-opacity duration-300",
-                    isDesktop ? "w-full max-w-[calc(100%-48px)] h-auto my-8" : "max-w-full max-h-full",
+                    "w-full max-w-[calc(100%-20px)] md:max-w-[calc(100%-48px)] h-auto my-4 md:my-8",
                     loading || error ? "opacity-0" : "opacity-100"
                   )}
                   onLoad={() => setLoading(false)}
@@ -349,36 +341,32 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
 
             {/* Floating Action Menu (Bottom-Right) */}
             {!loading && !error && (
-              <div className="absolute bottom-6 right-6 z-40 flex flex-col items-end gap-2" ref={dropdownRef}>
+              <div className="absolute bottom-4 right-4 md:bottom-6 md:right-6 z-40 flex flex-col items-end gap-2" ref={dropdownRef}>
                 <AnimatePresence>
                   {downloadOpen && (
                     <motion.div
                       initial={{ opacity: 0, scale: 0.9, y: 10 }}
                       animate={{ opacity: 1, scale: 1, y: 0 }}
                       exit={{ opacity: 0, scale: 0.9, y: 10 }}
-                      className="glass border border-white/10 rounded-2xl overflow-hidden shadow-2xl min-w-[160px] mb-2"
+                      className="glass border border-white/10 rounded-xl md:rounded-2xl overflow-hidden shadow-2xl min-w-[140px] md:min-w-[160px] mb-2"
                     >
                       <button
                         onClick={() => handleDownload('pdf')}
-                        disabled={isDownloading}
-                        className="w-full flex items-center justify-between px-4 py-3 text-xs font-bold hover:bg-white/10 transition-colors border-b border-white/5 text-left disabled:opacity-50"
+                        className="w-full flex items-center justify-between px-3 md:px-4 py-3 text-[10px] md:text-xs font-bold hover:bg-white/10 transition-colors border-b border-white/5 text-left"
                       >
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2 md:gap-3">
                           <FileText size={14} className="text-primary" />
-                          Download PDF
+                          PDF Format
                         </div>
-                        {isDownloading && <Loader2 size={12} className="animate-spin" />}
                       </button>
                       <button
                         onClick={() => handleDownload('jpg')}
-                        disabled={isDownloading}
-                        className="w-full flex items-center justify-between px-4 py-3 text-xs font-bold hover:bg-white/10 transition-colors text-left disabled:opacity-50"
+                        className="w-full flex items-center justify-between px-3 md:px-4 py-3 text-[10px] md:text-xs font-bold hover:bg-white/10 transition-colors text-left"
                       >
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2 md:gap-3">
                           <ImageIcon size={14} className="text-secondary" />
-                          Download JPG
+                          JPG Format
                         </div>
-                        {isDownloading && <Loader2 size={12} className="animate-spin" />}
                       </button>
                     </motion.div>
                   )}
@@ -388,14 +376,14 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                   onClick={() => setDownloadOpen(!downloadOpen)}
                   disabled={isDownloading}
                   className={cn(
-                    "w-12 h-12 rounded-2xl glass flex items-center justify-center text-foreground border border-white/10 hover:border-primary/50 hover:bg-primary/10 hover:text-primary transition-all shadow-xl active:scale-95 group",
+                    "w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl glass flex items-center justify-center text-foreground border border-white/10 hover:border-primary/50 transition-all shadow-xl active:scale-95",
                     isDownloading && "opacity-70 cursor-not-allowed"
                   )}
                 >
                   {isDownloading ? (
-                    <Loader2 size={20} className="animate-spin text-primary" />
+                    <Loader2 size={18} className="animate-spin text-primary" />
                   ) : (
-                    <Download size={20} className={cn("transition-transform", downloadOpen ? "scale-90" : "group-hover:translate-y-0.5")} />
+                    <Download size={18} className={cn("transition-transform", downloadOpen && "scale-90")} />
                   )}
                 </button>
               </div>
