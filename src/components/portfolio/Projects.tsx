@@ -78,7 +78,6 @@ export function Projects() {
                     isFeatured ? "h-64 sm:h-80 lg:h-full" : "h-48 sm:h-56",
                     isHalfWidth && "md:h-[220px]"
                   )}>
-                    <div className="absolute inset-0 bg-primary/10 group-hover:bg-transparent transition-all z-10" />
                     <Image 
                       src={firstScreenshot} 
                       alt={project.title}
