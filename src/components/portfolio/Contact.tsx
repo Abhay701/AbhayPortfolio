@@ -61,8 +61,8 @@ export function Contact() {
     }
 
     setIsSubmitting(true);
-    const contactRef = collection(db, 'contactMessages');
     
+    // Data for Firestore
     const firestoreData = {
       name: formData.name.trim(),
       email: formData.email.trim(),
@@ -74,40 +74,85 @@ export function Contact() {
       status: 'unread'
     };
 
-    addDoc(contactRef, firestoreData)
-      .then(() => {
+    // Data for Web3Forms
+    const web3FormsData = {
+      access_key: process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY || "ccdd135d-3d05-4ae6-a82d-2e150fe4dc36",
+      from_name: "Abhay Kumar | Portfolio Contact Form",
+      subject: `New Portfolio Enquiry: ${formData.subject.trim()}`,
+      name: formData.name.trim(),
+      email: formData.email.trim(),
+      phone: `${formData.countryCode} ${formData.phone.trim()}`,
+      country_code: formData.countryCode,
+      message_content: formData.message.trim() || "No message provided",
+      replyto: formData.email.trim(),
+      submission_time: new Date().toLocaleString(),
+    };
+
+    const contactRef = collection(db, 'contactMessages');
+
+    try {
+      // 1. Submit to Firestore first
+      await addDoc(contactRef, firestoreData);
+      
+      let emailSuccess = false;
+      try {
+        // 2. Submit to Web3Forms
+        const response = await fetch("https://api.web3forms.com/submit", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify(web3FormsData),
+        });
+
+        const result = await response.json();
+        emailSuccess = result.success;
+      } catch (emailErr) {
+        console.error("Web3Forms error:", emailErr);
+      }
+
+      // Success feedback based on both operations
+      if (emailSuccess) {
         toast({
-          title: "Message Submitted!",
-          description: "Your message has been submitted successfully!",
+          title: "Message Sent!",
+          description: "Your message has been saved and sent successfully!",
         });
-        setFormData({ 
-          name: '', 
-          email: '', 
-          phone: '', 
-          countryCode: '+91', 
-          subject: '', 
-          message: '', 
-          honeypot: '' 
-        });
-      })
-      .catch(async (err) => {
-        const permissionError = new FirestorePermissionError({
-          path: contactRef.path,
-          operation: 'create',
-          requestResourceData: firestoreData,
-        } satisfies SecurityRuleContext);
-        
-        errorEmitter.emit('permission-error', permissionError);
-        
+      } else {
         toast({
-          variant: "destructive",
-          title: "Submission Failed",
-          description: "Permission denied. Check Firestore security rules.",
+          title: "Message Saved",
+          description: "Saved to database, but email failed. I'll still see your message!",
         });
-      })
-      .finally(() => {
-        setIsSubmitting(false);
+      }
+
+      // Reset form
+      setFormData({ 
+        name: '', 
+        email: '', 
+        phone: '', 
+        countryCode: '+91', 
+        subject: '', 
+        message: '', 
+        honeypot: '' 
       });
+
+    } catch (err) {
+      const permissionError = new FirestorePermissionError({
+        path: contactRef.path,
+        operation: 'create',
+        requestResourceData: firestoreData,
+      } satisfies SecurityRuleContext);
+      
+      errorEmitter.emit('permission-error', permissionError);
+      
+      toast({
+        variant: "destructive",
+        title: "Submission Failed",
+        description: "Something went wrong. Please check your connection and try again.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
