@@ -55,8 +55,8 @@ export function Hero({ onResumeClick, guideState, onViewProjectsClick }: HeroPro
               <span className="text-sm md:text-base">{profile.location}</span>
             </div>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
-              <div className="relative w-full sm:w-auto">
+            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-6">
+              <div className="flex items-center gap-3 w-full sm:w-auto justify-center lg:justify-start">
                 {guideState === 'hero-guide' && <NavigationIndicator />}
                 <a 
                   href="#macro-print-pack" 
@@ -69,11 +69,9 @@ export function Hero({ onResumeClick, guideState, onViewProjectsClick }: HeroPro
                 </a>
               </div>
               <div className="flex w-full sm:w-auto gap-4">
-                {/* Desktop Link */}
                 <a href="#contact" className="hidden md:flex flex-1 sm:flex-none glass text-foreground px-6 py-4 rounded-xl font-bold items-center justify-center gap-2 hover:bg-white/5 transition-all active:scale-95 text-sm md:text-base">
                   Contact
                 </a>
-                {/* Mobile Link */}
                 <a href="#contact-form" className="flex md:hidden flex-1 sm:flex-none glass text-foreground px-6 py-4 rounded-xl font-bold items-center justify-center gap-2 hover:bg-white/5 transition-all active:scale-95 text-sm md:text-base">
                   Contact
                 </a>

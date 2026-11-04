@@ -7,27 +7,9 @@ export function useNavigationGuide() {
   const [state, setState] = useState<GuideState>('dismissed');
   const [isAutoScrolling, setIsAutoScrolling] = useState(false);
 
-  // Initialize and handle visit limit
+  // Initialize guide on every fresh load/refresh
   useEffect(() => {
-    const VISIT_LIMIT = 2;
-    const STORAGE_KEY = 'portfolio-guide-visits';
-    const SESSION_KEY = 'portfolio-guide-session-active';
-
-    try {
-      const visits = parseInt(localStorage.getItem(STORAGE_KEY) || '0', 10);
-      const isSessionActive = sessionStorage.getItem(SESSION_KEY);
-
-      if (visits < VISIT_LIMIT) {
-        if (!isSessionActive) {
-          const newVisits = visits + 1;
-          localStorage.setItem(STORAGE_KEY, newVisits.toString());
-          sessionStorage.setItem(SESSION_KEY, 'true');
-        }
-        setState('hero-guide');
-      }
-    } catch (e) {
-      console.error('Failed to handle guide storage', e);
-    }
+    setState('hero-guide');
   }, []);
 
   const dismissGuide = useCallback(() => {

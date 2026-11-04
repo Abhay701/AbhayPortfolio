@@ -142,7 +142,7 @@ export function Projects({ guideState, onExploreProjectClick }: ProjectsProps) {
                     </div>
 
                     <div className="flex flex-wrap items-center gap-4">
-                      <div className="relative w-full sm:w-auto">
+                      <div className="flex items-center gap-3 w-full sm:w-auto">
                         {idx === 0 && guideState === 'project-guide' && <NavigationIndicator />}
                         <Link 
                           href={`/projects/${project.slug}`}
