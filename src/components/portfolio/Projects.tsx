@@ -95,7 +95,7 @@ export function Projects() {
                     <div>
                       {/* Status Badge positioned above Category */}
                       <div className="flex mb-4">
-                        <span className="bg-primary text-primary-foreground px-3 py-1 md:px-4 md:py-1.5 rounded-full text-[10px] md:text-xs font-bold shadow-lg shadow-primary/20 flex items-center gap-1.5">
+                        <span className="bg-[#22C55E] text-[#052E16] px-3 py-1 md:px-4 md:py-1.5 rounded-full text-[10px] md:text-xs font-bold shadow-lg shadow-green-500/20 flex items-center gap-1.5">
                           <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
                           {project.status}
                         </span>
