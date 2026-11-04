@@ -113,7 +113,7 @@ export function ProjectGallery({ screenshots, categories }: ProjectGalleryProps)
       {isMounted && createPortal(
         <AnimatePresence>
           {selectedImageIdx !== null && filteredScreenshots[selectedImageIdx] && (
-            <div className="fixed inset-0 z-[9999] flex items-center justify-center p-2 xs:p-4 md:p-8">
+            <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 xs:p-6 md:p-10">
               {/* Background Overlay */}
               <motion.div
                 initial={{ opacity: 0 }}
@@ -128,12 +128,12 @@ export function ProjectGallery({ screenshots, categories }: ProjectGalleryProps)
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
-                className="relative z-10 pointer-events-auto w-full max-w-6xl aspect-video rounded-2xl md:rounded-3xl overflow-hidden glass border border-white/10 shadow-2xl"
+                className="relative z-10 pointer-events-auto w-full max-w-6xl h-full flex flex-col rounded-2xl md:rounded-3xl overflow-hidden glass border border-white/10 shadow-2xl bg-black/40"
                 role="dialog"
                 aria-modal="true"
                 aria-label="Screenshot preview"
               >
-                {/* Close Button */}
+                {/* Close Button - Stays inside the card top-right */}
                 <button
                   type="button"
                   onClick={(e) => {
@@ -146,55 +146,57 @@ export function ProjectGallery({ screenshots, categories }: ProjectGalleryProps)
                   <X size={24} />
                 </button>
 
-                {/* Screenshot */}
-                <Image
-                  src={filteredScreenshots[selectedImageIdx].path}
-                  alt={filteredScreenshots[selectedImageIdx].title}
-                  fill
-                  sizes="100vw"
-                  className="object-contain"
-                  priority
-                />
+                {/* Top Image Area */}
+                <div className="relative flex-1 min-h-0 w-full flex items-center justify-center p-2 md:p-4">
+                  <Image
+                    src={filteredScreenshots[selectedImageIdx].path}
+                    alt={filteredScreenshots[selectedImageIdx].title}
+                    fill
+                    sizes="100vw"
+                    className="object-contain"
+                    priority
+                  />
 
-                {/* Navigation Buttons */}
-                <div className="absolute inset-y-0 left-2 md:left-4 flex items-center z-20 pointer-events-none">
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handlePrev();
-                    }}
-                    className="w-10 h-10 md:w-12 md:h-12 rounded-full glass flex items-center justify-center text-white hover:text-primary transition-all hover:scale-110 active:scale-95 cursor-pointer pointer-events-auto"
-                    aria-label="Previous image"
-                  >
-                    <ChevronLeft size={24} />
-                  </button>
+                  {/* Navigation Buttons - Centered in image area */}
+                  <div className="absolute inset-y-0 left-2 md:left-4 flex items-center z-20 pointer-events-none">
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handlePrev();
+                      }}
+                      className="w-10 h-10 md:w-12 md:h-12 rounded-full glass flex items-center justify-center text-white hover:text-primary transition-all hover:scale-110 active:scale-95 cursor-pointer pointer-events-auto shadow-lg"
+                      aria-label="Previous image"
+                    >
+                      <ChevronLeft size={24} />
+                    </button>
+                  </div>
+
+                  <div className="absolute inset-y-0 right-2 md:right-4 flex items-center z-20 pointer-events-none">
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleNext();
+                      }}
+                      className="w-10 h-10 md:w-12 md:h-12 rounded-full glass flex items-center justify-center text-white hover:text-primary transition-all hover:scale-110 active:scale-95 cursor-pointer pointer-events-auto shadow-lg"
+                      aria-label="Next image"
+                    >
+                      <ChevronRight size={24} />
+                    </button>
+                  </div>
                 </div>
 
-                <div className="absolute inset-y-0 right-2 md:right-4 flex items-center z-20 pointer-events-none">
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleNext();
-                    }}
-                    className="w-10 h-10 md:w-12 md:h-12 rounded-full glass flex items-center justify-center text-white hover:text-primary transition-all hover:scale-110 active:scale-95 cursor-pointer pointer-events-auto"
-                    aria-label="Next image"
-                  >
-                    <ChevronRight size={24} />
-                  </button>
-                </div>
-
-                {/* Screenshot Caption */}
-                <div className="absolute bottom-0 inset-x-0 p-4 md:p-8 bg-gradient-to-t from-black/90 via-black/40 to-transparent z-20 pointer-events-none">
-                  <p className="text-primary font-bold text-[10px] md:text-xs uppercase tracking-widest mb-0.5 md:mb-1">
+                {/* Bottom Caption Area - Dedicated section */}
+                <div className="w-full p-4 md:p-8 bg-black/80 border-t border-white/10 shrink-0 overflow-y-auto custom-scrollbar">
+                  <p className="text-primary font-bold text-[10px] md:text-xs uppercase tracking-widest mb-1">
                     {filteredScreenshots[selectedImageIdx].category}
                   </p>
-                  <h4 className="text-sm md:text-xl font-bold text-white truncate">
+                  <h4 className="text-sm md:text-xl font-bold text-white mb-2">
                     {filteredScreenshots[selectedImageIdx].title}
                   </h4>
                   {filteredScreenshots[selectedImageIdx].description && (
-                    <p className="text-[10px] md:text-sm text-muted-foreground mt-1 md:mt-2 max-w-2xl line-clamp-2 md:line-clamp-none">
+                    <p className="text-[10px] md:text-sm text-muted-foreground leading-relaxed max-w-4xl">
                       {filteredScreenshots[selectedImageIdx].description}
                     </p>
                   )}
