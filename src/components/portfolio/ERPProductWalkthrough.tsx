@@ -12,7 +12,6 @@ import {
   QrCode, 
   Smartphone, 
   CheckCircle2, 
-  Shield,
   X
 } from 'lucide-react';
 import { Screenshot } from '@/lib/projects-data';
@@ -28,7 +27,8 @@ const AUTOPLAY_INTERVAL = 5000;
 
 export function ERPProductWalkthrough({ screenshots, onClose }: ERPProductWalkthroughProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
+  // Requirement: Walkthrough must start playing automatically
+  const [isPlaying, setIsPlaying] = useState(true);
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const progressTimer = useRef<NodeJS.Timeout | null>(null);
@@ -76,7 +76,7 @@ export function ERPProductWalkthrough({ screenshots, onClose }: ERPProductWalkth
 
   return createPortal(
     <div className={cn(
-      "fixed inset-0 z-[9999] bg-background/95 backdrop-blur-xl flex flex-col transition-all duration-500",
+      "fixed inset-0 z-[9999] bg-background/95 backdrop-blur-xl flex flex-col transition-all duration-500 overflow-y-auto custom-scrollbar",
       isFullScreen ? "p-0" : "p-4 md:p-8"
     )}>
       {/* Close Button */}
@@ -84,14 +84,14 @@ export function ERPProductWalkthrough({ screenshots, onClose }: ERPProductWalkth
         type="button"
         onClick={onClose}
         className="absolute top-4 right-4 md:top-6 md:right-6 z-[110] w-10 h-10 rounded-full bg-black/60 border border-white/10 flex items-center justify-center text-white hover:bg-black/80 hover:text-primary transition-all cursor-pointer shadow-lg"
-        aria-label="Close walkthrough"
+        aria-label="Close image preview"
       >
         <X size={24} />
       </button>
 
       {/* Header Controls */}
-      <div className="relative z-20 flex flex-col md:flex-row items-start md:items-center justify-between mb-4 md:mb-6 px-2 md:px-4 pr-14 md:pr-14">
-        <div className="flex flex-col mb-4 md:mb-0">
+      <div className="relative z-20 flex flex-col md:flex-row items-start md:items-center justify-between mb-4 md:mb-6 px-2 md:px-4 pr-14 md:pr-14 shrink-0">
+        <div className="hidden md:flex flex-col mb-4 md:mb-0">
           <span className="text-primary font-bold text-[10px] md:text-xs uppercase tracking-[0.2em] mb-1">
             {currentScreenshot.chapter}
           </span>
@@ -101,7 +101,7 @@ export function ERPProductWalkthrough({ screenshots, onClose }: ERPProductWalkth
           </h2>
         </div>
 
-        <div className="flex items-center gap-2 md:gap-4">
+        <div className="flex items-center gap-2 md:gap-4 ml-0 md:ml-auto">
           <div className="flex items-center gap-1 md:gap-2 bg-white/5 p-1 rounded-lg md:rounded-xl border border-white/10">
             <button 
               onClick={() => setIsPlaying(!isPlaying)}
@@ -127,9 +127,9 @@ export function ERPProductWalkthrough({ screenshots, onClose }: ERPProductWalkth
       </div>
 
       {/* Main Content Area */}
-      <div className="flex-1 relative flex flex-col lg:flex-row gap-4 md:gap-8 min-h-0 overflow-hidden">
+      <div className="flex-1 relative flex flex-col lg:flex-row gap-4 md:gap-8 min-h-0">
         {/* Left: Interactive Visualizer */}
-        <div className="flex-1 relative glass rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden border border-white/10 flex items-center justify-center bg-black/40 group min-h-[300px]">
+        <div className="flex-1 relative glass rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden border border-white/10 flex items-center justify-center bg-black/40 group min-h-[300px] md:min-h-0 aspect-video md:aspect-auto">
           <AnimatePresence mode="wait">
             <motion.div
               key={currentScreenshot.id}
@@ -144,29 +144,42 @@ export function ERPProductWalkthrough({ screenshots, onClose }: ERPProductWalkth
                 alt={currentScreenshot.title}
                 fill
                 priority
+                sizes="(max-width: 768px) 100vw, 70vw"
                 className="object-contain rounded-xl md:rounded-2xl shadow-2xl"
               />
             </motion.div>
           </AnimatePresence>
 
-          {/* Navigation Arrows - Simplified for mobile */}
+          {/* Navigation Arrows */}
           <button 
             onClick={(e) => { e.stopPropagation(); setIsPlaying(false); handlePrev(); }}
-            className="absolute left-2 md:left-6 w-10 h-10 md:w-14 md:h-14 rounded-full glass flex items-center justify-center md:opacity-0 md:group-hover:opacity-100 transition-all hover:text-primary z-30"
+            className="absolute left-2 md:left-6 w-10 h-10 md:w-14 md:h-14 rounded-full glass flex items-center justify-center opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all hover:text-primary z-30"
           >
             <ChevronLeft size={20} className="md:w-7 md:h-7" />
           </button>
           <button 
             onClick={(e) => { e.stopPropagation(); setIsPlaying(false); handleNext(); }}
-            className="absolute right-2 md:right-6 w-10 h-10 md:w-14 md:h-14 rounded-full glass flex items-center justify-center md:opacity-0 md:group-hover:opacity-100 transition-all hover:text-primary z-30"
+            className="absolute right-2 md:right-6 w-10 h-10 md:w-14 md:h-14 rounded-full glass flex items-center justify-center opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all hover:text-primary z-30"
           >
             <ChevronRight size={20} className="md:w-7 md:h-7" />
           </button>
         </div>
 
         {/* Right: Description & Workflow Panel */}
-        <div className="w-full lg:w-[400px] flex flex-col gap-4 md:gap-6 shrink-0 h-[30%] lg:h-full">
-          <div className="glass p-5 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] border-white/10 flex-1 overflow-y-auto custom-scrollbar">
+        <div className="w-full lg:w-[400px] flex flex-col gap-4 md:gap-6 shrink-0 lg:h-full pb-8 lg:pb-0">
+          <div className="glass p-5 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] border-white/10 flex-1 flex flex-col">
+            
+            {/* Mobile-only Header Info: Requirement: Category -> Title below image */}
+            <div className="flex md:hidden flex-col mb-6">
+              <span className="text-primary font-bold text-[10px] uppercase tracking-[0.2em] mb-1">
+                {currentScreenshot.chapter}
+              </span>
+              <h3 className="text-lg font-bold flex items-center gap-2">
+                <span className="text-muted-foreground tabular-nums text-sm">{(currentIndex + 1).toString().padStart(2, '0')}</span>
+                {currentScreenshot.title}
+              </h3>
+            </div>
+
             <h3 className="text-base md:text-xl font-bold mb-3 md:mb-4 flex items-center gap-2">
               <span className="w-1.5 h-1.5 rounded-full bg-primary" />
               Workflow Insight
@@ -195,7 +208,7 @@ export function ERPProductWalkthrough({ screenshots, onClose }: ERPProductWalkth
             )}
           </div>
 
-          {/* Bottom Summary Card - Hidden/Simplified on mobile if needed */}
+          {/* Bottom Summary Card */}
           <div className="glass p-4 md:p-6 rounded-[1.5rem] md:rounded-[2.5rem] border-primary/20 bg-primary/5">
              <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-widest text-primary mb-2 md:mb-4">
                 <span>Progress</span>
