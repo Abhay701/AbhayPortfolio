@@ -62,6 +62,10 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
+      // Reset scroll position to top when opening
+      if (viewportRef.current) {
+        viewportRef.current.scrollTop = 0;
+      }
     } else {
       document.body.style.overflow = 'unset';
       setLoading(true);
@@ -279,7 +283,7 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
             <div 
               ref={viewportRef}
               className={cn(
-                "relative flex-1 bg-black/20 flex items-center justify-center cursor-default select-none",
+                "relative flex-1 bg-black/20 flex items-start justify-center cursor-default select-none",
                 isDesktop && scale <= 1 ? "overflow-y-auto" : "overflow-hidden"
               )}
               onMouseDown={handleMouseDown}
@@ -319,11 +323,12 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
               {/* Zoomable Image Container */}
               <div 
                 className={cn(
-                  "w-full flex items-center justify-center transition-transform duration-200 ease-out",
+                  "w-full flex items-start justify-center transition-transform duration-200 ease-out",
                   isDesktop && scale <= 1 ? "h-auto" : "h-full"
                 )}
                 style={{
                   transform: `translate(${position.x}px, ${position.y}px) scale(${scale})`,
+                  transformOrigin: 'top center',
                   cursor: scale > 1 ? (isDragging ? 'grabbing' : 'grab') : 'default'
                 }}
               >
