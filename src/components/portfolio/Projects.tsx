@@ -11,7 +11,7 @@ export function Projects() {
   const featuredProjects = Object.values(projectsData);
 
   return (
-    <section id="projects" className="py-16 md:py-24">
+    <section id="projects" className="py-16 md:py-24 scroll-mt-20 md:scroll-mt-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col items-center text-center mb-12 md:mb-16">
           <motion.div
@@ -93,11 +93,16 @@ export function Projects() {
                     isFeatured ? "p-6 md:p-12" : "p-5 md:p-8"
                   )}>
                     <div>
-                      {/* Status Badge positioned above Category */}
-                      <div className="flex mb-4">
+                      {/* Status Badge & Project Number */}
+                      <div className="flex items-center justify-between mb-4">
                         <span className="bg-[#22C55E] text-[#052E16] px-3 py-1 md:px-4 md:py-1.5 rounded-full text-[10px] md:text-xs font-bold shadow-lg shadow-green-500/20 flex items-center gap-1.5">
                           <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
                           {project.status}
+                        </span>
+                        
+                        {/* Styled Project Number */}
+                        <span className="text-xl md:text-2xl font-black text-primary/30 tabular-nums select-none">
+                          {idx + 1}
                         </span>
                       </div>
 
