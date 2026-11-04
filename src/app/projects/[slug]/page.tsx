@@ -282,7 +282,7 @@ export default function CaseStudyPage() {
             />
           </div>
 
-          <aside className="lg:col-span-4 self-start sticky top-24 space-y-8">
+          <aside className="lg:col-span-4 self-start sticky top-24 space-y-8 z-30">
             {/* Tech Stack */}
             <div className="glass p-8 rounded-[2rem] border-white/5">
               <h3 className="text-xl font-bold mb-6 flex items-center gap-2">

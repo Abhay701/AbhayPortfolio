@@ -34,7 +34,8 @@
   }
   
   html, body {
-    @apply overflow-x-hidden w-full max-w-full;
+    @apply w-full max-w-full;
+    overflow-x: clip;
     scroll-behavior: smooth;
     -webkit-tap-highlight-color: transparent;
   }

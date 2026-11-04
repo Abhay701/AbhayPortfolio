@@ -31,7 +31,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${inter.variable} dark scroll-smooth`}>
-      <body className="font-body antialiased bg-background text-foreground overflow-x-hidden selection:bg-primary/30">
+      <body className="font-body antialiased bg-background text-foreground overflow-x-clip selection:bg-primary/30">
         <Providers>{children}</Providers>
         <Toaster />
       </body>
