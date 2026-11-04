@@ -13,6 +13,14 @@ const themes: { id: Theme; name: string; colors: string[] }[] = [
   { id: 'light', name: 'Minimal Light', colors: ['#3b82f6', '#f8fafc'] },
 ];
 
+// Opaque backgrounds as requested to ensure 100% opacity
+const themeBackgrounds: Record<Theme, string> = {
+  midnight: '#080D18',
+  sunset: '#1A100D',
+  ocean: '#071827',
+  light: '#FFFFFF',
+};
+
 export function ThemeSwitcher() {
   const { theme: activeTheme, setTheme } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
@@ -44,7 +52,11 @@ export function ThemeSwitcher() {
             initial={{ opacity: 0, scale: 0.95, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 10 }}
-            className="absolute right-0 top-full mt-4 w-56 bg-background/98 backdrop-blur-2xl p-2 rounded-2xl border border-white/10 shadow-2xl z-[110]"
+            style={{ backgroundColor: themeBackgrounds[activeTheme] }}
+            className={cn(
+              "absolute right-0 top-full mt-4 w-56 p-2 rounded-2xl border shadow-2xl z-[110]",
+              activeTheme === 'light' ? "border-black/10" : "border-white/10"
+            )}
           >
             <div className="px-3 py-2 border-b border-white/5 mb-2">
               <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Select Theme</p>
