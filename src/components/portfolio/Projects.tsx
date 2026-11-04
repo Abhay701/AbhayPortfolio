@@ -6,8 +6,15 @@ import { projectsData } from '@/lib/projects-data';
 import Link from 'next/link';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
+import { GuideState } from '@/hooks/use-navigation-guide';
+import { NavigationIndicator } from './NavigationIndicator';
 
-export function Projects() {
+interface ProjectsProps {
+  guideState?: GuideState;
+  onExploreProjectClick?: () => void;
+}
+
+export function Projects({ guideState, onExploreProjectClick }: ProjectsProps) {
   const featuredProjects = Object.values(projectsData);
 
   return (
@@ -135,13 +142,18 @@ export function Projects() {
                     </div>
 
                     <div className="flex flex-wrap items-center gap-4">
-                      <Link 
-                        href={`/projects/${project.slug}`}
-                        className="w-full sm:w-auto bg-primary text-primary-foreground px-6 py-3 md:px-8 md:py-4 rounded-xl md:rounded-2xl font-bold flex items-center justify-center gap-2 hover:translate-y-[-2px] transition-all shadow-lg shadow-primary/20 active:scale-95 text-xs md:text-base"
-                      >
-                        Explore Project
-                        <ArrowUpRight size={18} />
-                      </Link>
+                      <div className="relative w-full sm:w-auto">
+                        {idx === 0 && guideState === 'project-guide' && <NavigationIndicator />}
+                        <Link 
+                          href={`/projects/${project.slug}`}
+                          data-guide={idx === 0 ? "project-btn" : undefined}
+                          onClick={idx === 0 ? onExploreProjectClick : undefined}
+                          className="w-full sm:w-auto bg-primary text-primary-foreground px-6 py-3 md:px-8 md:py-4 rounded-xl md:rounded-2xl font-bold flex items-center justify-center gap-2 hover:translate-y-[-2px] transition-all shadow-lg shadow-primary/20 active:scale-95 text-xs md:text-base"
+                        >
+                          Explore Project
+                          <ArrowUpRight size={18} />
+                        </Link>
+                      </div>
                     </div>
                   </div>
                 </div>

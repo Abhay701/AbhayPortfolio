@@ -3,12 +3,16 @@ import { motion } from 'framer-motion';
 import { ArrowRight, MapPin, FileText } from 'lucide-react';
 import { profile } from '@/lib/data';
 import { HeroArchitectureVisual } from './HeroArchitectureVisual';
+import { NavigationIndicator } from './NavigationIndicator';
+import { GuideState } from '@/hooks/use-navigation-guide';
 
 interface HeroProps {
   onResumeClick?: () => void;
+  guideState?: GuideState;
+  onViewProjectsClick?: () => void;
 }
 
-export function Hero({ onResumeClick }: HeroProps) {
+export function Hero({ onResumeClick, guideState, onViewProjectsClick }: HeroProps) {
   return (
     <section id="home" className="relative min-h-[100dvh] flex items-center pt-24 pb-12 overflow-hidden">
       <div className="absolute inset-0 hero-gradient -z-10" />
@@ -52,10 +56,18 @@ export function Hero({ onResumeClick }: HeroProps) {
             </div>
 
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
-              <a href="#macro-print-pack" className="w-full sm:w-auto bg-primary text-primary-foreground px-8 py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:translate-y-[-2px] transition-all shadow-lg shadow-primary/20 active:scale-95 text-sm md:text-base">
-                View My Projects
-                <ArrowRight size={20} />
-              </a>
+              <div className="relative w-full sm:w-auto">
+                {guideState === 'hero-guide' && <NavigationIndicator />}
+                <a 
+                  href="#macro-print-pack" 
+                  data-guide="hero-btn"
+                  onClick={onViewProjectsClick}
+                  className="w-full sm:w-auto bg-primary text-primary-foreground px-8 py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:translate-y-[-2px] transition-all shadow-lg shadow-primary/20 active:scale-95 text-sm md:text-base"
+                >
+                  View My Projects
+                  <ArrowRight size={20} />
+                </a>
+              </div>
               <div className="flex w-full sm:w-auto gap-4">
                 {/* Desktop Link */}
                 <a href="#contact" className="hidden md:flex flex-1 sm:flex-none glass text-foreground px-6 py-4 rounded-xl font-bold items-center justify-center gap-2 hover:bg-white/5 transition-all active:scale-95 text-sm md:text-base">

@@ -10,18 +10,27 @@ import { Projects } from '@/components/portfolio/Projects';
 import { Contact } from '@/components/portfolio/Contact';
 import { Footer } from '@/components/portfolio/Footer';
 import { ResumeModal } from '@/components/portfolio/ResumeModal';
+import { useNavigationGuide } from '@/hooks/use-navigation-guide';
 
 export default function Home() {
   const [isResumeOpen, setIsResumeOpen] = useState(false);
+  const { state, completeStepOne, completeGuide } = useNavigationGuide();
 
   return (
     <main className="relative bg-background">
       <Navbar onResumeClick={() => setIsResumeOpen(true)} />
-      <Hero onResumeClick={() => setIsResumeOpen(true)} />
+      <Hero 
+        onResumeClick={() => setIsResumeOpen(true)} 
+        guideState={state}
+        onViewProjectsClick={completeStepOne}
+      />
       <About />
       <Skills />
       <Experience />
-      <Projects />
+      <Projects 
+        guideState={state}
+        onExploreProjectClick={completeGuide}
+      />
       <Contact />
       <Footer />
       
