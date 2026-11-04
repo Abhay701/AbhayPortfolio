@@ -5,6 +5,7 @@ import { profile } from '@/lib/data';
 import { projectsData } from '@/lib/projects-data';
 import Link from 'next/link';
 import Image from 'next/image';
+import { cn } from '@/lib/utils';
 
 export function Projects() {
   const featuredProjects = Object.values(projectsData);
@@ -54,6 +55,7 @@ export function Projects() {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {featuredProjects.map((project, idx) => {
+            const isFeatured = idx === 0;
             const firstScreenshot = project.screenshots[0]?.path || `https://picsum.photos/seed/${project.slug}/1200/800`;
             
             return (
@@ -63,13 +65,17 @@ export function Projects() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.1 }}
-                className={`group glass rounded-[2.5rem] overflow-hidden flex flex-col h-full border border-white/5 ${
-                  idx === 0 ? 'lg:col-span-12' : 'lg:col-span-6'
-                }`}
+                className={cn(
+                  "group glass rounded-[2.5rem] overflow-hidden flex flex-col h-full border border-white/5",
+                  isFeatured ? 'lg:col-span-12' : 'lg:col-span-6'
+                )}
               >
-                <div className={`grid grid-cols-1 ${idx === 0 ? 'lg:grid-cols-2' : ''} h-full`}>
+                <div className={cn("grid grid-cols-1 h-full", isFeatured && 'lg:grid-cols-2')}>
                   {/* Image Section */}
-                  <div className="relative h-64 lg:h-full min-h-[320px] overflow-hidden">
+                  <div className={cn(
+                    "relative h-64 lg:h-full overflow-hidden",
+                    isFeatured ? "min-h-[320px]" : "min-h-[220px]"
+                  )}>
                     <div className="absolute inset-0 bg-primary/10 group-hover:bg-transparent transition-all z-10" />
                     <Image 
                       src={firstScreenshot} 
@@ -86,20 +92,29 @@ export function Projects() {
                   </div>
 
                   {/* Content Section */}
-                  <div className="p-8 md:p-12 flex flex-col justify-between bg-gradient-to-br from-transparent to-primary/5">
+                  <div className={cn(
+                    "flex flex-col justify-between bg-gradient-to-br from-transparent to-primary/5",
+                    isFeatured ? "p-8 md:p-12" : "p-6 md:p-8"
+                  )}>
                     <div>
                       <div className="flex items-center gap-2 mb-3">
                         <span className="text-primary font-bold text-xs uppercase tracking-[0.2em]">
                           {project.category}
                         </span>
                       </div>
-                      <h3 className="text-3xl md:text-4xl font-bold mb-6 group-hover:text-primary transition-colors">
+                      <h3 className={cn(
+                        "font-bold mb-4 group-hover:text-primary transition-colors",
+                        isFeatured ? "text-3xl md:text-4xl" : "text-2xl md:text-3xl"
+                      )}>
                         {project.title}
                       </h3>
-                      <p className="text-muted-foreground text-lg leading-relaxed mb-8">
+                      <p className={cn(
+                        "text-muted-foreground leading-relaxed mb-6",
+                        isFeatured ? "text-lg" : "text-sm md:text-base"
+                      )}>
                         {project.description}
                       </p>
-                      <div className="flex flex-wrap gap-2 mb-10">
+                      <div className={cn("flex flex-wrap gap-2", isFeatured ? "mb-10" : "mb-6")}>
                         {project.verifiedTech.map((t) => (
                           <span key={t} className="px-3 py-1.5 rounded-lg bg-white/5 text-xs font-medium border border-white/10 hover:border-primary/50 transition-colors">
                             {t}
@@ -111,7 +126,7 @@ export function Projects() {
                     <div className="flex flex-wrap items-center gap-4">
                       <Link 
                         href={`/projects/${project.slug}`}
-                        className="bg-primary text-primary-foreground px-8 py-4 rounded-2xl font-bold flex items-center gap-2 hover:translate-y-[-2px] transition-all shadow-lg shadow-primary/20 active:scale-95"
+                        className="bg-primary text-primary-foreground px-6 py-3 md:px-8 md:py-4 rounded-2xl font-bold flex items-center gap-2 hover:translate-y-[-2px] transition-all shadow-lg shadow-primary/20 active:scale-95 text-sm md:text-base"
                       >
                         Explore Project
                         <ArrowUpRight size={18} />

@@ -18,11 +18,11 @@ import {
 import { cn } from '@/lib/utils';
 
 const modules = [
-  { id: 'orders', icon: ClipboardList, label: 'Order Management', pos: 'top-[-10%] left-[10%]', color: 'text-blue-400' },
-  { id: 'design', icon: ShieldCheck, label: 'Design & Approvals', pos: 'top-[15%] left-[-15%]', color: 'text-purple-400' },
+  { id: 'orders', icon: ClipboardList, label: 'Order Management', pos: 'top-[2%] left-[10%]', color: 'text-blue-400' },
+  { id: 'design', icon: ShieldCheck, label: 'Design & Approvals', pos: 'top-[18%] left-[-15%]', color: 'text-purple-400' },
   { id: 'production', icon: Layers, label: 'Production Tracking', pos: 'bottom-[15%] left-[-10%]', color: 'text-blue-500' },
-  { id: 'inventory', icon: Box, label: 'Inventory & Stock', pos: 'top-[-10%] right-[10%]', color: 'text-cyan-400' },
-  { id: 'dashboards', icon: Layout, label: 'Departmental Dashboards', pos: 'top-[15%] right-[-15%]', color: 'text-indigo-400' },
+  { id: 'inventory', icon: Box, label: 'Inventory & Stock', pos: 'top-[2%] right-[10%]', color: 'text-cyan-400' },
+  { id: 'dashboards', icon: Layout, label: 'Departmental Dashboards', pos: 'top-[18%] right-[-15%]', color: 'text-indigo-400' },
   { id: 'dispatch', icon: Truck, label: 'Dispatch & Delivery', pos: 'bottom-[15%] right-[-10%]', color: 'text-blue-300' },
 ];
 
@@ -49,7 +49,6 @@ export function HeroArchitectureVisual() {
         </defs>
         
         {/* Connection Paths from Center to Satellites */}
-        {/* Logic-based paths using simple line coordinates for the 400x400 viewbox */}
         <motion.path 
           d="M 200 200 L 100 80 M 200 200 L 60 180 M 200 200 L 80 320 M 200 200 L 300 80 M 200 200 L 340 180 M 200 200 L 320 320"
           fill="none"
