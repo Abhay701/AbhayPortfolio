@@ -62,13 +62,15 @@ export function Projects() {
             return (
               <motion.div
                 key={project.slug}
+                id={idx === 0 ? "macro-print-pack" : undefined}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-50px" }}
                 transition={{ delay: idx * 0.05 }}
                 className={cn(
                   "group glass rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden flex flex-col h-full border border-white/5 will-change-transform",
-                  isFeatured ? 'lg:col-span-12' : 'lg:col-span-6'
+                  isFeatured ? 'lg:col-span-12' : 'lg:col-span-6',
+                  idx === 0 && "scroll-mt-28"
                 )}
               >
                 <div className={cn("grid grid-cols-1 h-full", isFeatured && 'lg:grid-cols-2')}>

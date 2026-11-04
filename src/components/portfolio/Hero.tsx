@@ -52,7 +52,7 @@ export function Hero({ onResumeClick }: HeroProps) {
             </div>
 
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
-              <a href="#projects" className="w-full sm:w-auto bg-primary text-primary-foreground px-8 py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:translate-y-[-2px] transition-all shadow-lg shadow-primary/20 active:scale-95 text-sm md:text-base">
+              <a href="#macro-print-pack" className="w-full sm:w-auto bg-primary text-primary-foreground px-8 py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:translate-y-[-2px] transition-all shadow-lg shadow-primary/20 active:scale-95 text-sm md:text-base">
                 View My Projects
                 <ArrowRight size={20} />
               </a>

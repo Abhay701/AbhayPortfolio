@@ -57,7 +57,7 @@ export function Navbar({ onResumeClick }: NavbarProps) {
     { name: 'About', href: '#about' },
     { name: 'Skills', href: '#skills' },
     { name: 'Experience', href: '#experience' },
-    { name: 'Projects', href: '#projects' },
+    { name: 'Projects', href: '#macro-print-pack' },
     { name: 'Contact', href: '#contact' },
   ];
 
@@ -78,7 +78,7 @@ export function Navbar({ onResumeClick }: NavbarProps) {
         }}
         className={cn(
           "fixed top-0 w-full z-[100] transition-all duration-300",
-          isOpen ? "py-3" : (scrolled ? "glass py-3" : "bg-transparent py-5")
+          isOpen ? "py-3" : (scrolled ? "bg-background/95 backdrop-blur-md py-3" : "bg-transparent py-5")
         )}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
