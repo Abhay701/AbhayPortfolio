@@ -59,7 +59,7 @@ export const experience = [
   {
     company: "Macro Print Pack",
     role: "Full Stack Developer",
-    period: "Nov 2025 – Present",
+    period: "July 2025 – Present",
     type: "Freelance / Contract",
     location: "Ludhiana, Punjab",
     responsibilities: [
@@ -72,10 +72,24 @@ export const experience = [
     ]
   },
   {
+    company: "KB Print HUB",
+    role: "Full Stack Developer",
+    period: "July 2025 – Present",
+    type: "Freelance / Contract",
+    location: "Ludhiana, Punjab",
+    responsibilities: [
+      "Developing and maintaining a comprehensive printing and packaging ERP management platform.",
+      "Successfully processed over 1,600+ real-world business orders.",
+      "Engineered 9 dedicated role-based dashboards with strict access control.",
+      "Implemented complete business modules: Order Management, Job Card Generation, Manufacturing Tracking, Inventory Management, and Dispatch.",
+      "Integrated real-time database synchronization and cloud storage for production artwork."
+    ]
+  },
+  {
     company: "Anand Fabrics",
     role: "Professional Experience",
-    period: "6 Months",
-    type: "Full-time",
+    period: "July 2025 – Present",
+    type: "Professional Experience",
     location: "Ludhiana, Punjab",
     responsibilities: [
       "Contributed to business operations and technical process improvements during the tenure."
