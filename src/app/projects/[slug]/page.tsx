@@ -15,7 +15,8 @@ import {
   Database,
   Users,
   Settings,
-  ClipboardCheck
+  ClipboardCheck,
+  Truck
 } from 'lucide-react';
 import { projectsData } from '@/lib/projects-data';
 import { ProjectGallery } from '@/components/portfolio/ProjectGallery';
