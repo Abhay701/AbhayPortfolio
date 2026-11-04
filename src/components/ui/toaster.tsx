@@ -10,7 +10,7 @@ import {
   type ToastProps
 } from "@/components/ui/toast"
 
-type ToasterToast = ToastProps & {
+type ToasterToast = Omit<ToastProps, "title"> & {
   id: string
   title?: React.ReactNode
   description?: React.ReactNode
