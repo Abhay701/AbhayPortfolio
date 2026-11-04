@@ -62,7 +62,7 @@ export function Contact() {
 
     setIsSubmitting(true);
     
-    // Data for Firestore
+    // Data for Firestore (Unchanged)
     const firestoreData = {
       name: formData.name.trim(),
       email: formData.email.trim(),
@@ -74,18 +74,33 @@ export function Contact() {
       status: 'unread'
     };
 
-    // Data for Web3Forms
+    // Format IST Timestamp for professional email notification
+    const timestampIST = new Date().toLocaleString('en-IN', { 
+      timeZone: 'Asia/Kolkata',
+      dateStyle: 'full',
+      timeStyle: 'medium'
+    });
+
+    // Data for Web3Forms (Upgraded for professional notification)
     const web3FormsData = {
       access_key: process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY || "ccdd135d-3d05-4ae6-a82d-2e150fe4dc36",
       from_name: "Abhay Kumar | Portfolio Contact Form",
-      subject: `New Portfolio Enquiry: ${formData.subject.trim()}`,
+      // Dynamic professional subject for the email header
+      subject: `New Portfolio Enquiry | ${formData.subject.trim()} | Abhay Kumar Portfolio`,
+      
+      // Visitor Information
       name: formData.name.trim(),
       email: formData.email.trim(),
-      phone: `${formData.countryCode} ${formData.phone.trim()}`,
+      phone: formData.phone.trim(),
       country_code: formData.countryCode,
-      message_content: formData.message.trim() || "No message provided",
+      
+      // Enquiry Details (inquiry_subject ensures it appears in body since 'subject' is reserved for header)
+      inquiry_subject: formData.subject.trim(),
+      message: formData.message.trim() || "No message provided",
+      
+      // Metadata
       replyto: formData.email.trim(),
-      submission_time: new Date().toLocaleString(),
+      submitted_at: `${timestampIST} (IST)`,
     };
 
     const contactRef = collection(db, 'contactMessages');
