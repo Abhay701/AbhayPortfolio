@@ -85,7 +85,8 @@ export function ProjectGallery({ screenshots, categories }: ProjectGalleryProps)
                 src={shot.path} 
                 alt={shot.title} 
                 fill
-                className="object-cover group-hover:scale-105 transition-transform duration-500"
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                className="object-cover group-hover:scale-105 transition-transform duration-1000"
                 loading="lazy"
               />
               <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center p-4 text-center">
@@ -150,11 +151,12 @@ export function ProjectGallery({ screenshots, categories }: ProjectGalleryProps)
                   src={filteredScreenshots[selectedImageIdx].path}
                   alt={filteredScreenshots[selectedImageIdx].title}
                   fill
+                  sizes="100vw"
                   className="object-contain"
                   priority
                 />
 
-                {/* Navigation Buttons - Hidden on very small screens, larger targets on mobile */}
+                {/* Navigation Buttons */}
                 <div className="absolute inset-y-0 left-2 md:left-4 flex items-center z-20 pointer-events-none">
                   <button
                     type="button"
