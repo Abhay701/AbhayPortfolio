@@ -7,7 +7,6 @@ import {
   ChevronLeft, 
   ChevronRight, 
   RotateCcw, 
-  X, 
   Maximize2, 
   QrCode, 
   Smartphone, 
@@ -85,7 +84,7 @@ export function ERPProductWalkthrough({ screenshots, onClose }: ERPProductWalkth
         </div>
 
         <div className="flex items-center gap-2 md:gap-4">
-          <div className="hidden sm:flex items-center gap-2 bg-white/5 p-1 rounded-xl border border-white/10">
+          <div className="flex items-center gap-2 bg-white/5 p-1 rounded-xl border border-white/10">
             <button 
               onClick={() => setIsPlaying(!isPlaying)}
               className="w-10 h-10 rounded-lg flex items-center justify-center hover:bg-white/10 text-primary transition-all"
@@ -106,12 +105,6 @@ export function ERPProductWalkthrough({ screenshots, onClose }: ERPProductWalkth
               <Maximize2 size={18} />
             </button>
           </div>
-          <button 
-            onClick={onClose}
-            className="w-10 h-10 rounded-full glass flex items-center justify-center hover:text-primary transition-all"
-          >
-            <X size={20} />
-          </button>
         </div>
       </div>
 

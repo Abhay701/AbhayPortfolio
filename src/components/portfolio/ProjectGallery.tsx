@@ -1,8 +1,8 @@
-
 'use client';
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ChevronLeft, ChevronRight, ImageIcon, Maximize2 } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ImageIcon, Maximize2 } from 'lucide-react';
 import { Screenshot } from '@/lib/projects-data';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
@@ -15,6 +15,12 @@ interface ProjectGalleryProps {
 export function ProjectGallery({ screenshots, categories }: ProjectGalleryProps) {
   const [selectedImageIdx, setSelectedImageIdx] = useState<number | null>(null);
   const [activeCategory, setActiveCategory] = useState<string>("All");
+
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const filteredScreenshots = activeCategory === "All" 
     ? screenshots 
@@ -103,89 +109,94 @@ export function ProjectGallery({ screenshots, categories }: ProjectGalleryProps)
         </div>
       )}
 
-      {/* Lightbox */}
-      <AnimatePresence>
-        {selectedImageIdx !== null && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setSelectedImageIdx(null)}
-              className="absolute inset-0 bg-background/95 backdrop-blur-xl cursor-pointer"
-            />
-            
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              className="relative w-full max-w-6xl aspect-video rounded-3xl overflow-hidden glass border border-white/10 shadow-2xl z-10"
-            >
-              <Image 
-                src={filteredScreenshots[selectedImageIdx].path} 
-                alt={filteredScreenshots[selectedImageIdx].title}
-                fill
-                className="object-contain"
-                priority
+
+      {/* Lightbox - Rendered through Portal to avoid stacking context issues */}
+      {isMounted && createPortal(
+        <AnimatePresence>
+          {selectedImageIdx !== null && filteredScreenshots[selectedImageIdx] && (
+            <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 md:p-8">
+
+              {/* Background Overlay */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setSelectedImageIdx(null)}
+                className="absolute inset-0 z-0 bg-background/95 backdrop-blur-xl cursor-pointer"
               />
-              
-              {/* Controls */}
-              <div className="absolute top-6 right-6 flex items-center gap-2 z-50">
-                <button 
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setSelectedImageIdx(null);
-                  }}
-                  className="w-10 h-10 rounded-full glass flex items-center justify-center text-white hover:text-primary transition-all hover:scale-110 active:scale-95 cursor-pointer"
-                  aria-label="Close lightbox"
-                >
-                  <X size={20} />
-                </button>
-              </div>
 
-              <div className="absolute inset-y-0 left-4 flex items-center z-50">
-                <button 
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handlePrev();
-                  }}
-                  className="w-12 h-12 rounded-full glass flex items-center justify-center text-white hover:text-primary transition-all hover:scale-110 active:scale-95 cursor-pointer"
-                  aria-label="Previous image"
-                >
-                  <ChevronLeft size={24} />
-                </button>
-              </div>
+              {/* Main Lightbox */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                className="relative z-10 pointer-events-auto w-full max-w-6xl aspect-video rounded-3xl overflow-hidden glass border border-white/10 shadow-2xl"
+                role="dialog"
+                aria-modal="true"
+                aria-label="Screenshot preview"
+              >
+                {/* Screenshot */}
+                <Image
+                  src={filteredScreenshots[selectedImageIdx].path}
+                  alt={filteredScreenshots[selectedImageIdx].title}
+                  fill
+                  className="object-contain"
+                  priority
+                />
 
-              <div className="absolute inset-y-0 right-4 flex items-center z-50">
-                <button 
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleNext();
-                  }}
-                  className="w-12 h-12 rounded-full glass flex items-center justify-center text-white hover:text-primary transition-all hover:scale-110 active:scale-95 cursor-pointer"
-                  aria-label="Next image"
-                >
-                  <ChevronRight size={24} />
-                </button>
-              </div>
+                {/* Previous Button */}
+                <div className="absolute inset-y-0 left-4 flex items-center z-[100]">
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handlePrev();
+                    }}
+                    className="w-12 h-12 rounded-full glass flex items-center justify-center text-white hover:text-primary transition-all hover:scale-110 active:scale-95 cursor-pointer pointer-events-auto"
+                    aria-label="Previous image"
+                  >
+                    <ChevronLeft size={24} />
+                  </button>
+                </div>
 
-              {/* Caption */}
-              <div className="absolute bottom-0 inset-x-0 p-8 bg-gradient-to-t from-black/80 to-transparent z-20 pointer-events-none">
-                <p className="text-primary font-bold text-xs uppercase tracking-widest mb-1">
-                  {filteredScreenshots[selectedImageIdx].category}
-                </p>
-                <h4 className="text-xl font-bold text-white">{filteredScreenshots[selectedImageIdx].title}</h4>
-                {filteredScreenshots[selectedImageIdx].description && (
-                  <p className="text-muted-foreground text-sm mt-2 max-w-2xl">{filteredScreenshots[selectedImageIdx].description}</p>
-                )}
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
+                {/* Next Button */}
+                <div className="absolute inset-y-0 right-4 flex items-center z-[100]">
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleNext();
+                    }}
+                    className="w-12 h-12 rounded-full glass flex items-center justify-center text-white hover:text-primary transition-all hover:scale-110 active:scale-95 cursor-pointer pointer-events-auto"
+                    aria-label="Next image"
+                  >
+                    <ChevronRight size={24} />
+                  </button>
+                </div>
+
+                {/* Screenshot Caption */}
+                <div className="absolute bottom-0 inset-x-0 p-8 bg-gradient-to-t from-black/80 to-transparent z-20 pointer-events-none">
+                  <p className="text-primary font-bold text-xs uppercase tracking-widest mb-1">
+                    {filteredScreenshots[selectedImageIdx].category}
+                  </p>
+
+                  <h4 className="text-xl font-bold text-white">
+                    {filteredScreenshots[selectedImageIdx].title}
+                  </h4>
+
+                  {filteredScreenshots[selectedImageIdx].description && (
+                    <p className="text-muted-foreground text-sm mt-2 max-w-2xl">
+                      {filteredScreenshots[selectedImageIdx].description}
+                    </p>
+                  )}
+                </div>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
+
     </section>
   );
 }
