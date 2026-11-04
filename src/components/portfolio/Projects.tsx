@@ -17,7 +17,7 @@ export function Projects() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "-100px" }}
             className="space-y-4"
           >
             <h2 className="text-2xl md:text-5xl font-bold tracking-tight">
@@ -34,8 +34,8 @@ export function Projects() {
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="glass rounded-2xl md:rounded-[2rem] p-6 md:p-10 mb-12 md:mb-16 border-primary/10"
+          viewport={{ once: true, margin: "-100px" }}
+          className="glass rounded-2xl md:rounded-[2rem] p-6 md:p-10 mb-12 md:mb-16 border-primary/10 will-change-transform"
         >
           <h3 className="text-lg md:text-2xl font-bold mb-6 flex items-center gap-3">
             <span className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center shrink-0">
@@ -64,10 +64,10 @@ export function Projects() {
                 key={project.slug}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: idx * 0.1 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ delay: idx * 0.05 }}
                 className={cn(
-                  "group glass rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden flex flex-col h-full border border-white/5",
+                  "group glass rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden flex flex-col h-full border border-white/5 will-change-transform",
                   isFeatured ? 'lg:col-span-12' : 'lg:col-span-6'
                 )}
               >
@@ -83,7 +83,8 @@ export function Projects() {
                       src={firstScreenshot} 
                       alt={project.title}
                       fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-1000"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      className="object-cover group-hover:scale-105 transition-transform duration-700"
                     />
                     <div className="absolute top-4 left-4 md:top-6 md:left-6 z-20 flex flex-wrap gap-2">
                       <span className="bg-primary text-primary-foreground px-3 py-1 md:px-4 md:py-1.5 rounded-full text-[10px] md:text-xs font-bold shadow-xl flex items-center gap-1.5">

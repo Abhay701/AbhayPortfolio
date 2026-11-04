@@ -18,7 +18,7 @@ export function About() {
           <motion.h2 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "-50px" }}
             className="text-2xl md:text-4xl font-bold mb-4"
           >
             About Me
@@ -30,15 +30,15 @@ export function About() {
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            className="space-y-6"
+            viewport={{ once: true, margin: "-50px" }}
+            className="space-y-6 will-change-transform"
           >
             <p className="text-base md:text-lg text-muted-foreground leading-relaxed">
               {profile.about}
             </p>
             <div className="grid grid-cols-2 gap-3 md:gap-4">
               {highlights.map((item, i) => (
-                <div key={i} className="glass p-4 md:p-5 rounded-2xl hover:border-primary/50 transition-colors">
+                <div key={i} className="glass p-4 md:p-5 rounded-2xl hover:border-primary/50 transition-colors transform-gpu">
                   <item.icon className="text-primary mb-3" size={20} />
                   <p className="text-[10px] md:text-xs text-muted-foreground uppercase tracking-wider mb-1">{item.label}</p>
                   <p className="text-xs md:text-sm lg:text-base font-bold truncate">{item.value}</p>
@@ -50,10 +50,10 @@ export function About() {
           <motion.div
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            className="relative w-full"
+            viewport={{ once: true, margin: "-50px" }}
+            className="relative w-full will-change-transform"
           >
-            <div className="glass p-6 md:p-8 rounded-2xl md:rounded-3xl relative overflow-hidden">
+            <div className="glass p-6 md:p-8 rounded-2xl md:rounded-3xl relative overflow-hidden transform-gpu">
               <h3 className="text-xl md:text-2xl font-bold mb-6">Personal Highlights</h3>
               <ul className="space-y-4">
                 {[

@@ -1,4 +1,5 @@
 'use client';
+import React, { memo } from 'react';
 import { motion } from 'framer-motion';
 import { 
   ClipboardList, 
@@ -32,9 +33,9 @@ const techIndicators = [
   { icon: Lock, label: 'RBAC Security', pos: 'bottom-[5%] left-[20%]', mobilePos: 'bottom-[8%] left-[10%]' },
 ];
 
-export function HeroArchitectureVisual() {
+export const HeroArchitectureVisual = memo(function HeroArchitectureVisual() {
   return (
-    <div className="relative w-full aspect-square max-w-2xl mx-auto flex items-center justify-center p-4 sm:p-8 overflow-visible">
+    <div className="relative w-full aspect-square max-w-2xl mx-auto flex items-center justify-center p-4 sm:p-8 overflow-visible transform-gpu">
       {/* Background Radial Glow */}
       <div className="absolute inset-0 bg-primary/5 rounded-full blur-[80px] md:blur-[120px] animate-pulse" />
       
@@ -56,7 +57,8 @@ export function HeroArchitectureVisual() {
           strokeDasharray="4 4"
           className="text-primary/40"
           initial={{ strokeDashoffset: 100 }}
-          animate={{ strokeDashoffset: 0 }}
+          whileInView={{ strokeDashoffset: 0 }}
+          viewport={{ margin: "200px" }}
           transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
         />
       </svg>
@@ -66,7 +68,7 @@ export function HeroArchitectureVisual() {
         initial={{ scale: 0.8, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ duration: 0.8 }}
-        className="relative z-20 w-32 h-32 xs:w-40 xs:h-40 md:w-64 md:h-64 rounded-[1.5rem] md:rounded-[2.5rem] glass border-2 border-primary/30 shadow-[0_0_50px_rgba(59,130,246,0.2)] flex flex-col items-center justify-center text-center p-3 md:p-6 group"
+        className="relative z-20 w-32 h-32 xs:w-40 xs:h-40 md:w-64 md:h-64 rounded-[1.5rem] md:rounded-[2.5rem] glass border-2 border-primary/30 shadow-[0_0_50px_rgba(59,130,246,0.2)] flex flex-col items-center justify-center text-center p-3 md:p-6 group will-change-transform"
       >
         <div className="w-8 h-8 md:w-20 md:h-20 rounded-lg md:rounded-2xl bg-primary/20 flex items-center justify-center text-primary mb-2 md:mb-4 group-hover:scale-110 transition-transform">
           <Zap size={24} className="md:w-8 md:h-8 fill-current" />
@@ -74,7 +76,12 @@ export function HeroArchitectureVisual() {
         <h3 className="text-[10px] md:text-lg font-bold uppercase tracking-widest text-primary mb-0.5 md:mb-1">Enterprise</h3>
         <p className="text-[7px] md:text-xs font-medium text-muted-foreground uppercase tracking-[0.2em] md:tracking-[0.3em]">Business Platform</p>
         
-        <div className="absolute inset-0 rounded-[1.5rem] md:rounded-[2.5rem] border border-primary/50 animate-ping opacity-10" />
+        <motion.div 
+          className="absolute inset-0 rounded-[1.5rem] md:rounded-[2.5rem] border border-primary/50 opacity-10" 
+          whileInView={{ scale: [1, 1.1, 1] }}
+          transition={{ duration: 2, repeat: Infinity }}
+          viewport={{ margin: "200px" }}
+        />
       </motion.div>
 
       {/* Module Satellite Cards */}
@@ -82,10 +89,11 @@ export function HeroArchitectureVisual() {
         <motion.div
           key={mod.id}
           initial={{ opacity: 0, scale: 0 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.3 + (i * 0.1), duration: 0.5 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.3 + (i * 0.05), duration: 0.4 }}
           className={cn(
-            "absolute z-30 glass p-2 md:p-4 rounded-xl md:rounded-2xl border-white/10 shadow-xl flex items-center gap-2 md:gap-3 hover:border-primary/50 transition-all group cursor-default",
+            "absolute z-30 glass p-2 md:p-4 rounded-xl md:rounded-2xl border-white/10 shadow-xl flex items-center gap-2 md:gap-3 hover:border-primary/50 transition-all group cursor-default will-change-transform",
             mod.pos,
             "max-md:" + mod.mobilePos
           )}
@@ -102,8 +110,9 @@ export function HeroArchitectureVisual() {
         <motion.div
           key={i}
           initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1 + (i * 0.2) }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.8 + (i * 0.1) }}
           className={cn(
             "absolute z-10 flex items-center gap-1 md:gap-2 text-muted-foreground/30 md:text-muted-foreground/40 text-[6px] md:text-[10px] font-mono",
             tech.pos,
@@ -115,11 +124,12 @@ export function HeroArchitectureVisual() {
         </motion.div>
       ))}
 
-      {/* Floating Metrics - Hidden on very small screens, compact on mobile */}
+      {/* Floating Metrics */}
       <motion.div 
         initial={{ x: -30, opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
-        transition={{ delay: 1.2 }}
+        whileInView={{ x: 0, opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ delay: 1 }}
         className="absolute -left-2 md:-left-12 top-1/4 z-40 glass px-2 py-2 md:px-4 md:py-3 rounded-lg md:rounded-2xl border-primary/20 shadow-xl flex items-center gap-2 backdrop-blur-md"
       >
         <div className="w-5 h-5 md:w-8 md:h-8 rounded-md bg-primary/20 flex items-center justify-center text-primary shrink-0">
@@ -133,8 +143,9 @@ export function HeroArchitectureVisual() {
 
       <motion.div 
         initial={{ x: 30, opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
-        transition={{ delay: 1.4 }}
+        whileInView={{ x: 0, opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ delay: 1.1 }}
         className="absolute -right-2 md:-right-12 bottom-1/4 z-40 glass px-2 py-2 md:px-4 md:py-3 rounded-lg md:rounded-2xl border-secondary/20 shadow-xl flex items-center gap-2 backdrop-blur-md"
       >
         <div className="w-5 h-5 md:w-8 md:h-8 rounded-md bg-secondary/20 flex items-center justify-center text-secondary shrink-0">
@@ -148,8 +159,9 @@ export function HeroArchitectureVisual() {
 
       <motion.div 
         initial={{ y: 20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 1.6 }}
+        whileInView={{ y: 0, opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ delay: 1.2 }}
         className="absolute -bottom-4 md:-bottom-8 left-1/2 -translate-x-1/2 z-40 glass px-3 py-2 md:px-4 md:py-3 rounded-lg md:rounded-2xl border-green-500/20 shadow-xl flex items-center gap-2 backdrop-blur-md whitespace-nowrap scale-75 md:scale-100"
       >
         <div className="w-5 h-5 md:w-8 md:h-8 rounded-md bg-green-500/20 flex items-center justify-center text-green-500 shrink-0">
@@ -159,4 +171,4 @@ export function HeroArchitectureVisual() {
       </motion.div>
     </div>
   );
-}
+});
