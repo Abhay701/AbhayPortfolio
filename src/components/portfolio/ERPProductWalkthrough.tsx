@@ -45,21 +45,24 @@ export function ERPProductWalkthrough({ screenshots, onClose }: ERPProductWalkth
     setCurrentIndex((prev) => (prev - 1 + screenshots.length) % screenshots.length);
   }, [screenshots.length]);
 
+  // Handle autoplay transitions and timer resets
   useEffect(() => {
     if (isPlaying) {
+      // Set interval to advance to next slide
       progressTimer.current = setInterval(handleNext, AUTOPLAY_INTERVAL);
-    } else {
-      if (progressTimer.current) clearInterval(progressTimer.current);
     }
+    
     return () => {
       if (progressTimer.current) clearInterval(progressTimer.current);
     };
-  }, [isPlaying, handleNext]);
+    // Include currentIndex in dependencies to reset the timer when navigating manually
+  }, [isPlaying, handleNext, currentIndex]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowRight') { setIsPlaying(false); handleNext(); }
-      if (e.key === 'ArrowLeft') { setIsPlaying(false); handlePrev(); }
+      // Manual navigation preserves the current playback state (playing stays playing, paused stays paused)
+      if (e.key === 'ArrowRight') { handleNext(); }
+      if (e.key === 'ArrowLeft') { handlePrev(); }
       if (e.key === 'Escape') onClose();
       if (e.key === ' ') { e.preventDefault(); setIsPlaying(!isPlaying); }
     };
@@ -110,7 +113,7 @@ export function ERPProductWalkthrough({ screenshots, onClose }: ERPProductWalkth
               {isPlaying ? <Pause size={18} /> : <Play size={18} className="fill-current" />}
             </button>
             <button 
-              onClick={() => { setCurrentIndex(0); setIsPlaying(false); }}
+              onClick={() => { setCurrentIndex(0); }}
               className="w-8 h-8 md:w-10 md:h-10 rounded-md md:rounded-lg flex items-center justify-center hover:bg-white/10 text-muted-foreground transition-all"
             >
               <RotateCcw size={16} />
@@ -152,13 +155,13 @@ export function ERPProductWalkthrough({ screenshots, onClose }: ERPProductWalkth
 
           {/* Navigation Arrows */}
           <button 
-            onClick={(e) => { e.stopPropagation(); setIsPlaying(false); handlePrev(); }}
+            onClick={(e) => { e.stopPropagation(); handlePrev(); }}
             className="absolute left-2 md:left-6 w-10 h-10 md:w-14 md:h-14 rounded-full glass flex items-center justify-center opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all hover:text-primary z-30"
           >
             <ChevronLeft size={20} className="md:w-7 md:h-7" />
           </button>
           <button 
-            onClick={(e) => { e.stopPropagation(); setIsPlaying(false); handleNext(); }}
+            onClick={(e) => { e.stopPropagation(); handleNext(); }}
             className="absolute right-2 md:right-6 w-10 h-10 md:w-14 md:h-14 rounded-full glass flex items-center justify-center opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all hover:text-primary z-30"
           >
             <ChevronRight size={20} className="md:w-7 md:h-7" />
@@ -169,7 +172,7 @@ export function ERPProductWalkthrough({ screenshots, onClose }: ERPProductWalkth
         <div className="w-full lg:w-[400px] flex flex-col gap-4 md:gap-6 shrink-0 lg:h-full pb-8 lg:pb-0">
           <div className="glass p-5 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] border-white/10 flex-1 flex flex-col">
             
-            {/* Mobile-only Header Info: Requirement: Category -> Title below image */}
+            {/* Mobile-only Header Info */}
             <div className="flex md:hidden flex-col mb-6">
               <span className="text-primary font-bold text-[10px] uppercase tracking-[0.2em] mb-1">
                 {currentScreenshot.chapter}
