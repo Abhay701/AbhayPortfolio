@@ -16,7 +16,9 @@ import {
   Users,
   Settings,
   ClipboardCheck,
-  Truck
+  Truck,
+  FileText,
+  Package
 } from 'lucide-react';
 import { projectsData } from '@/lib/projects-data';
 import { ProjectGallery } from '@/components/portfolio/ProjectGallery';
@@ -227,12 +229,15 @@ export default function CaseStudyPage() {
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                   {[
-                    { icon: Settings, title: "Administrator", desc: "Complete oversight and control over all organizational modules." },
-                    { icon: ClipboardCheck, title: "Order Builder", desc: "Technical tool for configuring complex order specifications." },
-                    { icon: Users, title: "Production Units", desc: "Dedicated views for Kappa, Paper, Screen, and Jar departments." },
-                    { icon: ShieldCheck, title: "Designer Portal", desc: "Design-centric workflow management and approval tracking." },
-                    { icon: Database, title: "Stock & Inventory", desc: "Material lifecycle tracking and cross-unit stock allocation." },
-                    { icon: Truck, title: "Dispatch Center", desc: "Final order logistics and delivery fulfillment tracking." }
+                    { icon: Settings, title: "Administrator", desc: "Complete control over users, roles, permissions, settings and business operations." },
+                    { icon: ClipboardCheck, title: "Order Builder", desc: "Creates customer orders, configures packaging specifications and initiates the production workflow." },
+                    { icon: ShieldCheck, title: "Designer", desc: "Manages assigned design jobs, artwork updates and design approval stages." },
+                    { icon: Layers, title: "Kappa", desc: "Manages Kappa department production queues, assigned jobs and processing updates." },
+                    { icon: FileText, title: "Paper", desc: "Handles paper processing tasks, material preparation and production progress." },
+                    { icon: LayoutList, title: "Screen", desc: "Manages screen printing jobs, department queues and printing progress." },
+                    { icon: Package, title: "Jar", desc: "Handles jar-related production tasks, assigned orders and departmental updates." },
+                    { icon: Truck, title: "Dispatch", desc: "Manages completed orders, dispatch readiness, delivery scheduling and final fulfilment." },
+                    { icon: Database, title: "Stock & Inventory", desc: "Monitors raw materials, available quantities, stock allocation and inventory control." }
                   ].map((item, i) => (
                     <div key={i} className="glass p-6 rounded-2xl border-white/5">
                       <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center mb-4 text-primary">
@@ -277,9 +282,9 @@ export default function CaseStudyPage() {
             />
           </div>
 
-          <aside className="lg:col-span-4 space-y-8">
+          <aside className="lg:col-span-4 self-start sticky top-24 space-y-8">
             {/* Tech Stack */}
-            <div className="glass p-8 rounded-[2rem] sticky top-24 border-white/5">
+            <div className="glass p-8 rounded-[2rem] border-white/5">
               <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
                 <LayoutList size={20} className="text-primary" />
                 Verified Tech Stack

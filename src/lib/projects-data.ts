@@ -120,22 +120,150 @@ export const projectsData: Record<string, CaseStudyData> = {
     ],
     screenshotCategories: ["Admin", "Order Builder", "Designer", "Kappa/Paper/Screen", "Inventory", "Production Tracking", "Dispatch"],
     screenshots: [
-      { id: "kb-1", title: "Admin Overview Dashboard", category: "Admin", chapter: "Application Overview", path: "/projects/kb-print-hub/Admin%20Overview%20Dashboard_1.png", description: "Central administrative dashboard for business-wide metrics, performance indicators, and organizational oversight." },
-      { id: "kb-2", title: "Order Builder Interface", category: "Order Builder", chapter: "Customer & Order Management", path: "/projects/kb-print-hub/Order%20Builder%20Interface_2.png", description: "Technical specification and order building module for defining precise manufacturing parameters." },
-      { id: "kb-3", title: "Design Management Portal", category: "Designer", chapter: "Design & Approval", path: "/projects/kb-print-hub/Design%20Management%20Portal_3.png", description: "Coordination hub for designers to manage assets, track design stages, and handle artwork approvals." },
-      { id: "kb-4", title: "Kappa Production Unit", category: "Kappa/Paper/Screen", chapter: "Manufacturing & Production Tracking", path: "/projects/kb-print-hub/Kappa%20Production%20Unit_4.png", description: "Specialized dashboard for the Kappa processing department showing department-specific job queues." },
-      { id: "kb-5", title: "Paper Processing Dashboard", category: "Kappa/Paper/Screen", chapter: "Manufacturing & Production Tracking", path: "/projects/kb-print-hub/Paper%20Processing%20Dashboard_5.png", description: "Workflow management for the paper processing unit, tracking material readiness and preparation status." },
-      { id: "kb-6", title: "Screen Printing Dashboard", category: "Kappa/Paper/Screen", chapter: "Manufacturing & Production Tracking", path: "/projects/kb-print-hub/Screen%20Printing%20Dashboard_6.png", description: "Real-time tracking for the screen printing department, managing multi-stage print schedules." },
-      { id: "kb-7", title: "Jar Management Dashboard", category: "Production Tracking", chapter: "Manufacturing & Production Tracking", path: "/projects/kb-print-hub/Jar%20Management%20Dashboard_7.png", description: "Inventory and production tracking for jar components used in specialized packaging projects." },
-      { id: "kb-8", title: "Dispatch Control Center", category: "Dispatch", chapter: "Dispatch & Delivery", path: "/projects/kb-print-hub/Dispatch%20Control%20Center_8.png", description: "Logistics hub for shipping management, delivery scheduling, and final order fulfillment confirmation." },
-      { id: "kb-9", title: "Stock & Inventory Control", category: "Inventory", chapter: "Inventory & Stock Management", path: "/projects/kb-print-hub/Stock%20&%20Inventory%20Control_9.png", description: "Real-time stock level monitoring and raw material tracking across all manufacturing units." },
-      { id: "kb-10", title: "Production Pipeline Overview", category: "Production Tracking", chapter: "Manufacturing & Production Tracking", path: "/projects/kb-print-hub/Production%20Pipeline%20Overview_10.png", description: "High-level visual summary of the entire manufacturing pipeline across all 9 departments." },
-      { id: "kb-11", title: "Automated Job Card Generation", category: "Admin", chapter: "Job Card Generation", path: "/projects/kb-print-hub/Automated%20Job%20Card%20Generation_11.png", description: "System-generated job cards that convert order data into technical instructions for production teams." },
-      { id: "kb-12", title: "User Role Management", category: "Admin", chapter: "User Authentication & Role-Based Access", path: "/projects/kb-print-hub/User%20Role%20Management_12.png", description: "Configuring role-based access control and feature-level permissions for all system users." },
-      { id: "kb-13", title: "Inventory Audit Trail", category: "Inventory", chapter: "Inventory & Stock Management", path: "/projects/kb-print-hub/Inventory%20Audit%20Trail_13.png", description: "Detailed logs of inventory movement, adjustments, and material consumption for audit transparency." },
-      { id: "kb-14", title: "Cross-Departmental Sync", category: "Production Tracking", chapter: "Manufacturing & Production Tracking", path: "/projects/kb-print-hub/Cross-Departmental%20Sync_14.png", description: "Visualizing real-time data hand-off and coordination between sequential production departments." },
-      { id: "kb-15", title: "Order Lifecycle Tracking", category: "Order Builder", chapter: "Complete Order Lifecycle", path: "/projects/kb-print-hub/Order%20Lifecycle%20Tracking_15.png", description: "Comprehensive monitoring of a customer order's progress through all 9 departmental stages." },
-      { id: "kb-16", title: "Business Intelligence Analytics", category: "Admin", chapter: "Application Overview", path: "/projects/kb-print-hub/Business%20Intelligence%20Analytics_16.png", description: "Analytical dashboard providing data-driven insights into production efficiency and business growth." }
+      {
+        id: "kb-1",
+        title: "Home Dashboard – Overview",
+        category: "Admin",
+        chapter: "Application Overview",
+        path: "/projects/kb-print-hub/Home%20Page_1.png",
+        description: "Main KB Print HUB dashboard presenting an overview of business operations, live production activity, order statistics and department performance."
+      },
+      {
+        id: "kb-2",
+        title: "Home Dashboard – Operations",
+        category: "Admin",
+        chapter: "Application Overview",
+        path: "/projects/kb-print-hub/Home%20Page_2.png",
+        description: "Dashboard view providing visibility into production workload, departmental queues and overall order processing."
+      },
+      {
+        id: "kb-3",
+        title: "Order Management Dashboard",
+        category: "Order Builder",
+        chapter: "Customer Order Management",
+        path: "/projects/kb-print-hub/Order%20Dashboard%20Collage_3.png",
+        description: "Order management interface for viewing, searching, filtering and tracking customer orders, quantities, delivery dates and processing statuses."
+      },
+      {
+        id: "kb-4",
+        title: "Packaging Order Form",
+        category: "Order Builder",
+        chapter: "Order Creation",
+        path: "/projects/kb-print-hub/Packaging%20Order%20Form_4.png",
+        description: "Structured packaging order form containing order specifications, design details, components, packaging instructions and remarks."
+      },
+      {
+        id: "kb-5",
+        title: "Order Creation and Management Dialog",
+        category: "Order Builder",
+        chapter: "Order Creation",
+        path: "/projects/kb-print-hub/Order%20Dialog%20Collage_5.png",
+        description: "Multi-section order creation interface for entering customer details, item quantities, trays, inner components, logos, cards, jars and packaging instructions."
+      },
+      {
+        id: "kb-6",
+        title: "Cancelled Orders Management",
+        category: "Order Builder",
+        chapter: "Order Lifecycle Management",
+        path: "/projects/kb-print-hub/Cancelled%20Orders_6.png",
+        description: "Interface for viewing and managing cancelled customer orders and their associated records."
+      },
+      {
+        id: "kb-7",
+        title: "Inventory Management",
+        category: "Inventory",
+        chapter: "Inventory Management",
+        path: "/projects/kb-print-hub/Inventories%20Collage_7.png",
+        description: "Inventory management interface for monitoring available materials, stock categories and inventory records."
+      },
+      {
+        id: "kb-8",
+        title: "Stock Management Dashboard",
+        category: "Inventory",
+        chapter: "Stock Management",
+        path: "/projects/kb-print-hub/Stocks%20Collage_8.png",
+        description: "Stock management interface for monitoring available stock and material allocation."
+      },
+      {
+        id: "kb-9",
+        title: "Order Builder Dashboard",
+        category: "Order Builder",
+        chapter: "Order Processing",
+        path: "/projects/kb-print-hub/Order%20Builder%20Dashboard_9.png",
+        description: "Order Builder workspace for preparing and configuring customer orders before they enter the production workflow."
+      },
+      {
+        id: "kb-10",
+        title: "Designer Dashboard",
+        category: "Designer",
+        chapter: "Design Management",
+        path: "/projects/kb-print-hub/Designer%20Dashboard_10.png",
+        description: "Designer workspace for reviewing assigned orders and managing design-related production activities."
+      },
+      {
+        id: "kb-11",
+        title: "Kappa Production Dashboard",
+        category: "Kappa/Paper/Screen",
+        chapter: "Departmental Production",
+        path: "/projects/kb-print-hub/Kappa%20Dashboard%20Collage_11.png",
+        description: "Kappa department interface for handling assigned production jobs and tracking departmental progress."
+      },
+      {
+        id: "kb-12",
+        title: "Paper Processing Dashboard",
+        category: "Kappa/Paper/Screen",
+        chapter: "Departmental Production",
+        path: "/projects/kb-print-hub/Paper%20Dashboard%20Collage_12.png",
+        description: "Paper department interface for monitoring assigned work and paper processing activities."
+      },
+      {
+        id: "kb-13",
+        title: "Screen Printing Dashboard",
+        category: "Kappa/Paper/Screen",
+        chapter: "Departmental Production",
+        path: "/projects/kb-print-hub/Screen%20Dashboard%20Collage_13.png",
+        description: "Screen department interface for managing assigned screen printing jobs and production progress."
+      },
+      {
+        id: "kb-14",
+        title: "Jar Management Dashboard",
+        category: "Production Tracking",
+        chapter: "Jar Production",
+        path: "/projects/kb-print-hub/Jar%20Dashboard_14.png",
+        description: "Jar department interface for managing jar-related production activities and assigned jobs."
+      },
+      {
+        id: "kb-15",
+        title: "Dispatch Management Dashboard",
+        category: "Dispatch",
+        chapter: "Dispatch & Delivery",
+        path: "/projects/kb-print-hub/Dispatch%20Dashboard%20Collage_15.png",
+        description: "Dispatch management interface for monitoring completed orders, delivery readiness and dispatch operations."
+      },
+      {
+        id: "kb-16",
+        title: "Stock Control Panel",
+        category: "Inventory",
+        chapter: "Stock Control",
+        path: "/projects/kb-print-hub/Stock%20Control%20Panel%20Collage_16.png",
+        description: "Stock control interface for monitoring stock information and managing material availability."
+      },
+      {
+        id: "kb-17",
+        title: "Admin Settings Dashboard",
+        category: "Admin",
+        chapter: "Administration & Permissions",
+        path: "/projects/kb-print-hub/Admin%20Settings%20Collage_17.png",
+        description: "Administrative settings interface for managing users, application roles and access permissions."
+      },
+      {
+        id: "kb-18",
+        title: "Profile Settings",
+        category: "Admin",
+        chapter: "User Profile Management",
+        path: "/projects/kb-print-hub/Profile%20Settings%20Collage_18.png",
+        description: "User profile interface for managing display information, account details and personal settings."
+      }
     ]
   },
   "anand-fabrics": {
