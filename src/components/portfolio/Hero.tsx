@@ -1,6 +1,6 @@
 'use client';
 import { motion } from 'framer-motion';
-import { ArrowRight, MapPin, FileText } from 'lucide-react';
+import { ArrowRight, MapPin, FileText, Activity, Users, CheckCircle2 } from 'lucide-react';
 import { profile } from '@/lib/data';
 
 interface HeroProps {
@@ -13,7 +13,7 @@ export function Hero({ onResumeClick }: HeroProps) {
       <div className="absolute inset-0 hero-gradient -z-10" />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-12 items-center">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -68,28 +68,106 @@ export function Hero({ onResumeClick }: HeroProps) {
             </div>
           </motion.div>
 
+          {/* Premium ERP Product Showcase Visual */}
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="hidden lg:block relative"
+            className="relative px-4 lg:px-0"
           >
-            <div className="aspect-square rounded-3xl overflow-hidden glass relative group p-1">
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20 group-hover:opacity-100 transition-opacity" />
-              <img 
-                src="https://picsum.photos/seed/dev/800/800" 
-                alt="Developer illustration"
-                data-ai-hint="developer programming"
-                className="w-full h-full object-cover rounded-[1.4rem]"
-              />
-              <div className="absolute bottom-6 left-6 glass p-4 rounded-2xl">
-                <p className="text-xs text-muted-foreground mb-1">Experience</p>
-                <p className="text-xl font-bold">13+ Months</p>
+            <div className="relative aspect-[4/3] w-full max-w-2xl mx-auto">
+              {/* Main Dashboard Frame - KB Print HUB */}
+              <motion.div 
+                whileHover={{ y: -5, rotateX: 2, rotateY: -2 }}
+                className="relative z-20 w-full h-full rounded-2xl glass border border-white/10 shadow-2xl overflow-hidden p-1.5"
+              >
+                <div className="w-full h-full rounded-xl overflow-hidden relative bg-[#0d1117] group">
+                   {/* Browser Toolbar UI Overlay */}
+                   <div className="absolute top-0 left-0 w-full h-6 bg-white/5 border-b border-white/5 flex items-center px-3 gap-1.5 z-30">
+                      <div className="w-2 h-2 rounded-full bg-red-500/30" />
+                      <div className="w-2 h-2 rounded-full bg-yellow-500/30" />
+                      <div className="w-2 h-2 rounded-full bg-green-500/30" />
+                      <div className="ml-2 px-2 py-0.5 rounded bg-white/5 text-[8px] text-muted-foreground font-mono">kb-print-hub.app</div>
+                   </div>
+                   <div className="pt-6 w-full h-full">
+                      <img 
+                        src="/projects/kb-print-hub/Home%20Page_1.png" 
+                        alt="KB Print HUB Dashboard"
+                        className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
+                      />
+                   </div>
+                   <div className="absolute inset-0 bg-gradient-to-t from-[#0d1117]/80 via-transparent to-transparent pointer-events-none" />
+                </div>
+              </motion.div>
+
+              {/* Secondary Overlapping Panel - Macro Print Pack */}
+              <motion.div 
+                initial={{ x: 40, y: 40, opacity: 0 }}
+                animate={{ x: 0, y: 0, opacity: 1 }}
+                transition={{ delay: 0.5, duration: 0.8 }}
+                className="absolute -bottom-6 -right-6 w-1/2 aspect-video z-30 glass border border-primary/30 rounded-xl overflow-hidden shadow-2xl hidden sm:block"
+              >
+                <div className="absolute inset-0 bg-primary/5 z-10" />
+                <img 
+                  src="/projects/Dashboard_1.png" 
+                  alt="Macro Print Pack Dashboard"
+                  className="w-full h-full object-cover"
+                />
+              </motion.div>
+
+              {/* Floating Metric Badges */}
+              <motion.div 
+                initial={{ x: -20, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ delay: 0.7 }}
+                className="absolute -left-4 sm:-left-12 top-1/4 z-40 glass px-4 py-3 rounded-2xl border-primary/20 shadow-xl flex items-center gap-3 backdrop-blur-md"
+              >
+                <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center text-primary shrink-0">
+                  <Activity size={16} />
+                </div>
+                <div>
+                  <p className="text-[9px] text-muted-foreground leading-none mb-1 uppercase tracking-wider font-bold">Total Activity</p>
+                  <p className="text-sm font-bold leading-none">1,600+ Orders</p>
+                </div>
+              </motion.div>
+
+              <motion.div 
+                initial={{ x: 20, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ delay: 0.9 }}
+                className="absolute -right-4 sm:-right-12 top-10 z-40 glass px-4 py-3 rounded-2xl border-secondary/20 shadow-xl flex items-center gap-3 backdrop-blur-md"
+              >
+                <div className="w-8 h-8 rounded-lg bg-secondary/20 flex items-center justify-center text-secondary shrink-0">
+                  <Users size={16} />
+                </div>
+                <div>
+                  <p className="text-[9px] text-muted-foreground leading-none mb-1 uppercase tracking-wider font-bold">Access Control</p>
+                  <p className="text-sm font-bold leading-none">9 Dashboards</p>
+                </div>
+              </motion.div>
+
+              <motion.div 
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 1.1 }}
+                className="absolute -bottom-12 left-1/4 z-40 glass px-4 py-3 rounded-2xl border-green-500/20 shadow-xl flex items-center gap-3 backdrop-blur-md hidden sm:flex"
+              >
+                <div className="w-8 h-8 rounded-lg bg-green-500/20 flex items-center justify-center text-green-500 shrink-0">
+                  <CheckCircle2 size={16} />
+                </div>
+                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">End-to-End Workflow Built</p>
+              </motion.div>
+              
+              {/* Professional Experience Badge */}
+              <div className="absolute bottom-4 left-4 z-40 glass p-3 rounded-xl border-white/5 hidden lg:block">
+                <p className="text-[10px] text-muted-foreground mb-0.5 uppercase tracking-widest font-bold">Industry Experience</p>
+                <p className="text-lg font-bold">13+ Months</p>
               </div>
+
+              {/* Decorative Background Accents */}
+              <div className="absolute -top-10 -right-10 w-64 h-64 bg-primary/10 rounded-full blur-[100px] -z-10" />
+              <div className="absolute -bottom-10 -left-10 w-64 h-64 bg-secondary/10 rounded-full blur-[100px] -z-10" />
             </div>
-            
-            <div className="absolute -top-10 -right-10 w-32 h-32 bg-primary/20 rounded-full blur-3xl" />
-            <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-secondary/20 rounded-full blur-3xl" />
           </motion.div>
         </div>
       </div>
