@@ -70,7 +70,8 @@ export function ERPProductWalkthrough({ screenshots, onClose }: ERPProductWalkth
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handleNext, handlePrev, onClose, isPlaying]);
 
-  if (!isMounted) return null;
+  // Ensure document and document.body exist before calling createPortal
+  if (!isMounted || typeof document === 'undefined' || !document.body) return null;
 
   const currentScreenshot = screenshots[currentIndex];
   const isQRChapter = currentScreenshot?.chapter?.toLowerCase().includes('qr-based');

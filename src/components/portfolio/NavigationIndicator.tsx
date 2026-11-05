@@ -196,7 +196,8 @@ export function NavigationIndicator({ targetSelector, isWalkthrough = false }: N
     }
   };
 
-  if (!mounted || typeof document === 'undefined') return null;
+  // Ensure document and document.body exist before calling createPortal
+  if (!mounted || typeof document === 'undefined' || !document.body) return null;
 
   return createPortal(
     <>
@@ -285,6 +286,7 @@ export function NavigationIndicator({ targetSelector, isWalkthrough = false }: N
           </motion.div>
         )}
       </AnimatePresence>
-    </>
+    </>,
+    document.body
   );
 }

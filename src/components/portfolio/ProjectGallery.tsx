@@ -123,6 +123,9 @@ export function ProjectGallery({ screenshots, categories }: ProjectGalleryProps)
   const zoomIn = () => setScale(prev => Math.min(4, prev + 0.5));
   const zoomOut = () => setScale(prev => Math.max(1, prev - 0.5));
 
+  // Ensure document and document.body exist before calling createPortal
+  const showLightbox = isMounted && selectedImageIdx !== null && filteredScreenshots[selectedImageIdx] && typeof document !== 'undefined' && document.body;
+
   return (
     <section className="py-12">
       <h3 className="text-xl md:text-2xl font-bold mb-8 flex items-center gap-3">
@@ -187,7 +190,7 @@ export function ProjectGallery({ screenshots, categories }: ProjectGalleryProps)
       )}
 
       {/* Lightbox - Rendered through Portal */}
-      {isMounted && createPortal(
+      {showLightbox && createPortal(
         <AnimatePresence>
           {selectedImageIdx !== null && filteredScreenshots[selectedImageIdx] && (
             <div className="fixed inset-0 z-[9999] flex items-center justify-center p-3 xs:p-4 md:p-10">
