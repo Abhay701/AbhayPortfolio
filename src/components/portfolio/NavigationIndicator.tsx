@@ -103,6 +103,7 @@ export function NavigationIndicator({ targetSelector, isWalkthrough = false }: N
     const spaceBottom = vpHeight - rect.bottom;
 
     let placement: PointerPlacement = 'left';
+    const isTargetButton = targetSelector.includes('hero-btn') || targetSelector.includes('project-btn');
 
     // Intelligent responsive placement decision
     if (vpWidth >= 768) {
@@ -116,15 +117,21 @@ export function NavigationIndicator({ targetSelector, isWalkthrough = false }: N
         placement = 'bottom';
       }
     } else {
-      // Mobile Logic: Aggressively prefer side placement to avoid vertical overlap with button text
-      if (spaceLeft >= 30) {
-        placement = 'left';
-      } else if (spaceRight >= 30) {
-        placement = 'right';
-      } else if (spaceTop >= 50) {
+      // Mobile Logic
+      if (isTargetButton) {
+        // Force top placement for main buttons as requested
         placement = 'top';
       } else {
-        placement = 'bottom';
+        // Mobile Logic for others: Aggressively prefer side placement to avoid vertical overlap with button text
+        if (spaceLeft >= 30) {
+          placement = 'left';
+        } else if (spaceRight >= 30) {
+          placement = 'right';
+        } else if (spaceTop >= 50) {
+          placement = 'top';
+        } else {
+          placement = 'bottom';
+        }
       }
     }
 
@@ -138,7 +145,12 @@ export function NavigationIndicator({ targetSelector, isWalkthrough = false }: N
       x = rect.right + gap;
       y = rect.top + (rect.height - pointerH) / 2;
     } else if (placement === 'top') {
-      x = rect.left + (rect.width - pointerW) / 2;
+      // Corner alignment for buttons on mobile as requested
+      if (vpWidth < 768 && isTargetButton) {
+        x = rect.left;
+      } else {
+        x = rect.left + (rect.width - pointerW) / 2;
+      }
       y = rect.top - pointerH - gap;
     } else {
       x = rect.left + (rect.width - pointerW) / 2;
@@ -156,7 +168,7 @@ export function NavigationIndicator({ targetSelector, isWalkthrough = false }: N
     y = Math.max(8, Math.min(y, vpHeight - pointerH - 8));
 
     setCoords({ x, y, placement });
-  }, [targetElement, isWalkthrough]);
+  }, [targetElement, isWalkthrough, targetSelector]);
 
   // Recalculate on scroll, resize, and orientation change
   useEffect(() => {
@@ -198,6 +210,10 @@ export function NavigationIndicator({ targetSelector, isWalkthrough = false }: N
 
   // Ensure document and document.body exist before calling createPortal
   if (!mounted || typeof document === 'undefined' || !document.body) return null;
+
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+  const isTargetButton = targetSelector.includes('hero-btn') || targetSelector.includes('project-btn');
+  const emoji = (isMobile && isTargetButton) ? '👇' : '👉';
 
   return createPortal(
     <>
@@ -272,16 +288,17 @@ export function NavigationIndicator({ targetSelector, isWalkthrough = false }: N
             <span 
               className={cn(
                 "text-3xl md:text-4xl transition-transform duration-300 block select-none",
-                coords.placement === 'left' && 'rotate-0',
-                coords.placement === 'right' && 'rotate-180',
-                coords.placement === 'top' && 'rotate-90',
-                coords.placement === 'bottom' && '-rotate-90'
+                (emoji === '👉') && coords.placement === 'left' && 'rotate-0',
+                (emoji === '👉') && coords.placement === 'right' && 'rotate-180',
+                (emoji === '👉') && coords.placement === 'top' && 'rotate-90',
+                (emoji === '👉') && coords.placement === 'bottom' && '-rotate-90',
+                (emoji === '👇') && 'rotate-0'
               )}
               style={{ 
                 filter: `drop-shadow(0 0 8px ${themeEmojiColors[theme]})`
               }}
             >
-              👉
+              {emoji}
             </span>
           </motion.div>
         )}
