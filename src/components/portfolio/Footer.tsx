@@ -24,7 +24,12 @@ export function Footer() {
             <a href="#" className="w-10 h-10 rounded-lg glass border border-border text-foreground flex items-center justify-center hover:text-primary hover:border-primary/50 transition-all">
               <Github size={20} />
             </a>
-            <a href="#" className="w-10 h-10 rounded-lg glass border border-border text-foreground flex items-center justify-center hover:text-primary hover:border-primary/50 transition-all">
+            <a 
+              href="https://www.linkedin.com/in/abhay-kumar-5aa8b5230/" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="w-10 h-10 rounded-lg glass border border-border text-foreground flex items-center justify-center hover:text-primary hover:border-primary/50 transition-all"
+            >
               <Linkedin size={20} />
             </a>
             <a href={`mailto:${profile.email}`} className="w-10 h-10 rounded-lg glass border border-border text-foreground flex items-center justify-center hover:text-primary hover:border-primary/50 transition-all">

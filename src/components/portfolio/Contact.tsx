@@ -91,7 +91,12 @@ export function Contact() {
 
   const socialLinks = [
     { icon: Mail, href: `mailto:${profile.email}`, label: profile.email },
-    { icon: Linkedin, href: "#", label: "LinkedIn Profile" },
+    { 
+      icon: Linkedin, 
+      href: "https://www.linkedin.com/in/abhay-kumar-5aa8b5230/", 
+      label: "LinkedIn Profile",
+      isExternal: true 
+    },
     { icon: Github, href: "#", label: "GitHub Profile" },
     { icon: MapPin, href: "#", label: profile.location },
   ];
@@ -147,7 +152,6 @@ export function Contact() {
     if (errors[name]) {
       setErrors(prev => {
         const newErrors = { ...prev };
-        delete newErrors[name];
         return newErrors;
       });
     }
@@ -224,7 +228,7 @@ export function Contact() {
     const web3FormsData = {
       access_key: process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY || "ccdd135d-3d05-4ae6-a82d-2e150fe4dc36",
       from_name: "Abhay Kumar | Portfolio Contact Form",
-      subject: `New Portfolio Enquiry | ${formData.subject.trim()} | Abhay Kumar Portfolio`,
+      subject: `New Portfolio Inquiry | ${formData.subject.trim()} | Abhay Kumar Portfolio`,
       name: formData.name.trim(),
       email: formData.email.trim(),
       phone: `${selectedCountry.dialCode} ${formData.phone.trim()}`,
@@ -309,6 +313,8 @@ export function Contact() {
                 <a 
                   key={i}
                   href={link.href}
+                  target={link.isExternal ? "_blank" : undefined}
+                  rel={link.isExternal ? "noopener noreferrer" : undefined}
                   className="flex items-center gap-4 group hover:translate-x-2 transition-transform w-fit"
                 >
                   <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl glass flex items-center justify-center group-hover:bg-primary/20 group-hover:border-primary/50 transition-all shrink-0">
