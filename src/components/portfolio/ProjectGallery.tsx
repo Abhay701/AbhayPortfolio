@@ -140,7 +140,7 @@ export function ProjectGallery({ screenshots, categories }: ProjectGalleryProps)
               "px-3 py-1.5 md:px-4 md:py-2 rounded-xl text-xs md:text-sm font-medium transition-all border",
               activeCategory === cat 
                 ? "bg-primary text-primary-foreground border-primary" 
-                : "glass border-white/5 text-muted-foreground hover:border-primary/50"
+                : "glass border-border text-foreground hover:border-primary/50"
             )}
           >
             {cat}
@@ -156,7 +156,7 @@ export function ProjectGallery({ screenshots, categories }: ProjectGalleryProps)
               key={shot.id}
               layoutId={shot.id}
               onClick={() => setSelectedImageIdx(idx)}
-              className="group relative aspect-video rounded-2xl overflow-hidden glass border border-white/5 cursor-pointer"
+              className="group relative aspect-video rounded-2xl overflow-hidden glass border border-border shadow-xs cursor-pointer"
             >
               <Image 
                 src={shot.path} 
@@ -168,14 +168,14 @@ export function ProjectGallery({ screenshots, categories }: ProjectGalleryProps)
               />
               <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center p-4 text-center">
                 <Maximize2 className="text-primary mb-2" size={20} />
-                <p className="font-bold text-xs md:text-sm">{shot.title}</p>
-                <p className="text-[9px] md:text-[10px] text-muted-foreground mt-1">{shot.category}</p>
+                <p className="font-bold text-xs md:text-sm text-white">{shot.title}</p>
+                <p className="text-[9px] md:text-[10px] text-gray-300 mt-1">{shot.category}</p>
               </div>
             </motion.div>
           ))}
         </div>
       ) : (
-        <div className="py-16 md:py-20 glass rounded-[2rem] md:rounded-[2.5rem] border border-dashed border-white/10 flex flex-col items-center justify-center text-center">
+        <div className="py-16 md:py-20 glass rounded-[2rem] md:rounded-[2.5rem] border border-dashed border-border flex flex-col items-center justify-center text-center">
           <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl md:rounded-3xl bg-primary/10 flex items-center justify-center mb-6">
             <ImageIcon className="text-primary/50" size={32} />
           </div>
@@ -203,7 +203,7 @@ export function ProjectGallery({ screenshots, categories }: ProjectGalleryProps)
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
-                className="relative z-10 pointer-events-auto w-full max-w-6xl h-full flex flex-col rounded-2xl md:rounded-3xl overflow-hidden glass border border-white/10 shadow-2xl bg-black/40"
+                className="relative z-10 pointer-events-auto w-full max-w-6xl h-full flex flex-col rounded-2xl md:rounded-3xl overflow-hidden glass border border-border shadow-2xl bg-card"
               >
                 {/* Close Button */}
                 <button
@@ -213,7 +213,7 @@ export function ProjectGallery({ screenshots, categories }: ProjectGalleryProps)
                     resetZoom();
                     setSelectedImageIdx(null);
                   }}
-                  className="absolute top-4 right-4 z-[110] w-10 h-10 rounded-full bg-black/60 border border-white/10 flex items-center justify-center text-white hover:bg-black/80 hover:text-primary transition-all cursor-pointer shadow-lg"
+                  className="absolute top-4 right-4 z-[110] w-10 h-10 rounded-full bg-card/90 border border-border flex items-center justify-center text-foreground hover:bg-card hover:text-primary transition-all cursor-pointer shadow-lg"
                   aria-label="Close image preview"
                 >
                   <X size={24} />
@@ -221,10 +221,10 @@ export function ProjectGallery({ screenshots, categories }: ProjectGalleryProps)
 
                 {/* Mobile Zoom Controls - Only visible on small screens */}
                 <div className="absolute top-4 left-4 z-[110] flex items-center gap-2 md:hidden">
-                  <div className="flex items-center gap-1 glass p-1 rounded-xl border border-white/10 bg-black/40 shadow-lg">
+                  <div className="flex items-center gap-1 glass p-1 rounded-xl border border-border bg-card/90 shadow-lg">
                     <button 
                       onClick={zoomOut}
-                      className="w-8 h-8 rounded-lg flex items-center justify-center text-white hover:text-primary active:bg-white/10 transition-all"
+                      className="w-8 h-8 rounded-lg flex items-center justify-center text-foreground hover:text-primary active:bg-muted transition-all"
                     >
                       <Minus size={18} />
                     </button>
@@ -233,24 +233,24 @@ export function ProjectGallery({ screenshots, categories }: ProjectGalleryProps)
                     </span>
                     <button 
                       onClick={zoomIn}
-                      className="w-8 h-8 rounded-lg flex items-center justify-center text-white hover:text-primary active:bg-white/10 transition-all"
+                      className="w-8 h-8 rounded-lg flex items-center justify-center text-foreground hover:text-primary active:bg-muted transition-all"
                     >
                       <Plus size={18} />
                     </button>
-                    <div className="w-[1px] h-4 bg-white/10 mx-1" />
+                    <div className="w-[1px] h-4 bg-border mx-1" />
                     <button 
                       onClick={resetZoom}
-                      className="w-8 h-8 rounded-lg flex items-center justify-center text-white hover:text-primary active:bg-white/10 transition-all"
+                      className="w-8 h-8 rounded-lg flex items-center justify-center text-foreground hover:text-primary active:bg-muted transition-all"
                     >
                       <RotateCcw size={16} />
                     </button>
                   </div>
                 </div>
 
-                {/* Image Area */}
+                {/* Image Area - Native dashboard canvas */}
                 <div 
                   ref={viewportRef}
-                  className="relative flex-1 min-h-0 w-full flex items-center justify-center p-2 md:p-4 overflow-hidden"
+                  className="relative flex-1 min-h-0 w-full flex items-center justify-center p-2 md:p-4 overflow-hidden bg-[#0d1117]"
                   onTouchStart={handleTouchStart}
                   onTouchMove={handleTouchMove}
                   onTouchEnd={handleTouchEnd}
@@ -277,7 +277,7 @@ export function ProjectGallery({ screenshots, categories }: ProjectGalleryProps)
                     <button
                       type="button"
                       onClick={(e) => { e.stopPropagation(); handlePrev(); }}
-                      className="w-10 h-10 md:w-12 md:h-12 rounded-full glass flex items-center justify-center text-white hover:text-primary transition-all hover:scale-110 active:scale-95 cursor-pointer pointer-events-auto shadow-lg"
+                      className="w-10 h-10 md:w-12 md:h-12 rounded-full glass border border-border flex items-center justify-center text-foreground hover:text-primary transition-all hover:scale-110 active:scale-95 cursor-pointer pointer-events-auto shadow-lg"
                       aria-label="Previous image"
                     >
                       <ChevronLeft size={24} />
@@ -288,7 +288,7 @@ export function ProjectGallery({ screenshots, categories }: ProjectGalleryProps)
                     <button
                       type="button"
                       onClick={(e) => { e.stopPropagation(); handleNext(); }}
-                      className="w-10 h-10 md:w-12 md:h-12 rounded-full glass flex items-center justify-center text-white hover:text-primary transition-all hover:scale-110 active:scale-95 cursor-pointer pointer-events-auto shadow-lg"
+                      className="w-10 h-10 md:w-12 md:h-12 rounded-full glass border border-border flex items-center justify-center text-foreground hover:text-primary transition-all hover:scale-110 active:scale-95 cursor-pointer pointer-events-auto shadow-lg"
                       aria-label="Next image"
                     >
                       <ChevronRight size={24} />
@@ -297,11 +297,11 @@ export function ProjectGallery({ screenshots, categories }: ProjectGalleryProps)
                 </div>
 
                 {/* Bottom Caption Area */}
-                <div className="w-full p-4 md:p-8 bg-black/80 border-t border-white/10 shrink-0 overflow-y-auto custom-scrollbar">
+                <div className="w-full p-4 md:p-8 bg-card/95 border-t border-border shrink-0 overflow-y-auto custom-scrollbar">
                   <p className="text-primary font-bold text-[10px] md:text-xs uppercase tracking-widest mb-1">
                     {filteredScreenshots[selectedImageIdx].category}
                   </p>
-                  <h4 className="text-sm md:text-xl font-bold text-white mb-2">
+                  <h4 className="text-sm md:text-xl font-bold text-foreground mb-2">
                     {filteredScreenshots[selectedImageIdx].title}
                   </h4>
                   {filteredScreenshots[selectedImageIdx].description && (

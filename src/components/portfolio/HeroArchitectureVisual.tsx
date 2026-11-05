@@ -93,12 +93,12 @@ export const HeroArchitectureVisual = memo(function HeroArchitectureVisual() {
           viewport={{ once: true }}
           transition={{ delay: 0.3 + (i * 0.05), duration: 0.4 }}
           className={cn(
-            "absolute z-30 glass p-2 md:p-4 rounded-xl md:rounded-2xl border-white/10 shadow-xl flex items-center gap-2 md:gap-3 hover:border-primary/50 transition-all group cursor-default will-change-transform",
+            "absolute z-30 glass p-2 md:p-4 rounded-xl md:rounded-2xl border-border/60 shadow-xl flex items-center gap-2 md:gap-3 hover:border-primary/50 transition-all group cursor-default will-change-transform",
             mod.pos,
             "max-md:" + mod.mobilePos
           )}
         >
-          <div className={cn("w-6 h-6 md:w-10 md:h-10 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-primary/20 transition-colors", mod.color)}>
+          <div className={cn("w-6 h-6 md:w-10 md:h-10 rounded-lg bg-muted/40 flex items-center justify-center group-hover:bg-primary/20 transition-colors", mod.color)}>
             <mod.icon size={14} className="md:w-5 md:h-5" />
           </div>
           <span className="text-[8px] md:text-xs font-bold whitespace-nowrap hidden sm:block">{mod.label}</span>

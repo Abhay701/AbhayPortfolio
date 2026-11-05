@@ -58,6 +58,11 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
     return () => window.removeEventListener('resize', checkDesktop);
   }, []);
 
+  const resetZoom = useCallback(() => {
+    setScale(1);
+    setPosition({ x: 0, y: 0 });
+  }, []);
+
   // Reset states when modal opens/closes
   useEffect(() => {
     if (isOpen) {
@@ -76,12 +81,7 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
     return () => {
       document.body.style.overflow = 'unset';
     };
-  }, [isOpen]);
-
-  const resetZoom = useCallback(() => {
-    setScale(1);
-    setPosition({ x: 0, y: 0 });
-  }, []);
+  }, [isOpen, resetZoom]);
 
   const handleZoomIn = () => setScale(prev => Math.min(MAX_SCALE, prev + SCALE_STEP));
   const handleZoomOut = () => setScale(prev => Math.max(MIN_SCALE, prev - SCALE_STEP));
@@ -220,27 +220,27 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
             initial={{ opacity: 0, scale: 0.95, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 10 }}
-            className="relative w-full max-w-5xl h-full max-h-[90vh] md:max-h-[96vh] flex flex-col glass rounded-2xl md:rounded-[2.5rem] overflow-hidden border border-white/10 shadow-2xl bg-card/60"
+            className="relative w-full max-w-5xl h-full max-h-[90vh] md:max-h-[96vh] flex flex-col glass rounded-2xl md:rounded-[2.5rem] overflow-hidden border border-border shadow-2xl bg-card"
           >
             {/* Compact Header with Zoom Controls */}
-            <div className="relative z-20 flex items-center justify-between px-3 md:px-4 py-2 md:py-4 border-b border-white/5 bg-white/5 gap-2">
+            <div className="relative z-20 flex items-center justify-between px-3 md:px-4 py-2 md:py-4 border-b border-border bg-muted/20 gap-2">
               <div className="flex items-center gap-2 md:gap-3 min-w-0">
                 <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-primary/20 flex items-center justify-center shrink-0">
                   <FileText className="text-primary" size={16} />
                 </div>
                 <div className="truncate">
-                  <h3 className="text-[10px] md:text-xs font-bold leading-none mb-1">Resume Preview</h3>
+                  <h3 className="text-[10px] md:text-xs font-bold leading-none mb-1 text-foreground">Resume Preview</h3>
                   <p className="text-[8px] md:text-[9px] text-muted-foreground uppercase tracking-widest leading-none truncate hidden xs:block">Abhay Kumar</p>
                 </div>
               </div>
 
               <div className="flex items-center gap-2 md:gap-4 shrink-0">
                 {!loading && !error && (
-                  <div className="flex items-center gap-0.5 sm:gap-1 bg-white/5 p-0.5 md:p-1 rounded-lg md:rounded-xl border border-white/10 shadow-sm">
+                  <div className="flex items-center gap-0.5 sm:gap-1 bg-muted/40 p-0.5 md:p-1 rounded-lg md:rounded-xl border border-border shadow-xs">
                     <button 
                       onClick={handleZoomOut}
                       disabled={scale <= MIN_SCALE}
-                      className="w-7 h-7 md:w-10 md:h-10 rounded-md md:rounded-lg flex items-center justify-center hover:bg-white/10 text-muted-foreground hover:text-foreground disabled:opacity-30 transition-colors"
+                      className="w-7 h-7 md:w-10 md:h-10 rounded-md md:rounded-lg flex items-center justify-center hover:bg-muted text-muted-foreground hover:text-foreground disabled:opacity-30 transition-colors"
                     >
                       <Minus size={14} />
                     </button>
@@ -252,14 +252,14 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                     <button 
                       onClick={handleZoomIn}
                       disabled={scale >= MAX_SCALE}
-                      className="w-7 h-7 md:w-10 md:h-10 rounded-md md:rounded-lg flex items-center justify-center hover:bg-white/10 text-muted-foreground hover:text-foreground disabled:opacity-30 transition-colors"
+                      className="w-7 h-7 md:w-10 md:h-10 rounded-md md:rounded-lg flex items-center justify-center hover:bg-muted text-muted-foreground hover:text-foreground disabled:opacity-30 transition-colors"
                     >
                       <Plus size={14} />
                     </button>
-                    <div className="w-[1px] h-3 bg-white/10 mx-0.5 md:mx-1" />
+                    <div className="w-[1px] h-3 bg-border mx-0.5 md:mx-1" />
                     <button 
                       onClick={resetZoom}
-                      className="w-7 h-7 md:w-10 md:h-10 rounded-md md:rounded-lg flex items-center justify-center hover:bg-white/10 text-muted-foreground hover:text-primary transition-colors"
+                      className="w-7 h-7 md:w-10 md:h-10 rounded-md md:rounded-lg flex items-center justify-center hover:bg-muted text-muted-foreground hover:text-primary transition-colors"
                     >
                       <RotateCcw size={14} />
                     </button>
@@ -268,7 +268,7 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
 
                 <button
                   onClick={onClose}
-                  className="w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-white/10 transition-all active:scale-95"
+                  className="w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-muted transition-all active:scale-95"
                 >
                   <X size={20} />
                 </button>
@@ -307,7 +307,7 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                     <h4 className="text-base font-bold mb-2">Failed to Load</h4>
                     <button
                       onClick={() => { setLoading(true); setError(false); }}
-                      className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 border border-white/10 hover:border-primary/50 transition-all text-xs font-bold"
+                      className="flex items-center gap-2 px-4 py-2 rounded-lg bg-muted/40 border border-border text-foreground hover:border-primary/50 transition-all text-xs font-bold"
                     >
                       <RefreshCw size={14} /> Retry
                     </button>
@@ -348,11 +348,11 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                       initial={{ opacity: 0, scale: 0.9, y: 10 }}
                       animate={{ opacity: 1, scale: 1, y: 0 }}
                       exit={{ opacity: 0, scale: 0.9, y: 10 }}
-                      className="glass border border-white/10 rounded-xl md:rounded-2xl overflow-hidden shadow-2xl min-w-[140px] md:min-w-[160px] mb-2"
+                      className="bg-card border border-border rounded-xl md:rounded-2xl overflow-hidden shadow-2xl min-w-[140px] md:min-w-[160px] mb-2"
                     >
                       <button
                         onClick={() => handleDownload('pdf')}
-                        className="w-full flex items-center justify-between px-3 md:px-4 py-3 text-[10px] md:text-xs font-bold hover:bg-white/10 transition-colors border-b border-white/5 text-left"
+                        className="w-full flex items-center justify-between px-3 md:px-4 py-3 text-[10px] md:text-xs font-bold hover:bg-muted/50 transition-colors border-b border-border text-left text-foreground"
                       >
                         <div className="flex items-center gap-2 md:gap-3">
                           <FileText size={14} className="text-primary" />
@@ -361,7 +361,7 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                       </button>
                       <button
                         onClick={() => handleDownload('jpg')}
-                        className="w-full flex items-center justify-between px-3 md:px-4 py-3 text-[10px] md:text-xs font-bold hover:bg-white/10 transition-colors text-left"
+                        className="w-full flex items-center justify-between px-3 md:px-4 py-3 text-[10px] md:text-xs font-bold hover:bg-muted/50 transition-colors text-left text-foreground"
                       >
                         <div className="flex items-center gap-2 md:gap-3">
                           <ImageIcon size={14} className="text-secondary" />
@@ -376,7 +376,7 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                   onClick={() => setDownloadOpen(!downloadOpen)}
                   disabled={isDownloading}
                   className={cn(
-                    "w-10 h-10 md:w-14 md:h-14 rounded-xl md:rounded-2xl glass flex items-center justify-center text-foreground border border-white/10 hover:border-primary/50 transition-all shadow-xl active:scale-95",
+                    "w-10 h-10 md:w-14 md:h-14 rounded-xl md:rounded-2xl glass flex items-center justify-center text-foreground border border-border hover:border-primary/50 transition-all shadow-xl active:scale-95",
                     isDownloading && "opacity-70 cursor-not-allowed"
                   )}
                 >

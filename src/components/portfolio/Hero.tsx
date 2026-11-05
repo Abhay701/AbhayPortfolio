@@ -6,6 +6,8 @@ import { HeroArchitectureVisual } from './HeroArchitectureVisual';
 import { NavigationIndicator } from './NavigationIndicator';
 import { GuideState } from '@/hooks/use-navigation-guide';
 
+import { useTheme } from '@/providers/theme-provider';
+
 interface HeroProps {
   onResumeClick?: () => void;
   guideState?: GuideState;
@@ -13,6 +15,9 @@ interface HeroProps {
 }
 
 export function Hero({ onResumeClick, guideState, onViewProjectsClick }: HeroProps) {
+  const { theme } = useTheme();
+  const isCyberpunk = theme === 'cyberpunk';
+
   return (
     <section id="home" className="relative min-h-[100dvh] flex items-center pt-24 pb-12 overflow-hidden">
       <div className="absolute inset-0 hero-gradient -z-10" />
@@ -25,23 +30,50 @@ export function Hero({ onResumeClick, guideState, onViewProjectsClick }: HeroPro
             transition={{ duration: 0.6 }}
             className="text-center lg:text-left order-1"
           >
+            {/* Terminal Window Header when Cyberpunk Theme is active */}
+            {isCyberpunk && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-primary/30 bg-black/60 text-primary font-mono text-xs mb-4 shadow-sm"
+              >
+                <div className="flex items-center gap-1.5 mr-1">
+                  <span className="w-2.5 h-2.5 rounded-full bg-red-500/80 inline-block" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-yellow-500/80 inline-block" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-green-500/80 inline-block" />
+                </div>
+                <span className="text-muted-foreground">$</span>
+                <span>whoami --verbose</span>
+              </motion.div>
+            )}
+
             <motion.div 
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="inline-flex items-center gap-2 px-3 py-1 rounded-full glass text-[10px] md:text-xs font-semibold text-primary mb-6"
+              className="inline-flex items-center gap-2 px-3 py-1 rounded-full glass border border-border text-[10px] md:text-xs font-semibold text-primary mb-6"
             >
               <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-              Available for Opportunities
+              {isCyberpunk ? "[STATUS: AVAILABLE_FOR_OPPORTUNITIES]" : "Available for Opportunities"}
             </motion.div>
             
-            <h1 className="text-3xl xs:text-4xl md:text-5xl lg:text-7xl font-bold leading-tight mb-4">
-              Hi, I'm <span className="text-gradient">Abhay Kumar</span>
+            <h1 className="text-3xl xs:text-4xl md:text-5xl lg:text-7xl font-bold leading-tight mb-4 tracking-tight">
+              {isCyberpunk ? (
+                <>
+                  <span className="text-muted-foreground font-mono text-2xl xs:text-3xl md:text-4xl block mb-2">&gt; dev.init()</span>
+                  Hi, I'm <span className="text-gradient drop-shadow-[0_0_15px_rgba(57,255,20,0.4)]">Abhay Kumar</span>
+                  <span className="inline-block w-2.5 h-7 md:h-12 ml-1 bg-primary animate-pulse align-middle" />
+                </>
+              ) : (
+                <>
+                  Hi, I'm <span className="text-gradient">Abhay Kumar</span>
+                </>
+              )}
             </h1>
             
             <div className="flex flex-wrap justify-center lg:justify-start gap-y-2 mb-6">
               {["Full Stack Developer", "React.js Developer", "Next.js Developer"].map((t, i) => (
-                <span key={t} className={`text-sm md:text-lg lg:text-xl text-muted-foreground ${i !== 2 ? 'border-r border-muted pr-4 mr-4' : ''}`}>
-                  {t}
+                <span key={t} className={`text-sm md:text-lg lg:text-xl text-muted-foreground ${i !== 2 ? 'border-r border-border pr-4 mr-4' : ''}`}>
+                  {isCyberpunk ? `// ${t}` : t}
                 </span>
               ))}
             </div>
@@ -57,22 +89,24 @@ export function Hero({ onResumeClick, guideState, onViewProjectsClick }: HeroPro
 
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-6">
               <div className="flex items-center gap-3 w-full sm:w-auto justify-center lg:justify-start">
-                {guideState === 'hero-guide' && <NavigationIndicator />}
+                {guideState === 'hero-guide' && (
+                  <NavigationIndicator targetSelector='[data-guide="hero-btn"]' />
+                )}
                 <a 
                   href="#macro-print-pack" 
                   data-guide="hero-btn"
                   onClick={onViewProjectsClick}
                   className="w-full sm:w-auto bg-primary text-primary-foreground px-8 py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:translate-y-[-2px] transition-all shadow-lg shadow-primary/20 active:scale-95 text-sm md:text-base"
                 >
-                  View My Projects
+                  {isCyberpunk ? "$ ./view-projects" : "View My Projects"}
                   <ArrowRight size={20} />
                 </a>
               </div>
               <div className="flex w-full sm:w-auto gap-4">
-                <a href="#contact" className="hidden md:flex flex-1 sm:flex-none glass text-foreground px-6 py-4 rounded-xl font-bold items-center justify-center gap-2 hover:bg-white/5 transition-all active:scale-95 text-sm md:text-base">
+                <a href="#contact" className="hidden md:flex flex-1 sm:flex-none glass border border-border text-foreground px-6 py-4 rounded-xl font-bold items-center justify-center gap-2 hover:bg-primary/10 transition-all active:scale-95 text-sm md:text-base">
                   Contact
                 </a>
-                <a href="#contact-form" className="flex md:hidden flex-1 sm:flex-none glass text-foreground px-6 py-4 rounded-xl font-bold items-center justify-center gap-2 hover:bg-white/5 transition-all active:scale-95 text-sm md:text-base">
+                <a href="#contact-form" className="flex md:hidden flex-1 sm:flex-none glass border border-border text-foreground px-6 py-4 rounded-xl font-bold items-center justify-center gap-2 hover:bg-primary/10 transition-all active:scale-95 text-sm md:text-base">
                   Contact
                 </a>
                 <button 

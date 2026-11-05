@@ -62,7 +62,11 @@ const COUNTRIES = [
   { code: 'HK', name: 'Hong Kong', dialCode: '+852', flag: '🇭🇰' },
 ];
 
+import { useTheme } from '@/providers/theme-provider';
+
 export function Contact() {
+  const { theme } = useTheme();
+  const isCyberpunk = theme === 'cyberpunk';
   const db = useFirestore();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -292,7 +296,10 @@ export function Contact() {
             viewport={{ once: true }}
             className="w-full"
           >
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6">Let's Build Something Great Together</h2>
+            {isCyberpunk && (
+              <span className="text-xs font-mono text-primary mb-2 block tracking-wider">{"// 05. $ nc -vz connect 2026"}</span>
+            )}
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 text-foreground">Let's Build Something Great Together</h2>
             <p className="text-base md:text-lg text-muted-foreground mb-10 max-w-md">
               I'm open to Full Stack Developer, React.js Developer and Next.js Developer opportunities.
             </p>
@@ -344,7 +351,7 @@ export function Contact() {
                     onChange={handleChange}
                     required
                     className={cn(
-                      "w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 lg:py-2 focus:outline-none focus:border-primary transition-colors text-sm md:text-base",
+                      "w-full bg-muted/40 border border-border text-foreground rounded-xl px-4 py-3 lg:py-2 focus:outline-none focus:border-primary transition-colors text-sm md:text-base",
                       errors.name && "border-destructive focus:border-destructive"
                     )}
                   />
@@ -359,7 +366,7 @@ export function Contact() {
                     onChange={handleChange}
                     required
                     className={cn(
-                      "w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 lg:py-2 focus:outline-none focus:border-primary transition-colors text-sm md:text-base",
+                      "w-full bg-muted/40 border border-border text-foreground rounded-xl px-4 py-3 lg:py-2 focus:outline-none focus:border-primary transition-colors text-sm md:text-base",
                       errors.email && "border-destructive focus:border-destructive"
                     )}
                   />
@@ -377,7 +384,7 @@ export function Contact() {
                       type="button"
                       onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                       className={cn(
-                        "w-[70px] flex items-center justify-center gap-1 bg-white/5 border border-white/10 rounded-xl py-3 lg:py-2 focus:outline-none focus:border-primary transition-colors text-sm md:text-base cursor-pointer hover:bg-white/10",
+                        "w-[70px] flex items-center justify-center gap-1 bg-muted/40 border border-border text-foreground rounded-xl py-3 lg:py-2 focus:outline-none focus:border-primary transition-colors text-sm md:text-base cursor-pointer hover:bg-muted",
                         isDropdownOpen && "border-primary",
                         errors.phone && "border-destructive"
                       )}
@@ -393,12 +400,12 @@ export function Contact() {
                           animate={{ opacity: 1, y: 0, scale: 1 }}
                           exit={{ opacity: 0, y: opensUp ? 10 : -10, scale: 0.95 }}
                           className={cn(
-                            "absolute left-0 w-[280px] sm:w-[320px] bg-[#0d1117] border border-white/10 rounded-2xl shadow-2xl z-[150] overflow-hidden",
+                            "absolute left-0 w-[280px] sm:w-[320px] bg-card border border-border text-foreground rounded-2xl shadow-2xl z-[150] overflow-hidden",
                             opensUp ? "bottom-full mb-2" : "top-full mt-2"
                           )}
                         >
                           {/* Fixed Search Header */}
-                          <div className="p-3 border-b border-white/5 bg-white/5 shrink-0">
+                          <div className="p-3 border-b border-border bg-muted/20 shrink-0">
                             <div className="relative">
                               <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
                               <input 
@@ -407,7 +414,7 @@ export function Contact() {
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 placeholder="Search country or code..."
-                                className="w-full bg-white/5 border border-white/10 rounded-lg pl-9 pr-4 py-2 text-xs focus:outline-none focus:border-primary transition-colors"
+                                className="w-full bg-muted/40 border border-border text-foreground rounded-lg pl-9 pr-4 py-2 text-xs focus:outline-none focus:border-primary transition-colors placeholder:text-muted-foreground"
                                 onKeyDown={(e) => {
                                   if (e.key === 'Escape') setIsDropdownOpen(false);
                                   e.stopPropagation();
@@ -432,7 +439,7 @@ export function Contact() {
                                     setSearchQuery('');
                                   }}
                                   className={cn(
-                                    "w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs transition-colors hover:bg-white/5 group",
+                                    "w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs transition-colors hover:bg-muted/50 group text-foreground",
                                     selectedCountry.code === country.code && "bg-primary/10 text-primary"
                                   )}
                                 >
@@ -465,7 +472,7 @@ export function Contact() {
                     onChange={handleChange}
                     required
                     className={cn(
-                      "flex-1 min-w-0 bg-white/5 border border-white/10 rounded-xl px-4 py-3 lg:py-2 focus:outline-none focus:border-primary transition-colors text-sm md:text-base",
+                      "flex-1 min-w-0 bg-muted/40 border border-border text-foreground rounded-xl px-4 py-3 lg:py-2 focus:outline-none focus:border-primary transition-colors text-sm md:text-base",
                       errors.phone && "border-destructive focus:border-destructive"
                     )}
                   />
@@ -482,7 +489,7 @@ export function Contact() {
                   onChange={handleChange}
                   required
                   className={cn(
-                    "w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 lg:py-2 focus:outline-none focus:border-primary transition-colors text-sm md:text-base",
+                    "w-full bg-muted/40 border border-border text-foreground rounded-xl px-4 py-3 lg:py-2 focus:outline-none focus:border-primary transition-colors text-sm md:text-base",
                     errors.subject && "border-destructive focus:border-destructive"
                   )}
                 />
@@ -496,7 +503,7 @@ export function Contact() {
                   value={formData.message}
                   onChange={handleChange}
                   rows={4}
-                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 lg:py-2 lg:h-24 lg:min-h-[80px] focus:outline-none focus:border-primary transition-colors resize-none text-sm md:text-base"
+                  className="w-full bg-muted/40 border border-border text-foreground rounded-xl px-4 py-3 lg:py-2 lg:h-24 lg:min-h-[80px] focus:outline-none focus:border-primary transition-colors resize-none text-sm md:text-base"
                 />
               </div>
 

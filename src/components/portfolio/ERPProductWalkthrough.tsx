@@ -86,7 +86,7 @@ export function ERPProductWalkthrough({ screenshots, onClose }: ERPProductWalkth
       <button
         type="button"
         onClick={onClose}
-        className="absolute top-4 right-4 md:top-6 md:right-6 z-[110] w-10 h-10 rounded-full bg-black/60 border border-white/10 flex items-center justify-center text-white hover:bg-black/80 hover:text-primary transition-all cursor-pointer shadow-lg"
+        className="absolute top-4 right-4 md:top-6 md:right-6 z-[110] w-10 h-10 rounded-full bg-card/90 border border-border flex items-center justify-center text-foreground hover:bg-card hover:text-primary transition-all cursor-pointer shadow-lg"
         aria-label="Close image preview"
       >
         <X size={24} />
@@ -98,30 +98,30 @@ export function ERPProductWalkthrough({ screenshots, onClose }: ERPProductWalkth
           <span className="text-primary font-bold text-[10px] md:text-xs uppercase tracking-[0.2em] mb-1">
             {currentScreenshot.chapter}
           </span>
-          <h2 className="text-lg md:text-2xl font-bold flex items-center gap-2 md:gap-3">
+          <h2 className="text-lg md:text-2xl font-bold flex items-center gap-2 md:gap-3 text-foreground">
             <span className="text-muted-foreground tabular-nums text-sm md:text-2xl">{(currentIndex + 1).toString().padStart(2, '0')}</span>
             <span className="truncate max-w-[200px] xs:max-w-none">{currentScreenshot.title}</span>
           </h2>
         </div>
 
         <div className="flex items-center gap-2 md:gap-4 ml-0 md:ml-auto">
-          <div className="flex items-center gap-1 md:gap-2 bg-white/5 p-1 rounded-lg md:rounded-xl border border-white/10">
+          <div className="flex items-center gap-1 md:gap-2 bg-muted/40 p-1 rounded-lg md:rounded-xl border border-border shadow-xs">
             <button 
               onClick={() => setIsPlaying(!isPlaying)}
-              className="w-8 h-8 md:w-10 md:h-10 rounded-md md:rounded-lg flex items-center justify-center hover:bg-white/10 text-primary transition-all"
+              className="w-8 h-8 md:w-10 md:h-10 rounded-md md:rounded-lg flex items-center justify-center hover:bg-primary/10 text-primary transition-all"
             >
               {isPlaying ? <Pause size={18} /> : <Play size={18} className="fill-current" />}
             </button>
             <button 
               onClick={() => { setCurrentIndex(0); }}
-              className="w-8 h-8 md:w-10 md:h-10 rounded-md md:rounded-lg flex items-center justify-center hover:bg-white/10 text-muted-foreground transition-all"
+              className="w-8 h-8 md:w-10 md:h-10 rounded-md md:rounded-lg flex items-center justify-center hover:bg-primary/10 text-muted-foreground hover:text-foreground transition-all"
             >
               <RotateCcw size={16} />
             </button>
-            <div className="w-[1px] h-4 bg-white/10 mx-0.5 md:mx-1" />
+            <div className="w-[1px] h-4 bg-border mx-0.5 md:mx-1" />
             <button 
               onClick={() => setIsFullScreen(!isFullScreen)}
-              className="w-8 h-8 md:w-10 md:h-10 rounded-md md:rounded-lg flex items-center justify-center hover:bg-white/10 text-muted-foreground transition-all"
+              className="w-8 h-8 md:w-10 md:h-10 rounded-md md:rounded-lg flex items-center justify-center hover:bg-primary/10 text-muted-foreground hover:text-foreground transition-all"
             >
               <Maximize2 size={16} />
             </button>
@@ -131,8 +131,8 @@ export function ERPProductWalkthrough({ screenshots, onClose }: ERPProductWalkth
 
       {/* Main Content Area */}
       <div className="flex-1 relative flex flex-col lg:flex-row gap-4 md:gap-8 min-h-0">
-        {/* Left: Interactive Visualizer */}
-        <div className="flex-1 relative glass rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden border border-white/10 flex items-center justify-center bg-black/40 group min-h-[300px] md:min-h-0 aspect-video md:aspect-auto">
+        {/* Left: Interactive Visualizer - Native dashboard darkroom container */}
+        <div className="flex-1 relative rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden border border-border/80 flex items-center justify-center bg-[#0d1117] shadow-xl group min-h-[300px] md:min-h-0 aspect-video md:aspect-auto">
           <AnimatePresence mode="wait">
             <motion.div
               key={currentScreenshot.id}
@@ -156,13 +156,13 @@ export function ERPProductWalkthrough({ screenshots, onClose }: ERPProductWalkth
           {/* Navigation Arrows */}
           <button 
             onClick={(e) => { e.stopPropagation(); handlePrev(); }}
-            className="absolute left-2 md:left-6 w-10 h-10 md:w-14 md:h-14 rounded-full glass flex items-center justify-center opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all hover:text-primary z-30"
+            className="absolute left-2 md:left-6 w-10 h-10 md:w-14 md:h-14 rounded-full glass border border-border flex items-center justify-center opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all text-foreground hover:text-primary z-30 shadow-lg"
           >
             <ChevronLeft size={20} className="md:w-7 md:h-7" />
           </button>
           <button 
             onClick={(e) => { e.stopPropagation(); handleNext(); }}
-            className="absolute right-2 md:right-6 w-10 h-10 md:w-14 md:h-14 rounded-full glass flex items-center justify-center opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all hover:text-primary z-30"
+            className="absolute right-2 md:right-6 w-10 h-10 md:w-14 md:h-14 rounded-full glass border border-border flex items-center justify-center opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all text-foreground hover:text-primary z-30 shadow-lg"
           >
             <ChevronRight size={20} className="md:w-7 md:h-7" />
           </button>
@@ -170,20 +170,20 @@ export function ERPProductWalkthrough({ screenshots, onClose }: ERPProductWalkth
 
         {/* Right: Description & Workflow Panel */}
         <div className="w-full lg:w-[400px] flex flex-col gap-4 md:gap-6 shrink-0 lg:h-full pb-8 lg:pb-0">
-          <div className="glass p-5 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] border-white/10 flex-1 flex flex-col">
+          <div className="glass p-5 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] border border-border flex-1 flex flex-col">
             
             {/* Mobile-only Header Info */}
             <div className="flex md:hidden flex-col mb-6">
               <span className="text-primary font-bold text-[10px] uppercase tracking-[0.2em] mb-1">
                 {currentScreenshot.chapter}
               </span>
-              <h3 className="text-lg font-bold flex items-center gap-2">
+              <h3 className="text-lg font-bold flex items-center gap-2 text-foreground">
                 <span className="text-muted-foreground tabular-nums text-sm">{(currentIndex + 1).toString().padStart(2, '0')}</span>
                 {currentScreenshot.title}
               </h3>
             </div>
 
-            <h3 className="text-base md:text-xl font-bold mb-3 md:mb-4 flex items-center gap-2">
+            <h3 className="text-base md:text-xl font-bold mb-3 md:mb-4 flex items-center gap-2 text-foreground">
               <span className="w-1.5 h-1.5 rounded-full bg-primary" />
               Workflow Insight
             </h3>
@@ -193,7 +193,7 @@ export function ERPProductWalkthrough({ screenshots, onClose }: ERPProductWalkth
 
             {/* Special Workflow Visualization */}
             {isQRChapter && (
-              <div className="space-y-3 md:space-y-4 pt-4 md:pt-6 border-t border-white/10">
+              <div className="space-y-3 md:space-y-4 pt-4 md:pt-6 border-t border-border">
                 <h4 className="text-[10px] md:text-sm font-bold uppercase tracking-widest text-primary mb-2 md:mb-6">Attendance Workflow</h4>
                 {[
                   { icon: QrCode, text: "Employee Identity Verification" },
@@ -201,7 +201,7 @@ export function ERPProductWalkthrough({ screenshots, onClose }: ERPProductWalkth
                   { icon: CheckCircle2, text: "Automated Punch-In/Out" }
                 ].map((step, i) => (
                   <div key={i} className="flex items-center gap-3 md:gap-4 group">
-                    <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl glass flex items-center justify-center group-hover:text-primary transition-colors shrink-0">
+                    <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl glass border border-border flex items-center justify-center group-hover:text-primary transition-colors shrink-0">
                       <step.icon size={16} className="md:w-5 md:h-5" />
                     </div>
                     <span className="text-[11px] md:text-sm font-medium text-muted-foreground group-hover:text-foreground">{step.text}</span>
@@ -212,12 +212,12 @@ export function ERPProductWalkthrough({ screenshots, onClose }: ERPProductWalkth
           </div>
 
           {/* Bottom Summary Card */}
-          <div className="glass p-4 md:p-6 rounded-[1.5rem] md:rounded-[2.5rem] border-primary/20 bg-primary/5">
+          <div className="glass p-4 md:p-6 rounded-[1.5rem] md:rounded-[2.5rem] border border-primary/20 bg-primary/5">
              <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-widest text-primary mb-2 md:mb-4">
                 <span>Progress</span>
                 <span>{Math.round(((currentIndex + 1) / screenshots.length) * 100)}%</span>
              </div>
-             <div className="w-full h-1 md:h-1.5 bg-white/5 rounded-full overflow-hidden">
+             <div className="w-full h-1 md:h-1.5 bg-muted rounded-full overflow-hidden">
                 <motion.div 
                   className="h-full bg-primary"
                   initial={{ width: 0 }}

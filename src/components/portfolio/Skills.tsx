@@ -2,11 +2,19 @@
 import { motion } from 'framer-motion';
 import { skills } from '@/lib/data';
 
+import { useTheme } from '@/providers/theme-provider';
+
 export function Skills() {
+  const { theme } = useTheme();
+  const isCyberpunk = theme === 'cyberpunk';
+
   return (
     <section id="skills" className="py-16 md:py-24 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col items-center text-center mb-12 md:mb-16">
+          {isCyberpunk && (
+            <span className="text-xs font-mono text-primary mb-2 tracking-wider">{"// 02. $ npm list --skills"}</span>
+          )}
           <motion.h2 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -36,7 +44,7 @@ export function Skills() {
                 {category.items.map((skill) => (
                   <span 
                     key={skill} 
-                    className="px-2.5 py-1.5 rounded-lg bg-white/5 text-[10px] md:text-xs font-medium text-muted-foreground border border-white/5 hover:border-primary/30 transition-colors"
+                    className="px-2.5 py-1.5 rounded-lg bg-muted/40 text-[10px] md:text-xs font-medium text-foreground border border-border hover:border-primary/50 transition-colors shadow-xs"
                   >
                     {skill}
                   </span>

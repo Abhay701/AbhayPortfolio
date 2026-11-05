@@ -11,7 +11,7 @@ const Card = React.forwardRef<
     className={cn(
       "rounded-2xl border",
       variant === 'default' && "bg-card text-card-foreground shadow-sm",
-      variant === 'glass' && "bg-white/10 backdrop-blur-sm border-white/20",
+      variant === 'glass' && "glass text-card-foreground border-border",
       className
     )}
     {...props}

@@ -11,6 +11,7 @@ const themes: { id: Theme; name: string; colors: string[] }[] = [
   { id: 'sunset', name: 'Sunset Glow', colors: ['#f97316', '#2d0a0a'] },
   { id: 'ocean', name: 'Ocean Breeze', colors: ['#06b6d4', '#050c14'] },
   { id: 'light', name: 'Minimal Light', colors: ['#3b82f6', '#f8fafc'] },
+  { id: 'cyberpunk', name: 'Cyberpunk Terminal', colors: ['#39FF14', '#050505'] },
 ];
 
 // Opaque backgrounds as requested to ensure 100% opacity
@@ -19,6 +20,7 @@ const themeBackgrounds: Record<Theme, string> = {
   sunset: '#1A100D',
   ocean: '#071827',
   light: '#FFFFFF',
+  cyberpunk: '#050505',
 };
 
 export function ThemeSwitcher() {
@@ -40,7 +42,7 @@ export function ThemeSwitcher() {
     <div className="relative" ref={containerRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center justify-center w-10 h-10 rounded-full glass border border-white/10 hover:border-primary/50 transition-all text-muted-foreground hover:text-primary"
+        className="flex items-center justify-center w-10 h-10 rounded-full glass border border-border hover:border-primary/50 transition-all text-muted-foreground hover:text-primary shadow-sm"
         aria-label="Switch theme"
       >
         <Palette size={20} />
@@ -54,11 +56,10 @@ export function ThemeSwitcher() {
             exit={{ opacity: 0, scale: 0.95, y: 10 }}
             style={{ backgroundColor: themeBackgrounds[activeTheme] }}
             className={cn(
-              "absolute right-0 top-full mt-4 w-56 p-2 rounded-2xl border shadow-2xl z-[110]",
-              activeTheme === 'light' ? "border-black/10" : "border-white/10"
+              "absolute right-0 top-full mt-4 w-56 p-2 rounded-2xl border border-border shadow-2xl z-[110]"
             )}
           >
-            <div className="px-3 py-2 border-b border-white/5 mb-2">
+            <div className="px-3 py-2 border-b border-border mb-2">
               <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Select Theme</p>
             </div>
             <div className="space-y-1">

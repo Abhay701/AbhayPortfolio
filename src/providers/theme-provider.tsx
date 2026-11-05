@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
-export type Theme = 'midnight' | 'sunset' | 'ocean' | 'light';
+export type Theme = 'midnight' | 'sunset' | 'ocean' | 'light' | 'cyberpunk';
 
 interface ThemeContextType {
   theme: Theme;
@@ -31,7 +31,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const root = document.documentElement;
     root.setAttribute('data-theme', newTheme);
     
-    // Manage standard Tailwind dark mode class
+    // Manage standard Tailwind dark mode class (only light is light, rest are dark)
     if (newTheme === 'light') {
       root.classList.remove('dark');
     } else {

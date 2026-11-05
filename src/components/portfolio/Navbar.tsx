@@ -15,6 +15,7 @@ const themeBackgrounds: Record<Theme, string> = {
   sunset: '#1A100D',
   ocean: '#071827',
   light: '#FFFFFF',
+  cyberpunk: '#050505',
 };
 
 export function Navbar({ onResumeClick }: NavbarProps) {
@@ -107,13 +108,13 @@ export function Navbar({ onResumeClick }: NavbarProps) {
                 </motion.a>
               ))}
               
-              <div className="flex items-center gap-4 border-l border-white/10 pl-8">
+              <div className="flex items-center gap-4 border-l border-border pl-8">
                 <ThemeSwitcher />
                 <motion.button
                   onClick={handleResumeClick}
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="bg-primary text-primary-foreground px-5 py-2 rounded-full text-sm font-bold flex items-center gap-2 hover:bg-primary/90 transition-all active:scale-95"
+                  className="bg-primary text-primary-foreground px-5 py-2 rounded-full text-sm font-bold flex items-center gap-2 hover:bg-primary/90 transition-all active:scale-95 shadow-sm"
                 >
                   <FileText size={16} />
                   Resume
@@ -140,16 +141,10 @@ export function Navbar({ onResumeClick }: NavbarProps) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             style={{ backgroundColor: themeBackgrounds[theme] }}
-            className={cn(
-              "md:hidden fixed inset-0 z-[110] flex flex-col",
-              theme === 'light' ? "text-foreground" : "text-white"
-            )}
+            className="md:hidden fixed inset-0 z-[110] flex flex-col text-foreground"
           >
             {/* Mobile Menu Header (Replicated for visual consistency when fixed) */}
-            <div className={cn(
-              "px-4 py-3 flex justify-between items-center border-b shrink-0",
-              theme === 'light' ? "border-black/5" : "border-white/10"
-            )}>
+            <div className="px-4 py-3 flex justify-between items-center border-b border-border shrink-0">
               <a href="#home" onClick={handleLinkClick} className="text-2xl font-bold text-primary tracking-tighter">
                 AK<span className="text-foreground">.</span>
               </a>
@@ -168,10 +163,7 @@ export function Navbar({ onResumeClick }: NavbarProps) {
                   key={link.name}
                   href={link.name === 'Contact' ? '#contact-form' : link.href}
                   onClick={handleLinkClick}
-                  className={cn(
-                    "block px-4 py-5 text-lg font-medium text-muted-foreground hover:text-primary border-b active:bg-white/5 transition-colors",
-                    theme === 'light' ? "border-black/5" : "border-white/5"
-                  )}
+                  className="block px-4 py-5 text-lg font-medium text-muted-foreground hover:text-primary border-b border-border/50 active:bg-primary/5 transition-colors"
                 >
                   {link.name}
                 </a>
@@ -179,10 +171,7 @@ export function Navbar({ onResumeClick }: NavbarProps) {
             </div>
 
             {/* Bottom Section - Resume Button Always Visible */}
-            <div className={cn(
-              "p-6 border-t mt-auto shrink-0",
-              theme === 'light' ? "border-black/5" : "border-white/10"
-            )}>
+            <div className="p-6 border-t border-border mt-auto shrink-0">
               <button 
                 onClick={handleResumeClick}
                 className="w-full bg-primary text-primary-foreground py-4 rounded-xl font-bold flex items-center justify-center gap-2 active:scale-95 transition-transform text-base shadow-lg shadow-primary/20"

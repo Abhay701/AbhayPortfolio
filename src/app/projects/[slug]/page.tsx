@@ -24,6 +24,8 @@ import { projectsData } from '@/lib/projects-data';
 import { ProjectGallery } from '@/components/portfolio/ProjectGallery';
 import { DevelopmentTimeline } from '@/components/portfolio/DevelopmentTimeline';
 import { ERPProductWalkthrough } from '@/components/portfolio/ERPProductWalkthrough';
+import { NavigationIndicator } from '@/components/portfolio/NavigationIndicator';
+import { useNavigationGuide } from '@/hooks/use-navigation-guide';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 
@@ -35,6 +37,7 @@ export default function CaseStudyPage() {
   
   const [isWalkthroughActive, setIsWalkthroughActive] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const { state: guideState, completeGuide } = useNavigationGuide();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -61,6 +64,8 @@ export default function CaseStudyPage() {
   const isMacroPrintPack = slug === 'macro-print-pack';
   const isKBPrintHub = slug === 'kb-print-hub';
   const isERP = isMacroPrintPack || isKBPrintHub;
+  const hasWalkthrough = isERP && (project?.screenshots?.length ?? 0) > 0;
+  const showWalkthroughGuide = guideState === 'walkthrough-guide' && hasWalkthrough;
 
   return (
     <main className="min-h-screen pb-24">
@@ -78,7 +83,7 @@ export default function CaseStudyPage() {
                 type="button"
                 aria-label="Back to Projects"
                 onClick={() => router.push('/#projects')}
-                className="w-10 h-10 shrink-0 rounded-full glass border border-white/10 shadow-lg flex items-center justify-center text-foreground transition-transform active:scale-95"
+                className="w-10 h-10 shrink-0 rounded-full glass border border-border shadow-lg flex items-center justify-center text-foreground transition-transform active:scale-95"
               >
                 <ArrowLeft size={18} />
               </button>
@@ -103,11 +108,11 @@ isScrolled ? "invisible" : "visible"
                 onClick={() => router.push('/#projects')}
                 className={cn(
                   "group flex items-center gap-2 text-muted-foreground hover:text-primary transition-all duration-300",
-                  isScrolled ? "bg-background/80 backdrop-blur-md p-1.5 rounded-full border border-white/10 shadow-xl md:bg-transparent md:p-0 md:border-0" : ""
+                  isScrolled ? "bg-background/80 backdrop-blur-md p-1.5 rounded-full border border-border shadow-xl md:bg-transparent md:p-0 md:border-0" : ""
                 )}
               >
                 <div className={cn(
-                  "rounded-full glass flex items-center justify-center transition-all duration-300",
+                  "rounded-full glass border border-border flex items-center justify-center transition-all duration-300 text-foreground",
                   isScrolled ? "w-10 h-10 md:w-8 md:h-8" : "w-8 h-8"
                 )}>
                   <ArrowLeft size={16} />
@@ -128,12 +133,12 @@ isScrolled ? "invisible" : "visible"
                 <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20">
                   {project.category}
                 </Badge>
-                <Badge variant="outline" className="flex items-center gap-1.5 bg-white/5">
+                <Badge variant="outline" className="flex items-center gap-1.5 bg-muted/40 border border-border text-foreground">
                   <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
                   {project.status}
                 </Badge>
               </div>
-              <h1 className="text-4xl md:text-6xl font-bold mb-6 tracking-tight">
+              <h1 className="text-4xl md:text-6xl font-bold mb-6 tracking-tight text-foreground">
                 {project.title}
               </h1>
               <p className="text-lg md:text-xl text-muted-foreground leading-relaxed max-w-3xl">
@@ -141,7 +146,7 @@ isScrolled ? "invisible" : "visible"
               </p>
             </div>
             <div className="lg:col-span-4 flex flex-col gap-4">
-              <div className="glass p-6 rounded-3xl border-white/5">
+              <div className="glass p-6 rounded-3xl border border-border">
                 <div className="flex items-center gap-3 text-sm text-muted-foreground mb-4">
                   <Calendar size={16} className="text-primary" />
                   <span>{project.period}</span>
@@ -167,7 +172,7 @@ isScrolled ? "invisible" : "visible"
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className="glass p-8 rounded-3xl border-white/5 text-center group hover:border-primary/30 transition-all"
+                className="glass p-8 rounded-3xl border border-border text-center group hover:border-primary/30 transition-all shadow-xs"
               >
                 <p className="text-3xl md:text-4xl font-bold text-primary mb-2 group-hover:scale-110 transition-transform">
                   {metric.value}
@@ -187,7 +192,7 @@ isScrolled ? "invisible" : "visible"
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="glass p-8 md:p-12 rounded-[2.5rem] border-primary/30 bg-primary/5 shadow-2xl overflow-hidden relative"
+            className="glass p-8 md:p-12 rounded-[2.5rem] border border-primary/30 bg-primary/5 shadow-2xl overflow-hidden relative"
           >
              <div className="absolute top-0 right-0 p-8 opacity-10">
                 <Zap size={120} className="text-primary" />
@@ -195,13 +200,19 @@ isScrolled ? "invisible" : "visible"
              
              <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-8">
                 <div className="max-w-2xl text-center lg:text-left">
-                  <h2 className="text-3xl md:text-4xl font-bold mb-4">Inside {project.title} – Complete ERP Workflow</h2>
+                  <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">Inside {project.title} – Complete ERP Workflow</h2>
                   <p className="text-muted-foreground text-lg leading-relaxed">
                     Explore the complete production workflow, management modules, and department coordination through a guided interactive walkthrough.
                   </p>
                 </div>
                 <button 
-                  onClick={() => setIsWalkthroughActive(true)}
+                  data-guide="walkthrough-btn"
+                  onClick={() => {
+                    if (showWalkthroughGuide) {
+                      completeGuide();
+                    }
+                    setIsWalkthroughActive(true);
+                  }}
                   className="bg-primary text-primary-foreground px-10 py-5 rounded-[2rem] font-bold text-lg flex items-center gap-3 hover:scale-105 active:scale-95 transition-all shadow-xl shadow-primary/20"
                 >
                   <Play className="fill-current" size={24} />
@@ -210,6 +221,14 @@ isScrolled ? "invisible" : "visible"
              </div>
           </motion.div>
         </section>
+      )}
+
+      {/* Guided Walkthrough Indicator on Project Exploration Page */}
+      {showWalkthroughGuide && (
+        <NavigationIndicator 
+          targetSelector='[data-guide="walkthrough-btn"]' 
+          isWalkthrough 
+        />
       )}
 
       {/* Main Content */}
@@ -229,8 +248,8 @@ isScrolled ? "invisible" : "visible"
 
             {/* Problem & Solution */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="glass p-8 rounded-[2rem] border-white/5">
-                <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+              <div className="glass p-8 rounded-[2rem] border border-border">
+                <h3 className="text-xl font-bold mb-4 flex items-center gap-2 text-foreground">
                   <span className="w-2 h-2 rounded-full bg-destructive" />
                   The Problem
                 </h3>
@@ -238,8 +257,8 @@ isScrolled ? "invisible" : "visible"
                   {project.businessProblem}
                 </p>
               </div>
-              <div className="glass p-8 rounded-[2rem] border-primary/10">
-                <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+              <div className="glass p-8 rounded-[2rem] border border-primary/20">
+                <h3 className="text-xl font-bold mb-4 flex items-center gap-2 text-foreground">
                   <span className="w-2 h-2 rounded-full bg-green-500" />
                   The Solution
                 </h3>
@@ -262,11 +281,11 @@ isScrolled ? "invisible" : "visible"
                     { icon: Zap, title: "Real-time Sync", desc: "Firestore ensures attendance logs are synced across all admin dashboards instantly." },
                     { icon: Layers, title: "ID Logic", desc: "Unique QR IDs generated for each employee, verified against central records." }
                   ].map((item, i) => (
-                    <div key={i} className="glass p-6 rounded-2xl border-white/5 text-center">
+                    <div key={i} className="glass p-6 rounded-2xl border border-border text-center shadow-xs">
                       <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mx-auto mb-4 text-primary">
                         <item.icon size={24} />
                       </div>
-                      <h4 className="font-bold mb-2">{item.title}</h4>
+                      <h4 className="font-bold mb-2 text-foreground">{item.title}</h4>
                       <p className="text-xs text-muted-foreground">{item.desc}</p>
                     </div>
                   ))}
@@ -277,7 +296,7 @@ isScrolled ? "invisible" : "visible"
             {/* Role-Based Spotlight (KB Print Hub) */}
             {isKBPrintHub && (
               <section className="space-y-8">
-                <h3 className="text-2xl font-bold flex items-center gap-3">
+                <h3 className="text-2xl font-bold flex items-center gap-3 text-foreground">
                   <span className="w-1.5 h-8 bg-primary rounded-full" />
                   9 Role-Based Dashboards & Access Control
                 </h3>
@@ -293,11 +312,11 @@ isScrolled ? "invisible" : "visible"
                     { icon: Truck, title: "Dispatch", desc: "Manages completed orders, dispatch readiness, delivery scheduling and final fulfilment." },
                     { icon: Database, title: "Stock & Inventory", desc: "Monitors raw materials, available quantities, stock allocation and inventory control." }
                   ].map((item, i) => (
-                    <div key={i} className="glass p-6 rounded-2xl border-white/5">
+                    <div key={i} className="glass p-6 rounded-2xl border border-border shadow-xs">
                       <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center mb-4 text-primary">
                         <item.icon size={20} />
                       </div>
-                      <h4 className="font-bold mb-2">{item.title}</h4>
+                      <h4 className="font-bold mb-2 text-foreground">{item.title}</h4>
                       <p className="text-xs text-muted-foreground leading-relaxed">{item.desc}</p>
                     </div>
                   ))}
@@ -310,18 +329,18 @@ isScrolled ? "invisible" : "visible"
 
             {/* Modules */}
             <section>
-              <h3 className="text-2xl font-bold mb-8 flex items-center gap-3">
+              <h3 className="text-2xl font-bold mb-8 flex items-center gap-3 text-foreground">
                 <span className="w-1.5 h-8 bg-primary rounded-full" />
                 Key Modules & Functionality
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 {project.modules.map((mod, i) => (
-                  <div key={i} className="flex gap-4 p-6 glass rounded-2xl border-white/5 hover:border-primary/20 transition-all">
+                  <div key={i} className="flex gap-4 p-6 glass rounded-2xl border border-border hover:border-primary/30 transition-all shadow-xs">
                     <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
                       <mod.icon className="text-primary" size={24} />
                     </div>
                     <div>
-                      <h4 className="font-bold mb-1">{mod.title}</h4>
+                      <h4 className="font-bold mb-1 text-foreground">{mod.title}</h4>
                       <p className="text-sm text-muted-foreground leading-relaxed">{mod.description}</p>
                     </div>
                   </div>
@@ -330,8 +349,8 @@ isScrolled ? "invisible" : "visible"
             </section>
 
             {/* Data Privacy & Confidentiality Notice */}
-            <div className="glass p-6 md:p-8 rounded-[2rem] border-white/5 bg-white/5">
-              <h4 className="text-lg font-bold mb-4 flex items-center gap-2">
+            <div className="glass p-6 md:p-8 rounded-[2rem] border border-border bg-muted/20">
+              <h4 className="text-lg font-bold mb-4 flex items-center gap-2 text-foreground">
                 <ShieldCheck size={20} className="text-primary" />
                 Data Privacy & Confidentiality Notice
               </h4>
@@ -352,8 +371,8 @@ isScrolled ? "invisible" : "visible"
 
           <aside className="lg:col-span-4 self-start sticky top-24 space-y-8 z-30">
             {/* Tech Stack */}
-            <div className="glass p-8 rounded-[2rem] border-white/5">
-              <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
+            <div className="glass p-8 rounded-[2rem] border border-border shadow-md">
+              <h3 className="text-xl font-bold mb-6 flex items-center gap-2 text-foreground">
                 <LayoutList size={20} className="text-primary" />
                 Verified Tech Stack
               </h3>
@@ -361,14 +380,14 @@ isScrolled ? "invisible" : "visible"
                 {project.verifiedTech.map(tech => (
                   <span 
                     key={tech}
-                    className="px-4 py-2 rounded-xl glass border border-white/10 text-sm font-medium hover:border-primary/30 transition-colors"
+                    className="px-4 py-2 rounded-xl bg-muted/40 border border-border text-foreground text-sm font-medium hover:border-primary/50 transition-colors shadow-2xs"
                   >
                     {tech}
                   </span>
                 ))}
               </div>
               
-              <div className="mt-12 pt-8 border-t border-white/10">
+              <div className="mt-12 pt-8 border-t border-border">
                 <h4 className="text-sm font-bold uppercase tracking-[0.2em] text-muted-foreground mb-4">
                   Need more details?
                 </h4>
@@ -390,8 +409,8 @@ isScrolled ? "invisible" : "visible"
       {/* ERP Ecosystem Summary */}
       {isERP && (
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-24">
-          <div className="glass p-12 rounded-[3rem] text-center border-white/10">
-            <h2 className="text-3xl font-bold mb-4">{project.title} – Complete ERP Ecosystem</h2>
+          <div className="glass p-12 rounded-[3rem] text-center border border-border shadow-md">
+            <h2 className="text-3xl font-bold mb-4 text-foreground">{project.title} – Complete ERP Ecosystem</h2>
             <p className="text-muted-foreground mb-8 max-w-2xl mx-auto">
               An end-to-end business application designed to solve complex operational challenges, coordinate multi-departmental workflows, and provide data-driven insights through a unified real-time platform.
             </p>
@@ -402,7 +421,7 @@ isScrolled ? "invisible" : "visible"
             </div>
             <button 
               onClick={() => setIsWalkthroughActive(true)}
-              className="px-8 py-4 rounded-2xl glass hover:bg-white/5 transition-all font-bold flex items-center gap-2 mx-auto"
+              className="px-8 py-4 rounded-2xl glass border border-border hover:bg-primary/10 transition-all font-bold flex items-center gap-2 mx-auto text-foreground hover:text-primary"
             >
               Explore Walkthrough Again <ArrowRight size={18} />
             </button>

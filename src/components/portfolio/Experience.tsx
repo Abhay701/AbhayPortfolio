@@ -3,11 +3,19 @@ import { motion } from 'framer-motion';
 import { Briefcase, Calendar, MapPin } from 'lucide-react';
 import { experience } from '@/lib/data';
 
+import { useTheme } from '@/providers/theme-provider';
+
 export function Experience() {
+  const { theme } = useTheme();
+  const isCyberpunk = theme === 'cyberpunk';
+
   return (
     <section id="experience" className="py-16 md:py-24 bg-card/30 overflow-hidden">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col items-center text-center mb-12 md:mb-16">
+          {isCyberpunk && (
+            <span className="text-xs font-mono text-primary mb-2 tracking-wider">{"// 03. $ git log --career"}</span>
+          )}
           <motion.h2 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -40,8 +48,8 @@ export function Experience() {
                     <h3 className="text-base md:text-xl font-bold leading-tight">{item.role}</h3>
                     <p className="text-primary font-semibold text-xs md:text-base">{item.company}</p>
                   </div>
-                  <div className="flex items-center gap-1.5 text-[9px] md:text-xs text-muted-foreground bg-white/5 px-2 py-0.5 md:px-2.5 md:py-1 rounded-full w-fit shrink-0">
-                    <Calendar size={10} className="md:w-3 md:h-3" />
+                  <div className="flex items-center gap-1.5 text-[9px] md:text-xs text-foreground bg-muted/40 border border-border/60 px-2 py-0.5 md:px-2.5 md:py-1 rounded-full w-fit shrink-0 shadow-2xs">
+                    <Calendar size={10} className="md:w-3 md:h-3 text-primary" />
                     {item.period}
                   </div>
                 </div>

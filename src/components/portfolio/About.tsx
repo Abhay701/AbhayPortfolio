@@ -3,7 +3,12 @@ import { motion } from 'framer-motion';
 import { GraduationCap, Briefcase, Code, Terminal } from 'lucide-react';
 import { profile } from '@/lib/data';
 
+import { useTheme } from '@/providers/theme-provider';
+
 export function About() {
+  const { theme } = useTheme();
+  const isCyberpunk = theme === 'cyberpunk';
+
   const highlights = [
     { icon: GraduationCap, label: "B.Tech CSE", value: "CGC Landran" },
     { icon: Briefcase, label: "Experience", value: "13 Months" },
@@ -15,6 +20,9 @@ export function About() {
     <section id="about" className="py-16 md:py-24 bg-card/30 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col items-center text-center mb-12 md:mb-16">
+          {isCyberpunk && (
+            <span className="text-xs font-mono text-primary mb-2 tracking-wider">{"// 01. $ cat about_me.md"}</span>
+          )}
           <motion.h2 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -70,7 +78,7 @@ export function About() {
                 ))}
               </ul>
               
-              <div className="mt-8 pt-8 border-t border-white/10">
+              <div className="mt-8 pt-8 border-t border-border">
                 <div className="flex items-center gap-4">
                   <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl glass flex items-center justify-center shrink-0">
                     <GraduationCap className="text-primary" size={20} />

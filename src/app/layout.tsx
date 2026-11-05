@@ -9,6 +9,9 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 export const metadata: Metadata = {
   title: 'Abhay Kumar | Full Stack Developer Portfolio',
   description: 'Portfolio of Abhay Kumar - Full Stack Developer specializing in React, Next.js, and Enterprise ERP Systems.',
+  icons: {
+    icon: '/icon.png',
+  },
   openGraph: {
     title: 'Abhay Kumar | Full Stack Developer',
     description: 'Building modern, responsive, and scalable web applications.',

@@ -14,7 +14,7 @@ import { useNavigationGuide } from '@/hooks/use-navigation-guide';
 
 export default function Home() {
   const [isResumeOpen, setIsResumeOpen] = useState(false);
-  const { state, completeStepOne, completeGuide } = useNavigationGuide();
+  const { state, completeStepOne, advanceToWalkthrough } = useNavigationGuide();
 
   return (
     <main className="relative bg-background">
@@ -29,7 +29,7 @@ export default function Home() {
       <Experience />
       <Projects 
         guideState={state}
-        onExploreProjectClick={completeGuide}
+        onExploreProjectClick={advanceToWalkthrough}
       />
       <Contact />
       <Footer />

@@ -18,7 +18,7 @@ export function DevelopmentTimeline() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ delay: idx * 0.05 }}
-            className="flex items-center gap-4 p-4 rounded-2xl glass border border-white/5 hover:border-primary/20 transition-all group"
+            className="flex items-center gap-4 p-4 rounded-2xl glass border border-border hover:border-primary/30 transition-all group shadow-xs"
           >
             <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary font-bold text-sm shrink-0 group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
               {step.id}

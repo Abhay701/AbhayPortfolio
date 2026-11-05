@@ -9,12 +9,16 @@ import { cn } from '@/lib/utils';
 import { GuideState } from '@/hooks/use-navigation-guide';
 import { NavigationIndicator } from './NavigationIndicator';
 
+import { useTheme } from '@/providers/theme-provider';
+
 interface ProjectsProps {
   guideState?: GuideState;
   onExploreProjectClick?: () => void;
 }
 
 export function Projects({ guideState, onExploreProjectClick }: ProjectsProps) {
+  const { theme } = useTheme();
+  const isCyberpunk = theme === 'cyberpunk';
   const featuredProjects = Object.values(projectsData);
 
   return (
@@ -27,6 +31,9 @@ export function Projects({ guideState, onExploreProjectClick }: ProjectsProps) {
             viewport={{ once: true, margin: "-100px" }}
             className="space-y-4"
           >
+            {isCyberpunk && (
+              <span className="text-xs font-mono text-primary tracking-wider">{"// 04. $ ./deploy --projects"}</span>
+            )}
             <h2 className="text-2xl md:text-5xl font-bold tracking-tight">
               Real-World <span className="text-gradient">Applications</span>
             </h2>
@@ -42,7 +49,7 @@ export function Projects({ guideState, onExploreProjectClick }: ProjectsProps) {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
-          className="glass rounded-2xl md:rounded-[2rem] p-6 md:p-10 mb-12 md:mb-16 border-primary/10 will-change-transform"
+          className="glass rounded-2xl md:rounded-[2rem] p-6 md:p-10 mb-12 md:mb-16 border border-border will-change-transform"
         >
           <h3 className="text-lg md:text-2xl font-bold mb-6 flex items-center gap-3">
             <span className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center shrink-0">
@@ -52,7 +59,7 @@ export function Projects({ guideState, onExploreProjectClick }: ProjectsProps) {
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
             {profile.contributions.map((contribution, idx) => (
-              <div key={idx} className="flex items-start gap-3 p-2 md:p-3 rounded-xl hover:bg-white/5 transition-colors">
+              <div key={idx} className="flex items-start gap-3 p-2 md:p-3 rounded-xl hover:bg-primary/10 transition-colors">
                 <CheckCircle2 size={16} className="text-primary mt-1 shrink-0" />
                 <span className="text-xs md:text-sm text-muted-foreground">{contribution}</span>
               </div>
@@ -75,25 +82,27 @@ export function Projects({ guideState, onExploreProjectClick }: ProjectsProps) {
                 viewport={{ once: true, margin: "-50px" }}
                 transition={{ delay: idx * 0.05 }}
                 className={cn(
-                  "group glass rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden flex flex-col h-full border border-white/5 will-change-transform",
+                  "group glass rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden flex flex-col h-full border border-border/80 shadow-md will-change-transform",
                   isFeatured ? 'lg:col-span-12' : 'lg:col-span-6',
                   idx === 0 && "scroll-mt-28"
                 )}
               >
                 <div className={cn("grid grid-cols-1 h-full", isFeatured && 'lg:grid-cols-2')}>
-                  {/* Image Section */}
+                  {/* Image Section - Native dashboard canvas without grey letterboxing */}
                   <div className={cn(
-                    "relative overflow-hidden bg-black/40",
-                    isFeatured ? "h-64 sm:h-80 lg:h-full" : "h-48 sm:h-56",
-                    isHalfWidth && "md:h-[220px]"
+                    "p-3 sm:p-5 lg:p-6 bg-muted/20 border-b lg:border-b-0 lg:border-r border-border/60 flex items-center justify-center",
+                    isFeatured ? "min-h-[260px] sm:min-h-[340px] lg:min-h-full" : "min-h-[220px] sm:min-h-[260px]",
+                    isHalfWidth && "md:min-h-[240px]"
                   )}>
-                    <Image 
-                      src={firstScreenshot} 
-                      alt={project.title}
-                      fill
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                      className="object-contain transition-all duration-700"
-                    />
+                    <div className="relative w-full h-full min-h-[200px] sm:min-h-[260px] lg:min-h-[320px] rounded-xl overflow-hidden bg-[#0d1117] border border-border/60 shadow-lg flex items-center justify-center">
+                      <Image 
+                        src={firstScreenshot} 
+                        alt={project.title}
+                        fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        className="object-contain p-1 transition-all duration-700 group-hover:scale-[1.02]"
+                      />
+                    </div>
                   </div>
 
                   {/* Content Section */}
@@ -121,7 +130,7 @@ export function Projects({ guideState, onExploreProjectClick }: ProjectsProps) {
                         </span>
                       </div>
                       <h3 className={cn(
-                        "font-bold mb-3 md:mb-4 group-hover:text-primary transition-colors",
+                        "font-bold mb-3 md:mb-4 group-hover:text-primary transition-colors text-foreground",
                         isFeatured ? "text-2xl md:text-4xl" : "text-xl md:text-3xl"
                       )}>
                         {project.title}
@@ -134,7 +143,7 @@ export function Projects({ guideState, onExploreProjectClick }: ProjectsProps) {
                       </p>
                       <div className={cn("flex flex-wrap gap-1.5 md:gap-2", isFeatured ? "mb-8 md:mb-10" : "mb-6")}>
                         {project.verifiedTech.map((t) => (
-                          <span key={t} className="px-2 py-1 md:px-3 md:py-1.5 rounded-lg bg-white/5 text-[10px] md:text-xs font-medium border border-white/10 hover:border-primary/50 transition-colors">
+                          <span key={t} className="px-2 py-1 md:px-3 md:py-1.5 rounded-lg bg-muted/40 text-foreground text-[10px] md:text-xs font-medium border border-border hover:border-primary/50 transition-colors shadow-2xs">
                             {t}
                           </span>
                         ))}
@@ -143,14 +152,16 @@ export function Projects({ guideState, onExploreProjectClick }: ProjectsProps) {
 
                     <div className="flex flex-wrap items-center gap-4">
                       <div className="flex items-center gap-3 w-full sm:w-auto">
-                        {idx === 0 && guideState === 'project-guide' && <NavigationIndicator />}
+                        {idx === 0 && guideState === 'project-guide' && (
+                          <NavigationIndicator targetSelector='[data-guide="project-btn"]' />
+                        )}
                         <Link 
-                          href={`/projects/${project.slug}`}
+                          href={idx === 0 && guideState === 'project-guide' ? `/projects/${project.slug}?guide=walkthrough` : `/projects/${project.slug}`}
                           data-guide={idx === 0 ? "project-btn" : undefined}
                           onClick={idx === 0 ? onExploreProjectClick : undefined}
                           className="w-full sm:w-auto bg-primary text-primary-foreground px-6 py-3 md:px-8 md:py-4 rounded-xl md:rounded-2xl font-bold flex items-center justify-center gap-2 hover:translate-y-[-2px] transition-all shadow-lg shadow-primary/20 active:scale-95 text-xs md:text-base"
                         >
-                          Explore Project
+                          {isCyberpunk ? "$ ./explore --project" : "Explore Project"}
                           <ArrowUpRight size={18} />
                         </Link>
                       </div>
