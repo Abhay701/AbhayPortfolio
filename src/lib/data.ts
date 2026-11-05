@@ -14,6 +14,7 @@ export const profile = {
   title: "Full Stack Developer | React.js Developer | Next.js Developer",
   location: "Ludhiana, Punjab, India",
   email: "kumarabhay46790@gmail.com",
+  secondaryEmail: "thakurabhay36790@gmail.com",
   intro: "I build modern, responsive and scalable web applications, transforming ideas into practical digital solutions through clean code and thoughtful design.",
   about: "I'm a Computer Science Engineering graduate and Full Stack Developer passionate about building modern web applications and solving real-world business problems. I have hands-on experience developing and maintaining business management applications, including ERP systems for the printing and packaging industry. My work involves frontend development, database integration, authentication, role-based access control, application optimization and building responsive user experiences.",
   education: {

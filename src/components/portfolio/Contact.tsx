@@ -22,6 +22,7 @@ import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError, type SecurityRuleContext } from '@/firebase/errors';
 import { cn } from '@/lib/utils';
+import { useTheme } from '@/providers/theme-provider';
 
 // Comprehensive Country Data
 const COUNTRIES = [
@@ -62,8 +63,6 @@ const COUNTRIES = [
   { code: 'HK', name: 'Hong Kong', dialCode: '+852', flag: '🇭🇰' },
 ];
 
-import { useTheme } from '@/providers/theme-provider';
-
 export function Contact() {
   const { theme } = useTheme();
   const isCyberpunk = theme === 'cyberpunk';
@@ -91,6 +90,7 @@ export function Contact() {
 
   const socialLinks = [
     { icon: Mail, href: `mailto:${profile.email}`, label: profile.email },
+    { icon: Mail, href: `mailto:${profile.secondaryEmail}`, label: profile.secondaryEmail },
     { 
       icon: Linkedin, 
       href: "https://www.linkedin.com/in/abhay-kumar-5aa8b5230/", 

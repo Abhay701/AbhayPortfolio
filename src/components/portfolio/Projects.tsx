@@ -8,7 +8,6 @@ import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { GuideState } from '@/hooks/use-navigation-guide';
 import { NavigationIndicator } from './NavigationIndicator';
-
 import { useTheme } from '@/providers/theme-provider';
 
 interface ProjectsProps {
@@ -71,6 +70,7 @@ export function Projects({ guideState, onExploreProjectClick }: ProjectsProps) {
           {featuredProjects.map((project, idx) => {
             const isHalfWidth = idx > 0;
             const isFeatured = idx === 0;
+            const isMacroPrintPack = project.slug === 'macro-print-pack';
             const firstScreenshot = project.screenshots[0]?.path || `https://picsum.photos/seed/${project.slug}/1200/800`;
             
             return (
@@ -84,17 +84,23 @@ export function Projects({ guideState, onExploreProjectClick }: ProjectsProps) {
                 className={cn(
                   "group glass rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden flex flex-col h-full border border-border/80 shadow-md will-change-transform",
                   isFeatured ? 'lg:col-span-12' : 'lg:col-span-6',
-                  idx === 0 && "scroll-mt-28"
+                  idx === 0 && "scroll-mt-28",
+                  isMacroPrintPack && "max-sm:min-h-0"
                 )}
               >
                 <div className={cn("grid grid-cols-1 h-full", isFeatured && 'lg:grid-cols-2')}>
-                  {/* Image Section - Native dashboard canvas without grey letterboxing */}
+                  {/* Image Section */}
                   <div className={cn(
                     "p-3 sm:p-5 lg:p-6 bg-muted/20 border-b lg:border-b-0 lg:border-r border-border/60 flex items-center justify-center",
-                    isFeatured ? "min-h-[260px] sm:min-h-[340px] lg:min-h-full" : "min-h-[220px] sm:min-h-[260px]",
-                    isHalfWidth && "md:min-h-[240px]"
+                    isFeatured ? "min-h-[200px] sm:min-h-[340px] lg:min-h-full" : "min-h-[220px] sm:min-h-[260px]",
+                    isHalfWidth && "md:min-h-[240px]",
+                    isMacroPrintPack && "max-sm:min-h-[160px] max-sm:p-3"
                   )}>
-                    <div className="relative w-full h-full min-h-[200px] sm:min-h-[260px] lg:min-h-[320px] rounded-xl overflow-hidden bg-[#0d1117] border border-border/60 shadow-lg flex items-center justify-center">
+                    <div className={cn(
+                      "relative w-full h-full rounded-xl overflow-hidden bg-[#0d1117] border border-border/60 shadow-lg flex items-center justify-center",
+                      isFeatured ? "min-h-[160px] sm:min-h-[260px] lg:min-h-[320px]" : "min-h-[180px]",
+                      isMacroPrintPack && "max-sm:min-h-[140px]"
+                    )}>
                       <Image 
                         src={firstScreenshot} 
                         alt={project.title}
@@ -108,42 +114,44 @@ export function Projects({ guideState, onExploreProjectClick }: ProjectsProps) {
                   {/* Content Section */}
                   <div className={cn(
                     "flex flex-col justify-between bg-gradient-to-br from-transparent to-primary/5",
-                    isFeatured ? "p-6 md:p-12" : "p-5 md:p-8"
+                    isFeatured ? "p-5 md:p-12" : "p-5 md:p-8",
+                    isMacroPrintPack && "max-sm:p-4"
                   )}>
                     <div>
                       {/* Status Badge & Project Number */}
-                      <div className="flex items-center justify-between mb-4">
-                        <span className="bg-[#22C55E] text-[#052E16] px-3 py-1 md:px-4 md:py-1.5 rounded-full text-[10px] md:text-xs font-bold shadow-lg shadow-green-500/20 flex items-center gap-1.5">
-                          <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                      <div className="flex items-center justify-between mb-3 md:mb-4">
+                        <span className="bg-[#22C55E] text-[#052E16] px-3 py-1 md:px-4 md:py-1.5 rounded-full text-[9px] md:text-xs font-bold shadow-lg shadow-green-500/20 flex items-center gap-1.5">
+                          <span className="w-1 h-1 md:w-1.5 md:h-1.5 rounded-full bg-white animate-pulse" />
                           {project.status}
                         </span>
                         
-                        {/* Styled Project Number */}
-                        <span className="text-xl md:text-2xl font-black text-primary/30 tabular-nums select-none">
+                        <span className="text-lg md:text-2xl font-black text-primary/30 tabular-nums select-none">
                           {idx + 1}
                         </span>
                       </div>
 
                       <div className="flex items-center gap-2 mb-2 md:mb-3">
-                        <span className="text-primary font-bold text-[10px] md:text-xs uppercase tracking-[0.2em]">
+                        <span className="text-primary font-bold text-[9px] md:text-xs uppercase tracking-[0.2em]">
                           {project.category}
                         </span>
                       </div>
                       <h3 className={cn(
-                        "font-bold mb-3 md:mb-4 group-hover:text-primary transition-colors text-foreground",
-                        isFeatured ? "text-2xl md:text-4xl" : "text-xl md:text-3xl"
+                        "font-bold mb-2 md:mb-4 group-hover:text-primary transition-colors text-foreground",
+                        isFeatured ? "text-xl md:text-4xl" : "text-lg md:text-3xl",
+                        isMacroPrintPack && "max-sm:text-lg max-sm:mb-1"
                       )}>
                         {project.title}
                       </h3>
                       <p className={cn(
                         "text-muted-foreground leading-relaxed mb-4 md:mb-6",
-                        isFeatured ? "text-sm md:text-lg" : "text-xs md:text-base"
+                        isFeatured ? "text-xs md:text-lg" : "text-[10px] md:text-base",
+                        isMacroPrintPack && "max-sm:text-[11px] max-sm:mb-3 max-sm:leading-tight"
                       )}>
                         {project.description}
                       </p>
-                      <div className={cn("flex flex-wrap gap-1.5 md:gap-2", isFeatured ? "mb-8 md:mb-10" : "mb-6")}>
+                      <div className={cn("flex flex-wrap gap-1 md:gap-2", isFeatured ? "mb-6 md:mb-10" : "mb-6", isMacroPrintPack && "max-sm:mb-4")}>
                         {project.verifiedTech.map((t) => (
-                          <span key={t} className="px-2 py-1 md:px-3 md:py-1.5 rounded-lg bg-muted/40 text-foreground text-[10px] md:text-xs font-medium border border-border hover:border-primary/50 transition-colors shadow-2xs">
+                          <span key={t} className="px-1.5 py-0.5 md:px-3 md:py-1.5 rounded-md md:rounded-lg bg-muted/40 text-foreground text-[8px] md:text-xs font-medium border border-border hover:border-primary/50 transition-colors shadow-2xs">
                             {t}
                           </span>
                         ))}
@@ -159,10 +167,10 @@ export function Projects({ guideState, onExploreProjectClick }: ProjectsProps) {
                           href={idx === 0 && guideState === 'project-guide' ? `/projects/${project.slug}?guide=walkthrough` : `/projects/${project.slug}`}
                           data-guide={idx === 0 ? "project-btn" : undefined}
                           onClick={idx === 0 ? onExploreProjectClick : undefined}
-                          className="w-full sm:w-auto bg-primary text-primary-foreground px-6 py-3 md:px-8 md:py-4 rounded-xl md:rounded-2xl font-bold flex items-center justify-center gap-2 hover:translate-y-[-2px] transition-all shadow-lg shadow-primary/20 active:scale-95 text-xs md:text-base"
+                          className="w-full sm:w-auto bg-primary text-primary-foreground px-5 py-2.5 md:px-8 md:py-4 rounded-lg md:rounded-2xl font-bold flex items-center justify-center gap-2 hover:translate-y-[-2px] transition-all shadow-lg shadow-primary/20 active:scale-95 text-[10px] md:text-base"
                         >
                           {isCyberpunk ? "$ ./explore --project" : "Explore Project"}
-                          <ArrowUpRight size={18} />
+                          <ArrowUpRight size={16} />
                         </Link>
                       </div>
                     </div>

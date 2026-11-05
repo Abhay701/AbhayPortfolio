@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTheme, type Theme } from '@/providers/theme-provider';
 
 interface NavigationIndicatorProps {
   targetSelector: string;
@@ -15,7 +16,36 @@ interface Coords {
   x: number;
   y: number;
   placement: PointerPlacement;
-  emoji: string;
+}
+
+const themeEmojiColors: Record<Theme, string> = {
+  midnight: '#3b82f6',
+  sunset: '#f97316',
+  ocean: '#06b6d4',
+  light: '#7c3aed',
+  cyberpunk: '#39FF14',
+};
+
+function FingerIcon({ placement, color }: { placement: PointerPlacement, color: string }) {
+  const rotation = {
+    left: 'rotate-0',
+    right: 'rotate-180',
+    top: 'rotate-90',
+    bottom: '-rotate-90',
+  }[placement];
+
+  return (
+    <svg 
+      viewBox="0 0 24 24" 
+      className={`w-full h-full ${rotation} transition-colors duration-300`}
+      style={{ filter: `drop-shadow(0 2px 4px rgba(0,0,0,0.3))` }}
+    >
+      <path
+        fill={color}
+        d="M21,11H13.82L15.39,4.72A1,1,0,0,0,14.41,3.5L12,3.5a1,1,0,0,0-.94.66L8.4,11H3a1,1,0,0,0-1,1v8a1,1,0,0,0,1,1H19.5a1,1,0,0,0,.96-.74l2-8A1,1,0,0,0,21.5,11Z"
+      />
+    </svg>
+  );
 }
 
 export function NavigationIndicator({ targetSelector, isWalkthrough = false }: NavigationIndicatorProps) {
@@ -24,6 +54,7 @@ export function NavigationIndicator({ targetSelector, isWalkthrough = false }: N
   const [coords, setCoords] = useState<Coords | null>(null);
   const [isTargetInView, setIsTargetInView] = useState(false);
   const animFrameRef = useRef<number | null>(null);
+  const { theme } = useTheme();
 
   useEffect(() => {
     setMounted(true);
@@ -59,8 +90,8 @@ export function NavigationIndicator({ targetSelector, isWalkthrough = false }: N
 
     const rect = targetElement.getBoundingClientRect();
 
-    // If element is completely hidden/collapsed
-    if (rect.width === 0 && rect.height === 0) {
+    // Fix: If element is collapsed or at 0,0 (often during back navigation transitions)
+    if ((rect.width === 0 && rect.height === 0) || (rect.top <= 0 && rect.left <= 0)) {
       setCoords(null);
       return;
     }
@@ -96,7 +127,6 @@ export function NavigationIndicator({ targetSelector, isWalkthrough = false }: N
 
     // Intelligent responsive placement decision
     if (vpWidth >= 768) {
-      // Desktop / Tablet layout
       if (spaceLeft >= pointerW + gap + 16) {
         placement = 'left';
       } else if (spaceRight >= pointerW + gap + 16) {
@@ -107,7 +137,6 @@ export function NavigationIndicator({ targetSelector, isWalkthrough = false }: N
         placement = 'bottom';
       }
     } else {
-      // Mobile layout: buttons often span wide, so vertical placement is cleanest unless horizontal has ample room
       if (spaceLeft < pointerW + gap + 12 && spaceRight < pointerW + gap + 12) {
         if (spaceTop >= pointerH + gap + 12) {
           placement = 'top';
@@ -123,32 +152,32 @@ export function NavigationIndicator({ targetSelector, isWalkthrough = false }: N
 
     let x = 0;
     let y = 0;
-    let emoji = '👉';
 
     if (placement === 'left') {
-      emoji = '👉'; // Pointing right into the target button
       x = rect.left - pointerW - gap;
       y = rect.top + (rect.height - pointerH) / 2;
     } else if (placement === 'right') {
-      emoji = '👈'; // Pointing left into the target button
       x = rect.right + gap;
       y = rect.top + (rect.height - pointerH) / 2;
     } else if (placement === 'top') {
-      emoji = '👇'; // Pointing down into the target button
       x = rect.left + (rect.width - pointerW) / 2;
       y = rect.top - pointerH - gap;
     } else {
-      // bottom
-      emoji = '👆'; // Pointing up into the target button
       x = rect.left + (rect.width - pointerW) / 2;
       y = rect.bottom + gap;
     }
 
-    // Viewport clamping to guarantee no overflow
+    // Guard against popping up near navbar (AK Logo area) when target is likely off-screen or not ready
+    if (y < 80 && !isWalkthrough) {
+      setCoords(null);
+      return;
+    }
+
+    // Viewport clamping
     x = Math.max(8, Math.min(x, vpWidth - pointerW - 8));
     y = Math.max(8, Math.min(y, vpHeight - pointerH - 8));
 
-    setCoords({ x, y, placement, emoji });
+    setCoords({ x, y, placement });
   }, [targetElement, isWalkthrough]);
 
   // Recalculate on scroll, resize, and orientation change
@@ -157,7 +186,6 @@ export function NavigationIndicator({ targetSelector, isWalkthrough = false }: N
 
     updatePosition();
 
-    // Smooth tracking during entrance animations (Framer Motion often animates in the first 1.2s)
     let startTime = Date.now();
     const trackInterval = setInterval(() => {
       updatePosition();
@@ -194,7 +222,7 @@ export function NavigationIndicator({ targetSelector, isWalkthrough = false }: N
 
   return createPortal(
     <>
-      {/* 1. Walkthrough Scroll Guidance: When target is below fold on the project exploration page */}
+      {/* 1. Walkthrough Scroll Guidance */}
       <AnimatePresence>
         {isWalkthrough && !isTargetInView && targetElement && (
           <motion.button
@@ -212,6 +240,7 @@ export function NavigationIndicator({ targetSelector, isWalkthrough = false }: N
               animate={{ y: [0, 5, 0] }}
               transition={{ repeat: Infinity, duration: 1.1, ease: 'easeInOut' }}
               className="text-2xl"
+              style={{ color: themeEmojiColors[theme] }}
             >
               👇
             </motion.span>
@@ -220,7 +249,7 @@ export function NavigationIndicator({ targetSelector, isWalkthrough = false }: N
         )}
       </AnimatePresence>
 
-      {/* 2. Direct Button Pointer: Intelligently positioned adjacent to and pointing at the target button */}
+      {/* 2. Theme-Colored Pointer */}
       <AnimatePresence>
         {coords && (!isWalkthrough || isTargetInView) && (
           <motion.div
@@ -251,11 +280,11 @@ export function NavigationIndicator({ targetSelector, isWalkthrough = false }: N
               width: '44px',
               height: '44px',
             }}
-            className="z-[110] cursor-pointer select-none flex items-center justify-center text-3xl md:text-4xl filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.5)] active:scale-90 transition-transform"
+            className="z-[110] cursor-pointer select-none flex items-center justify-center transition-transform"
             aria-hidden="true"
             title="Click target"
           >
-            {coords.emoji}
+            <FingerIcon placement={coords.placement} color={themeEmojiColors[theme]} />
           </motion.div>
         )}
       </AnimatePresence>
