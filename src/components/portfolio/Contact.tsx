@@ -3,7 +3,6 @@ import { useState, useRef, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Mail, 
-  Github, 
   Linkedin, 
   MapPin, 
   Send, 
@@ -97,7 +96,6 @@ export function Contact() {
       label: "LinkedIn Profile",
       isExternal: true 
     },
-    { icon: Github, href: "#", label: "GitHub Profile" },
     { icon: MapPin, href: "#", label: profile.location },
   ];
 
