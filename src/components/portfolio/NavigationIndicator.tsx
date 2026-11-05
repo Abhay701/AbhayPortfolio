@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme, type Theme } from '@/providers/theme-provider';
+import { cn } from '@/lib/utils';
 
 interface NavigationIndicatorProps {
   targetSelector: string;
@@ -25,28 +26,6 @@ const themeEmojiColors: Record<Theme, string> = {
   light: '#7c3aed',
   cyberpunk: '#39FF14',
 };
-
-function FingerIcon({ placement, color }: { placement: PointerPlacement, color: string }) {
-  const rotation = {
-    left: 'rotate-0',
-    right: 'rotate-180',
-    top: 'rotate-90',
-    bottom: '-rotate-90',
-  }[placement];
-
-  return (
-    <svg 
-      viewBox="0 0 24 24" 
-      className={`w-full h-full ${rotation} transition-colors duration-300`}
-      style={{ filter: `drop-shadow(0 2px 4px rgba(0,0,0,0.3))` }}
-    >
-      <path
-        fill={color}
-        d="M21,11H13.82L15.39,4.72A1,1,0,0,0,14.41,3.5L12,3.5a1,1,0,0,0-.94.66L8.4,11H3a1,1,0,0,0-1,1v8a1,1,0,0,0,1,1H19.5a1,1,0,0,0,.96-.74l2-8A1,1,0,0,0,21.5,11Z"
-      />
-    </svg>
-  );
-}
 
 export function NavigationIndicator({ targetSelector, isWalkthrough = false }: NavigationIndicatorProps) {
   const [mounted, setMounted] = useState(false);
@@ -284,7 +263,20 @@ export function NavigationIndicator({ targetSelector, isWalkthrough = false }: N
             aria-hidden="true"
             title="Click target"
           >
-            <FingerIcon placement={coords.placement} color={themeEmojiColors[theme]} />
+            <span 
+              className={cn(
+                "text-4xl transition-transform duration-300 block select-none",
+                coords.placement === 'left' && 'rotate-0',
+                coords.placement === 'right' && 'rotate-180',
+                coords.placement === 'top' && 'rotate-90',
+                coords.placement === 'bottom' && '-rotate-90'
+              )}
+              style={{ 
+                filter: `drop-shadow(0 0 8px ${themeEmojiColors[theme]})`
+              }}
+            >
+              👉
+            </span>
           </motion.div>
         )}
       </AnimatePresence>
