@@ -93,9 +93,9 @@ export function NavigationIndicator({ targetSelector, isWalkthrough = false }: N
       return;
     }
 
-    const pointerW = 44;
-    const pointerH = 44;
-    const gap = 12;
+    const pointerW = vpWidth < 768 ? 36 : 44;
+    const pointerH = vpWidth < 768 ? 36 : 44;
+    const gap = vpWidth < 768 ? 8 : 12;
 
     const spaceLeft = rect.left;
     const spaceRight = vpWidth - rect.right;
@@ -116,16 +116,15 @@ export function NavigationIndicator({ targetSelector, isWalkthrough = false }: N
         placement = 'bottom';
       }
     } else {
-      if (spaceLeft < pointerW + gap + 12 && spaceRight < pointerW + gap + 12) {
-        if (spaceTop >= pointerH + gap + 12) {
-          placement = 'top';
-        } else {
-          placement = 'bottom';
-        }
-      } else if (spaceLeft >= pointerW + gap + 12) {
+      // Mobile Logic: Aggressively prefer side placement to avoid vertical overlap with button text
+      if (spaceLeft >= 30) {
         placement = 'left';
-      } else {
+      } else if (spaceRight >= 30) {
         placement = 'right';
+      } else if (spaceTop >= 50) {
+        placement = 'top';
+      } else {
+        placement = 'bottom';
       }
     }
 
@@ -201,7 +200,7 @@ export function NavigationIndicator({ targetSelector, isWalkthrough = false }: N
 
   return createPortal(
     <>
-      {/* 1. Walkthrough Scroll Guidance */}
+      {/* 1. Walkthrough Scroll Guidance - Optimized for Mobile */}
       <AnimatePresence>
         {isWalkthrough && !isTargetInView && targetElement && (
           <motion.button
@@ -212,18 +211,24 @@ export function NavigationIndicator({ targetSelector, isWalkthrough = false }: N
             exit={{ opacity: 0, y: 30, scale: 0.9 }}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[110] glass px-6 py-3.5 rounded-full border border-primary/50 bg-card/95 shadow-2xl flex items-center gap-3 text-sm md:text-base font-bold text-foreground cursor-pointer hover:border-primary transition-all group"
+            className={cn(
+              "fixed z-[110] glass rounded-full border border-primary/50 bg-card/95 shadow-2xl flex items-center gap-2 md:gap-3 text-foreground cursor-pointer hover:border-primary transition-all group",
+              "bottom-6 right-4 left-auto translate-x-0", // Mobile: Compact, bottom-right
+              "md:left-1/2 md:right-auto md:bottom-8 md:-translate-x-1/2", // Desktop: Centered
+              "px-3 py-2 md:px-6 md:py-3.5", // Responsive padding
+              "text-[10px] sm:text-xs md:text-base font-bold" // Responsive text
+            )}
             aria-label="Scroll to Start Product Walkthrough"
           >
             <motion.span 
               animate={{ y: [0, 5, 0] }}
               transition={{ repeat: Infinity, duration: 1.1, ease: 'easeInOut' }}
-              className="text-2xl"
+              className="text-lg md:text-2xl"
               style={{ color: themeEmojiColors[theme] }}
             >
               👇
             </motion.span>
-            <span>Scroll to Product Walkthrough</span>
+            <span>Scroll to Walkthrough</span>
           </motion.button>
         )}
       </AnimatePresence>
@@ -265,7 +270,7 @@ export function NavigationIndicator({ targetSelector, isWalkthrough = false }: N
           >
             <span 
               className={cn(
-                "text-4xl transition-transform duration-300 block select-none",
+                "text-3xl md:text-4xl transition-transform duration-300 block select-none",
                 coords.placement === 'left' && 'rotate-0',
                 coords.placement === 'right' && 'rotate-180',
                 coords.placement === 'top' && 'rotate-90',
@@ -280,7 +285,6 @@ export function NavigationIndicator({ targetSelector, isWalkthrough = false }: N
           </motion.div>
         )}
       </AnimatePresence>
-    </>,
-    document.body
+    </>
   );
 }
