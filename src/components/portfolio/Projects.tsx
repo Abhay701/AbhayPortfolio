@@ -27,7 +27,7 @@ export function Projects({ guideState, onExploreProjectClick }: ProjectsProps) {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
+            viewport={{ once: true, margin: "-30px" }}
             className="space-y-4"
           >
             {isCyberpunk && (
@@ -47,8 +47,8 @@ export function Projects({ guideState, onExploreProjectClick }: ProjectsProps) {
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          className="glass rounded-2xl md:rounded-[2rem] p-6 md:p-10 mb-12 md:mb-16 border border-border will-change-transform"
+          viewport={{ once: true, margin: "-30px" }}
+          className="glass rounded-2xl md:rounded-[2rem] p-6 md:p-10 mb-12 md:mb-16 border border-border transform-gpu"
         >
           <h3 className="text-lg md:text-2xl font-bold mb-6 flex items-center gap-3">
             <span className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center shrink-0">
@@ -79,10 +79,10 @@ export function Projects({ guideState, onExploreProjectClick }: ProjectsProps) {
                 id={idx === 0 ? "macro-print-pack" : undefined}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-50px" }}
+                viewport={{ once: true, margin: "-30px" }}
                 transition={{ delay: idx * 0.05 }}
                 className={cn(
-                  "group glass rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden flex flex-col h-full border border-border/80 shadow-md will-change-transform",
+                  "group glass rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden flex flex-col h-full border border-border/80 shadow-md transform-gpu",
                   isFeatured ? 'lg:col-span-12' : 'lg:col-span-6',
                   idx === 0 && "scroll-mt-28",
                   isMacroPrintPack && "max-sm:min-h-0"

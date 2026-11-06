@@ -293,9 +293,9 @@ export function Contact() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
           <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-30px" }}
             className="w-full"
           >
             {isCyberpunk && (
@@ -328,10 +328,10 @@ export function Contact() {
 
           <motion.div
             id="contact-form"
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            className="glass p-6 md:p-8 lg:p-6 rounded-2xl md:rounded-[2.5rem] w-full lg:mt-0 lg:p-4 scroll-mt-24 md:scroll-mt-0"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-30px" }}
+            className="glass p-6 md:p-8 lg:p-6 rounded-2xl md:rounded-[2.5rem] w-full lg:mt-0 lg:p-4 scroll-mt-24 md:scroll-mt-0 transform-gpu"
           >
             <form onSubmit={handleSubmit} className="space-y-5 md:space-y-6 lg:space-y-3">
               <div className="hidden">

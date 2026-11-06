@@ -29,9 +29,7 @@ export function Navbar({ onResumeClick }: NavbarProps) {
       if (!ticking) {
         window.requestAnimationFrame(() => {
           const isScrolled = window.scrollY > 20;
-          if (isScrolled !== scrolled) {
-            setScrolled(isScrolled);
-          }
+          setScrolled(prev => (prev !== isScrolled ? isScrolled : prev));
           ticking = false;
         });
         ticking = true;
@@ -39,7 +37,7 @@ export function Navbar({ onResumeClick }: NavbarProps) {
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [scrolled]);
+  }, []);
 
   // Prevent body scroll when menu is open
   useEffect(() => {

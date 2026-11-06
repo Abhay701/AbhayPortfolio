@@ -141,25 +141,43 @@
   html, body {
     @apply w-full max-w-full;
     overflow-x: clip;
-    scroll-behavior: smooth;
     -webkit-tap-highlight-color: transparent;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, ::before, ::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 
   body {
     @apply bg-background text-foreground transition-colors duration-300;
   }
-
-  /* Stabilized section rendering */
-  section {
-    contain: layout style;
-  }
 }
 
 .glass {
   background: var(--glass-bg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   border: 1px solid var(--glass-border);
+  transform: translateZ(0);
+}
+
+@media (min-width: 768px) {
+  .glass {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
 }
 
 .text-gradient {
@@ -168,6 +186,7 @@
 
 .hero-gradient {
   background: radial-gradient(circle at 50% 50%, hsla(var(--primary), 0.15) 0%, hsla(var(--background), 0) 50%);
+  transform: translateZ(0);
 }
 
 .custom-scrollbar::-webkit-scrollbar {

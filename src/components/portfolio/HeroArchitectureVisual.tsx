@@ -37,7 +37,7 @@ export const HeroArchitectureVisual = memo(function HeroArchitectureVisual() {
   return (
     <div className="relative w-full aspect-square max-w-2xl mx-auto flex items-center justify-center p-4 sm:p-8 overflow-visible transform-gpu">
       {/* Background Radial Glow */}
-      <div className="absolute inset-0 bg-primary/5 rounded-full blur-[80px] md:blur-[120px] animate-pulse" />
+      <div className="absolute inset-0 bg-primary/5 rounded-full blur-[40px] md:blur-[120px] opacity-70 md:opacity-100 md:animate-pulse transform-gpu pointer-events-none" />
       
       {/* Animated Connection Lines (SVG) */}
       <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-20 md:opacity-30" viewBox="0 0 400 400">
@@ -68,7 +68,7 @@ export const HeroArchitectureVisual = memo(function HeroArchitectureVisual() {
         initial={{ scale: 0.8, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ duration: 0.8 }}
-        className="relative z-20 w-32 h-32 xs:w-40 xs:h-40 md:w-64 md:h-64 rounded-[1.5rem] md:rounded-[2.5rem] glass border-2 border-primary/30 shadow-[0_0_50px_rgba(59,130,246,0.2)] flex flex-col items-center justify-center text-center p-3 md:p-6 group will-change-transform"
+        className="relative z-20 w-32 h-32 xs:w-40 xs:h-40 md:w-64 md:h-64 rounded-[1.5rem] md:rounded-[2.5rem] glass border-2 border-primary/30 shadow-[0_0_50px_rgba(59,130,246,0.2)] flex flex-col items-center justify-center text-center p-3 md:p-6 group transform-gpu"
       >
         <div className="w-8 h-8 md:w-20 md:h-20 rounded-lg md:rounded-2xl bg-primary/20 flex items-center justify-center text-primary mb-2 md:mb-4 group-hover:scale-110 transition-transform">
           <Zap size={24} className="md:w-8 md:h-8 fill-current" />
@@ -93,7 +93,7 @@ export const HeroArchitectureVisual = memo(function HeroArchitectureVisual() {
           viewport={{ once: true }}
           transition={{ delay: 0.3 + (i * 0.05), duration: 0.4 }}
           className={cn(
-            "absolute z-30 glass p-2 md:p-4 rounded-xl md:rounded-2xl border-border/60 shadow-xl flex items-center gap-2 md:gap-3 hover:border-primary/50 transition-all group cursor-default will-change-transform",
+            "absolute z-30 glass p-2 md:p-4 rounded-xl md:rounded-2xl border-border/60 shadow-xl flex items-center gap-2 md:gap-3 hover:border-primary/50 transition-all group cursor-default transform-gpu",
             mod.pos,
             "max-md:" + mod.mobilePos
           )}

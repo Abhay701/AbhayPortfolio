@@ -167,12 +167,26 @@ export function NavigationIndicator({ targetSelector, isWalkthrough = false }: N
     x = Math.max(8, Math.min(x, vpWidth - pointerW - 8));
     y = Math.max(8, Math.min(y, vpHeight - pointerH - 8));
 
-    setCoords({ x, y, placement });
+    setCoords(prev => {
+      if (prev && Math.abs(prev.x - x) < 1 && Math.abs(prev.y - y) < 1 && prev.placement === placement) {
+        return prev;
+      }
+      return { x, y, placement };
+    });
   }, [targetElement, isWalkthrough, targetSelector]);
 
-  // Recalculate on scroll, resize, and orientation change
+  // Recalculate on scroll, resize, and orientation change with RAF throttling
   useEffect(() => {
     if (!targetElement) return;
+
+    let rafId: number | null = null;
+    const throttledUpdate = () => {
+      if (rafId !== null) return;
+      rafId = requestAnimationFrame(() => {
+        updatePosition();
+        rafId = null;
+      });
+    };
 
     updatePosition();
 
@@ -182,17 +196,18 @@ export function NavigationIndicator({ targetSelector, isWalkthrough = false }: N
       if (Date.now() - startTime > 1500) {
         clearInterval(trackInterval);
       }
-    }, 60);
+    }, 100);
 
-    window.addEventListener('resize', updatePosition, { passive: true });
-    window.addEventListener('scroll', updatePosition, { passive: true });
-    window.addEventListener('orientationchange', updatePosition, { passive: true });
+    window.addEventListener('resize', throttledUpdate, { passive: true });
+    window.addEventListener('scroll', throttledUpdate, { passive: true });
+    window.addEventListener('orientationchange', throttledUpdate, { passive: true });
 
     return () => {
+      if (rafId !== null) cancelAnimationFrame(rafId);
       clearInterval(trackInterval);
-      window.removeEventListener('resize', updatePosition);
-      window.removeEventListener('scroll', updatePosition);
-      window.removeEventListener('orientationchange', updatePosition);
+      window.removeEventListener('resize', throttledUpdate);
+      window.removeEventListener('scroll', throttledUpdate);
+      window.removeEventListener('orientationchange', throttledUpdate);
     };
   }, [targetElement, updatePosition]);
 
@@ -250,57 +265,63 @@ export function NavigationIndicator({ targetSelector, isWalkthrough = false }: N
         )}
       </AnimatePresence>
 
-      {/* 2. Theme-Colored Pointer */}
+      {/* 2. Theme-Colored Pointer - Decoupled GPU Transform to eliminate scroll jitter */}
       <AnimatePresence>
         {coords && (!isWalkthrough || isTargetInView) && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.5 }}
-            animate={{
-              opacity: 1,
-              scale: 1,
-              ...(coords.placement === 'left' && { x: [0, 8, 0] }),
-              ...(coords.placement === 'right' && { x: [0, -8, 0] }),
-              ...(coords.placement === 'top' && { y: [0, 8, 0] }),
-              ...(coords.placement === 'bottom' && { y: [0, -8, 0] }),
-            }}
-            exit={{ opacity: 0, scale: 0.5 }}
-            transition={{
-              ...(coords.placement === 'left' || coords.placement === 'right' ? {
-                x: { repeat: Infinity, duration: 1.1, ease: 'easeInOut' }
-              } : {
-                y: { repeat: Infinity, duration: 1.1, ease: 'easeInOut' }
-              }),
-              opacity: { duration: 0.25 },
-              scale: { duration: 0.25 }
-            }}
+          <div
             onClick={handlePointerClick}
             style={{
               position: 'fixed',
-              left: `${coords.x}px`,
-              top: `${coords.y}px`,
+              top: 0,
+              left: 0,
+              transform: `translate3d(${coords.x}px, ${coords.y}px, 0)`,
               width: '44px',
               height: '44px',
+              willChange: 'transform',
             }}
-            className="z-[110] cursor-pointer select-none flex items-center justify-center transition-transform"
+            className="z-[110] cursor-pointer select-none flex items-center justify-center pointer-events-auto"
             aria-hidden="true"
             title="Click target"
           >
-            <span 
-              className={cn(
-                "text-3xl md:text-4xl transition-transform duration-300 block select-none",
-                (emoji === '👉') && coords.placement === 'left' && 'rotate-0',
-                (emoji === '👉') && coords.placement === 'right' && 'rotate-180',
-                (emoji === '👉') && coords.placement === 'top' && 'rotate-90',
-                (emoji === '👉') && coords.placement === 'bottom' && '-rotate-90',
-                (emoji === '👇') && 'rotate-0'
-              )}
-              style={{ 
-                filter: `drop-shadow(0 0 8px ${themeEmojiColors[theme]})`
+            <motion.div
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={{
+                opacity: 1,
+                scale: 1,
+                ...(coords.placement === 'left' && { x: [0, 6, 0] }),
+                ...(coords.placement === 'right' && { x: [0, -6, 0] }),
+                ...(coords.placement === 'top' && { y: [0, 6, 0] }),
+                ...(coords.placement === 'bottom' && { y: [0, -6, 0] }),
               }}
+              exit={{ opacity: 0, scale: 0.5 }}
+              transition={{
+                ...(coords.placement === 'left' || coords.placement === 'right' ? {
+                  x: { repeat: Infinity, duration: 1.2, ease: 'easeInOut' }
+                } : {
+                  y: { repeat: Infinity, duration: 1.2, ease: 'easeInOut' }
+                }),
+                opacity: { duration: 0.2 },
+                scale: { duration: 0.2 }
+              }}
+              className="w-full h-full flex items-center justify-center"
             >
-              {emoji}
-            </span>
-          </motion.div>
+              <span 
+                className={cn(
+                  "text-3xl md:text-4xl transition-transform duration-300 block select-none",
+                  (emoji === '👉') && coords.placement === 'left' && 'rotate-0',
+                  (emoji === '👉') && coords.placement === 'right' && 'rotate-180',
+                  (emoji === '👉') && coords.placement === 'top' && 'rotate-90',
+                  (emoji === '👉') && coords.placement === 'bottom' && '-rotate-90',
+                  (emoji === '👇') && 'rotate-0'
+                )}
+                style={{ 
+                  filter: `drop-shadow(0 0 8px ${themeEmojiColors[theme]})`
+                }}
+              >
+                {emoji}
+              </span>
+            </motion.div>
+          </div>
         )}
       </AnimatePresence>
     </>,

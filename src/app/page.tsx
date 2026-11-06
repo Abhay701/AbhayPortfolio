@@ -41,9 +41,9 @@ export default function Home() {
       />
       
       {/* Global Background Accents */}
-      <div className="fixed top-0 left-0 w-full h-full pointer-events-none -z-20 overflow-hidden">
-        <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] bg-primary/5 rounded-full blur-[120px]" />
-        <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] bg-secondary/5 rounded-full blur-[120px]" />
+      <div className="fixed top-0 left-0 w-full h-full pointer-events-none -z-20 overflow-hidden transform-gpu">
+        <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] bg-primary/5 rounded-full blur-[60px] md:blur-[120px] transform-gpu" />
+        <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] bg-secondary/5 rounded-full blur-[60px] md:blur-[120px] transform-gpu" />
       </div>
     </main>
   );

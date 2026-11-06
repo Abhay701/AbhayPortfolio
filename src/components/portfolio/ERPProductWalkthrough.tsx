@@ -80,7 +80,7 @@ export function ERPProductWalkthrough({ screenshots, onClose }: ERPProductWalkth
 
   return createPortal(
     <div className={cn(
-      "fixed inset-0 z-[9999] bg-background/95 backdrop-blur-xl flex flex-col transition-all duration-500 overflow-y-auto custom-scrollbar",
+      "fixed inset-0 z-[9999] bg-background/95 backdrop-blur-md md:backdrop-blur-xl flex flex-col transition-all duration-500 overflow-y-auto custom-scrollbar transform-gpu",
       isFullScreen ? "p-0" : "p-4 md:p-8"
     )}>
       {/* Close Button */}

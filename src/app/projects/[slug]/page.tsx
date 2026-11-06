@@ -40,8 +40,16 @@ export default function CaseStudyPage() {
   const { state: guideState, completeGuide } = useNavigationGuide();
 
   useEffect(() => {
+    let ticking = false;
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 80);
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const next = window.scrollY > 80;
+          setIsScrolled(prev => (prev !== next ? next : prev));
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);

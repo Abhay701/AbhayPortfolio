@@ -3,6 +3,7 @@
 import { ReactQueryProvider } from '@/providers/query-client';
 import { FirebaseClientProvider, FirebaseErrorListener } from '@/firebase';
 import { ThemeProvider } from '@/providers/theme-provider';
+import { MotionConfig } from 'framer-motion';
 import type { ReactNode } from 'react';
 
 export function Providers({ children }: { children: ReactNode }) {
@@ -10,7 +11,11 @@ export function Providers({ children }: { children: ReactNode }) {
     <ThemeProvider>
       <FirebaseClientProvider>
         <FirebaseErrorListener />
-        <ReactQueryProvider>{children}</ReactQueryProvider>
+        <ReactQueryProvider>
+          <MotionConfig reducedMotion="user">
+            {children}
+          </MotionConfig>
+        </ReactQueryProvider>
       </FirebaseClientProvider>
     </ThemeProvider>
   );

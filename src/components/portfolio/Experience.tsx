@@ -19,7 +19,7 @@ export function Experience() {
           <motion.h2 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
+            viewport={{ once: true, margin: "-30px" }}
             className="text-2xl md:text-4xl font-bold mb-4"
           >
             Professional Experience
@@ -33,7 +33,7 @@ export function Experience() {
               key={idx}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
+              viewport={{ once: true, margin: "-30px" }}
               className="relative flex items-start justify-between md:justify-normal md:odd:flex-row-reverse group"
             >
               {/* Dot */}
